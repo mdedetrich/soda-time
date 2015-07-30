@@ -70,7 +70,7 @@ object DurationFieldType {
       false
     }
 
-    override def hashCode(): Int = (1 << iOrdinal)
+    override def hashCode(): Int = 1 << iOrdinal
 
     def getField(chronology: Chronology): DurationField = {
       var _chronology: Chronology = chronology
