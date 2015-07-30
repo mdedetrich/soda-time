@@ -58,7 +58,7 @@ the majority of critical business logic code has been ported correctly and autom
 
 ## Differences
 ### Breaking API differences
-There are difference for `SodaTime` on Scala.js, mainly due dealing with Javascript. In regards to API, there are `some` breaking changes, which are noted below
+There are difference for `SodaTime` on Scala.js, mainly due dealing with Javascript. In regards to API, there are *some* breaking changes, which are noted below
 
 - Methods that deal with file operations (i.e. `java.io.File`) are not exported, as they make no sense on `Javascript`
 - Error classes, such as `org.joda.IllegalFieldValueException`, only have a single primary constructor, rather than various constructors as
@@ -276,6 +276,3 @@ with the following (in order of being problematic)
          
          class ToString extends StaticAnnotation
      ```
-     Since 
-         
-    
