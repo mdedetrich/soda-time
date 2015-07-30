@@ -217,7 +217,7 @@ class LocalTime(instant: Long, private var chronology: Chronology) extends BaseL
   def this(instant: AnyRef) {
     this(instant, null.asInstanceOf[Chronology])
   }
-  
+
   def this(hourOfDay: Int,
            minuteOfHour: Int,
            secondOfMinute: Int,
@@ -250,7 +250,7 @@ class LocalTime(instant: Long, private var chronology: Chronology) extends BaseL
     if (iChronology == null) {
       return new LocalTime(iLocalMillis, ISOChronology.getInstanceUTC)
     }
-    if (DateTimeZone.UTC == iChronology.getZone == false) {
+    if (!(DateTimeZone.UTC == iChronology.getZone)) {
       return new LocalTime(iLocalMillis, iChronology.withUTC())
     }
     this
@@ -278,7 +278,7 @@ class LocalTime(instant: Long, private var chronology: Chronology) extends BaseL
     if (fieldType == null) {
       throw new IllegalArgumentException("The DateTimeFieldType must not be null")
     }
-    if (isSupported(fieldType) == false) {
+    if (!isSupported(fieldType)) {
       throw new IllegalArgumentException("Field '" + fieldType + "' is not supported")
     }
     fieldType.getField(getChronology).get(getLocalMillis)
@@ -288,7 +288,7 @@ class LocalTime(instant: Long, private var chronology: Chronology) extends BaseL
     if (`type` == null) {
       return false
     }
-    if (isSupported(`type`.getDurationType) == false) {
+    if (!isSupported(`type`.getDurationType)) {
       return false
     }
     val range = `type`.getRangeDurationType
@@ -352,7 +352,7 @@ class LocalTime(instant: Long, private var chronology: Chronology) extends BaseL
     if (fieldType == null) {
       throw new IllegalArgumentException("Field must not be null")
     }
-    if (isSupported(fieldType) == false) {
+    if (!isSupported(fieldType)) {
       throw new IllegalArgumentException("Field '" + fieldType + "' is not supported")
     }
     val instant = fieldType.getField(getChronology).set(getLocalMillis, value)
@@ -363,7 +363,7 @@ class LocalTime(instant: Long, private var chronology: Chronology) extends BaseL
     if (fieldType == null) {
       throw new IllegalArgumentException("Field must not be null")
     }
-    if (isSupported(fieldType) == false) {
+    if (!isSupported(fieldType)) {
       throw new IllegalArgumentException("Field '" + fieldType + "' is not supported")
     }
     if (amount == 0) {
