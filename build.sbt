@@ -13,11 +13,11 @@ lazy val sodatime = crossProject.in(file(".")).
     name := "soda-time",
     version := "0.0.1-SNAPSHOT",
     scalaVersion := "2.11.7",
-    organization := "org.mdedetrich"
+    organization := "org.mdedetrich",
+    crossScalaVersions := Seq(scala211Version,scala210Version)
   ).
   jvmSettings(
     // Add JVM-specific settings here
-    crossScalaVersions := Seq(scala211Version,scala210Version)
   ).
   jsSettings(
     // Add JS-specific settings here
