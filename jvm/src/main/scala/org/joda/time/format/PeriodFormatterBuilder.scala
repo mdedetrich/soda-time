@@ -11,7 +11,6 @@ import java.util.Locale
 import java.util.Set
 import java.util.TreeSet
 import java.util.concurrent.ConcurrentHashMap
-import java.util.function.Consumer
 import java.util.regex.Pattern
 import org.joda.time.DateTimeConstants
 import org.joda.time.DurationFieldType
@@ -103,17 +102,18 @@ object PeriodFormatterBuilder {
           shortestAffix = affix
         }
         val affixesToIgnore = new HashSet[String]()
-        periodFieldAffixesToIgnore.forEach(new Consumer[PeriodFieldAffix] {
-          def accept(periodFieldAffixToIgnore: PeriodFieldAffix): Unit = {
-            if (periodFieldAffixToIgnore != null) {
-              periodFieldAffixToIgnore.getAffixes().foreach{affixToIgnore =>
-                if (affixToIgnore.length > shortestAffixLength || (affixToIgnore.equalsIgnoreCase(shortestAffix) && !(affixToIgnore == shortestAffix))) {
-                  affixesToIgnore.add(affixToIgnore)
-                }
+        val iterator = periodFieldAffixesToIgnore.iterator()
+        while (iterator.hasNext) {
+          val periodFieldAffixToIgnore = iterator.next()
+          if (periodFieldAffixToIgnore != null) {
+            periodFieldAffixToIgnore.getAffixes().foreach{affixToIgnore =>
+              if (affixToIgnore.length > shortestAffixLength || (affixToIgnore.equalsIgnoreCase(shortestAffix) && !(affixToIgnore == shortestAffix))) {
+                affixesToIgnore.add(affixToIgnore)
               }
             }
           }
-        })
+        }
+        
         iOtherAffixes = affixesToIgnore.toArray(Array.ofDim[String](affixesToIgnore.size))
       }
     }

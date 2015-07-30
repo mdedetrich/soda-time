@@ -237,10 +237,10 @@ with the following (in order of being problematic)
         interopt for the Java consumer API. This means the above code will be typically changed to
         
         ```scala
-        someCollection.forEach(new Consumer[T] {
-            def accept(t: T): Unit = {
+        val iterator = someCollection.iterator
+        
+        while(iterator.hasNext) {
             // Do stuff here
-            }
         }
         ```
         

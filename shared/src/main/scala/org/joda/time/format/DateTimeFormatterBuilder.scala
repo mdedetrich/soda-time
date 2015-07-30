@@ -5,7 +5,6 @@ import java.util.List
 import java.util.Locale
 import java.util.Map
 import java.util.concurrent.ConcurrentHashMap
-import java.util.function.Consumer
 import org.joda.time.Chronology
 import org.joda.time.DateTimeConstants
 import org.joda.time.DateTimeField
@@ -1052,15 +1051,16 @@ object DateTimeFormatterBuilder {
       parseLookup = if (parseLookup != null) parseLookup else DateTimeUtils.getDefaultTimeZoneNames
       var matched: String = null
       
-      parseLookup.keySet().forEach(new Consumer[String] {
-        def accept(name: String): Unit = {
-          if (csStartsWith(text, position, name)) {
-            if (matched == null || name.length > matched.length) {
-              matched = name
-            }
+      val iterator = parseLookup.keySet().iterator()
+      
+      while (iterator.hasNext) {
+        val name = iterator.next()
+        if (csStartsWith(text, position, name)) {
+          if (matched == null || name.length > matched.length) {
+            matched = name
           }
         }
-      })
+      }
       
       if (matched != null) {
         bucket.setZone(parseLookup.get(matched))
@@ -1090,16 +1090,17 @@ object DateTimeFormatterBuilder {
 
     def parseInto(bucket: DateTimeParserBucket, text: CharSequence, position: Int): Int = {
       var best: String = null
-
-      ALL_IDS.forEach(new Consumer[String] {
-        def accept(id: String): Unit = {
-          if (csStartsWith(text, position, id)) {
-            if (best == null || id.length > best.length) {
-              best = id
-            }
+      
+      val iterator = ALL_IDS.iterator()
+      
+      while (iterator.hasNext) {
+        val id = iterator.next()
+        if (csStartsWith(text, position, id)) {
+          if (best == null || id.length > best.length) {
+            best = id
           }
         }
-      })
+      }
 
       if (best != null) {
         bucket.setZone(DateTimeZone.forID(best))
@@ -1117,70 +1118,15 @@ object DateTimeFormatterBuilder {
 
     var max = 0
     val MAX_LENGTH = max
-
-    ALL_IDS.forEach(new Consumer[String] {
-      def accept(id: String): Unit = {
-        max = Math.max(max, id.length)
-      }
-    })
+    
+    val iterator = ALL_IDS.iterator()
+    
+    while (iterator.hasNext) {
+      val id = iterator.next()
+      max = Math.max(max, id.length)
+    }
 
   }
-
-//  object TimeZoneId extends Enumeration {
-//
-//    val ALL_IDS = DateTimeZone.getAvailableIDs
-//
-//    val INSTANCE = new TimeZoneId()
-//
-//    class TimeZoneId extends Val with InternalPrinter with InternalParser {
-//
-//      def estimatePrintedLength(): Int = MAX_LENGTH
-//
-//      def printTo(appendable: Appendable,
-//                  instant: Long,
-//                  chrono: Chronology,
-//                  displayOffset: Int,
-//                  displayZone: DateTimeZone,
-//                  locale: Locale) {
-//        appendable.append(if (displayZone != null) displayZone.getID else "")
-//      }
-//
-//      def printTo(appendable: Appendable, partial: ReadablePartial, locale: Locale) {
-//      }
-//
-//      def estimateParsedLength(): Int = MAX_LENGTH
-//
-//      def parseInto(bucket: DateTimeParserBucket, text: CharSequence, position: Int): Int = {
-//        var best: String = null
-//        
-//        ALL_IDS.forEach(new Consumer[String] {
-//          def accept(id: String): Unit = {
-//            if (csStartsWith(text, position, id)) {
-//              if (best == null || id.length > best.length) {
-//                best = id
-//              }
-//            }
-//          }
-//        })
-//        
-//        if (best != null) {
-//          bucket.setZone(DateTimeZone.forID(best))
-//          return position + best.length
-//        }
-//        ~position
-//      }
-//    }
-//
-//    var max = 0
-//    val MAX_LENGTH = max
-//
-//    ALL_IDS.forEach(new Consumer[String] {
-//      def accept(id: String): Unit = {
-//        max = Math.max(max, id.length)
-//      }
-//    })
-//    
-//  }
 
   class Composite(elementPairs: List[Any]) extends InternalPrinter() with InternalParser {
 
