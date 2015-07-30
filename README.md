@@ -1,8 +1,6 @@
 # SodaTime, Port of JodaTime for Scala/Scala.js
 
-[![Join the chat at https://gitter.im/mdedetrich/soda-time](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mdedetrich/soda-time?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-[![Build Status](https://travis-ci.org/mdedetrich/soda-time.svg?branch=master)](https://travis-ci.org/mdedetrich/soda-time)
+[![Join the chat at https://gitter.im/mdedetrich/soda-time](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mdedetrich/soda-time?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Build Status](https://travis-ci.org/mdedetrich/soda-time.svg?branch=master)](https://travis-ci.org/mdedetrich/soda-time)
 
 SodaTime is a port of [JodaTime](http://www.joda.org/joda-time/) to Scala, so that it can be compiled with `Scala.js`.
 The intention is to have a cross compiled, high quality Date/Time library that can be used across all JVM's, as well as
