@@ -1,6 +1,5 @@
 package org.joda.time.chrono
 
-import java.util.HashMap
 import java.util.Locale
 import org.joda.time.Chronology
 import org.joda.time.DateTime
@@ -117,7 +116,7 @@ class LimitChronology private (base: Chronology, val lowerLimit: DateTime, val u
   }
 
   protected def assemble(fields: Fields) {
-    val converted = new HashMap[Any, Any]()
+    val converted = new collection.mutable.HashMap[Any, Any]()
     fields.eras = convertField(fields.eras, converted)
     fields.centuries = convertField(fields.centuries, converted)
     fields.years = convertField(fields.years, converted)
@@ -155,11 +154,11 @@ class LimitChronology private (base: Chronology, val lowerLimit: DateTime, val u
     fields.halfdayOfDay = convertField(fields.halfdayOfDay, converted)
   }
 
-  private def convertField(field: DurationField, converted: HashMap[Any, Any]): DurationField = {
+  private def convertField(field: DurationField, converted: collection.mutable.HashMap[Any, Any]): DurationField = {
     if (field == null || !field.isSupported) {
       return field
     }
-    if (converted.containsKey(field)) {
+    if (converted.contains(field)) {
       return converted.get(field).asInstanceOf[DurationField]
     }
     val limitField = new LimitDurationField(field)
@@ -167,11 +166,11 @@ class LimitChronology private (base: Chronology, val lowerLimit: DateTime, val u
     limitField
   }
 
-  private def convertField(field: DateTimeField, converted: HashMap[Any, Any]): DateTimeField = {
+  private def convertField(field: DateTimeField, converted: collection.mutable.HashMap[Any, Any]): DateTimeField = {
     if (field == null || !field.isSupported) {
       return field
     }
-    if (converted.containsKey(field)) {
+    if (converted.contains(field)) {
       return converted.get(field).asInstanceOf[DateTimeField]
     }
     val limitField = new LimitDateTimeField(field, convertField(field.getDurationField, converted), convertField(field.getRangeDurationField,

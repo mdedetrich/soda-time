@@ -1,8 +1,6 @@
 package org.joda.time.format
 
 import java.io.Writer
-import java.util.Arrays
-import java.util.Comparator
 import java.util.Locale
 import java.util.regex.Pattern
 import org.joda.time.DateTimeConstants
@@ -12,6 +10,8 @@ import org.joda.time.ReadWritablePeriod
 import org.joda.time.ReadablePeriod
 import PeriodFormatterBuilder._
 import scala.util.control.Breaks._
+import scalajs.js
+import js.JSConverters._
 
 object PeriodFormatterBuilder {
   private val PRINT_ZERO_RARELY_FIRST = 1
@@ -37,8 +37,8 @@ object PeriodFormatterBuilder {
       throw new IllegalStateException("Builder has created neither a printer nor a parser")
     }
     val size = elementPairs.size
-    if (size >= 2 && elementPairs(0).isInstanceOf[Separator]) {
-      var sep = elementPairs(0).asInstanceOf[Separator]
+    if (size >= 2 && elementPairs.head.isInstanceOf[Separator]) {
+      var sep = elementPairs.head.asInstanceOf[Separator]
       if (sep.iAfterParser == null && sep.iAfterPrinter == null) {
         val f = toFormatter(elementPairs.slice(2, size), notPrinter, notParser)
         sep = sep.finish(f.getPrinter, f.getParser)
@@ -55,12 +55,12 @@ object PeriodFormatterBuilder {
     }
   }
 
-  private def createComposite(elementPairs: collection.mutable.ListBuffer[Any]): Array[Any] = elementPairs.size match {
-    case 0 => Array(Literal.EMPTY, Literal.EMPTY)
-    case 1 => Array(elementPairs(0), elementPairs(1))
+  private def createComposite(elementPairs: collection.mutable.ListBuffer[Any]): js.Array[Any] = elementPairs.size match {
+    case 0 => js.Array(Literal.EMPTY, Literal.EMPTY)
+    case 1 => js.Array(elementPairs.head, elementPairs(1))
     case _ =>
       val comp = new Composite(elementPairs)
-      Array(comp, comp)
+      js.Array(comp, comp)
 
   }
 
@@ -76,14 +76,14 @@ object PeriodFormatterBuilder {
 
     def scan(periodStr: String, position: Int): Int
 
-    def getAffixes(): Array[String]
+    def getAffixes(): js.Array[String]
 
     def finish(affixesToIgnore: collection.mutable.Set[PeriodFieldAffix]): Unit
   }
 
   abstract class IgnorableAffix extends PeriodFieldAffix {
 
-    @volatile private var iOtherAffixes: Array[String] = _
+    private var iOtherAffixes: js.Array[String] = _
 
     def finish(periodFieldAffixesToIgnore: collection.mutable.Set[PeriodFieldAffix]) {
       if (iOtherAffixes == null) {
@@ -104,7 +104,7 @@ object PeriodFormatterBuilder {
             }
           }
         }
-        iOtherAffixes = affixesToIgnore.toArray
+        iOtherAffixes = affixesToIgnore.toJSArray
       }
     }
 
@@ -172,7 +172,7 @@ object PeriodFormatterBuilder {
       ~position
     }
 
-    def getAffixes(): Array[String] = Array(iText)
+    def getAffixes(): js.Array[String] = js.Array(iText)
   }
 
   class PluralAffix(private val iSingularText: String, private val iPluralText: String)
@@ -237,22 +237,21 @@ object PeriodFormatterBuilder {
       ~position
     }
 
-    def getAffixes(): Array[String] = Array(iSingularText, iPluralText)
+    def getAffixes(): js.Array[String] = js.Array(iSingularText, iPluralText)
   }
 
   object RegExAffix {
-
-    private val LENGTH_DESC_COMPARATOR = new Comparator[String]() {
-
+    
+    private val LENGTH_DESC_ORDERING = new Ordering[String] {
       def compare(o1: String, o2: String): Int = o2.length - o1.length
     }
   }
 
-  class RegExAffix(regExes: Array[String], texts: Array[String]) extends IgnorableAffix {
+  class RegExAffix(regExes: js.Array[String], texts: js.Array[String]) extends IgnorableAffix {
 
-    private val iSuffixes = texts.clone()
-    private val iPatterns = new Array[Pattern](regExes.length)
-    private val iSuffixesSortedDescByLength = iSuffixes.clone()
+    private val iSuffixes = texts.jsSlice(0)
+    private val iPatterns = new js.Array[Pattern]()
+    private var iSuffixesSortedDescByLength = iSuffixes.jsSlice(0)
 
     for (i <- 0 until regExes.length) {
       var pattern = PATTERNS.get(regExes(i)).orNull
@@ -266,11 +265,11 @@ object PeriodFormatterBuilder {
       iPatterns(i) = pattern
     }
 
-    Arrays.sort(iSuffixesSortedDescByLength, RegExAffix.LENGTH_DESC_COMPARATOR)
+    iSuffixesSortedDescByLength = iSuffixesSortedDescByLength.sorted(RegExAffix.LENGTH_DESC_ORDERING)
 
     private def selectSuffixIndex(value: Int): Int = {
       val valueString = String.valueOf(value)
-      for (i <- 0 until iPatterns.length if iPatterns(i).matcher(valueString).matches()) {
+      for (i <- iPatterns.indices if iPatterns(i).matcher(valueString).matches()) {
         return i
       }
       iPatterns.length - 1
@@ -305,14 +304,14 @@ object PeriodFormatterBuilder {
       ~position
     }
 
-    def getAffixes(): Array[String] = iSuffixes.clone()
+    def getAffixes(): js.Array[String] = iSuffixes.jsSlice(0)
   }
 
   class CompositeAffix(private val iLeft: PeriodFieldAffix, private val iRight: PeriodFieldAffix)
     extends IgnorableAffix {
 
     val result = new collection.mutable.HashSet[String]()
-    private val iLeftRightCombinations = result.toArray
+    private val iLeftRightCombinations = result.toJSArray
 
 
     for (leftText <- iLeft.getAffixes; rightText <- iRight.getAffixes) {
@@ -361,7 +360,7 @@ object PeriodFormatterBuilder {
       ~position
     }
 
-    def getAffixes(): Array[String] = iLeftRightCombinations.clone()
+    def getAffixes(): js.Array[String] = iLeftRightCombinations.jsSlice(0)
   }
 
   class FieldFormatter extends PeriodPrinter with PeriodParser {
@@ -371,7 +370,7 @@ object PeriodFormatterBuilder {
     private var iMaxParsedDigits: Int = _
     private var iRejectSignedValues: Boolean = _
     private var iFieldType: Int = _
-    private var iFieldFormatters: Array[FieldFormatter] = null
+    private var iFieldFormatters: js.Array[FieldFormatter] = _
     private var iPrefix: PeriodFieldAffix = null
     private var iSuffix: PeriodFieldAffix = null
 
@@ -380,7 +379,7 @@ object PeriodFormatterBuilder {
              maxParsedDigits: Int,
              rejectSignedValues: Boolean,
              fieldType: Int,
-             fieldFormatters: Array[FieldFormatter],
+             fieldFormatters: js.Array[FieldFormatter],
              prefix: PeriodFieldAffix,suffix: PeriodFieldAffix) = {
       this()
       iMinPrintedDigits = minPrintedDigits
@@ -410,7 +409,7 @@ object PeriodFormatterBuilder {
       iSuffix = _suffix
     }
 
-    def finish(fieldFormatters: Array[FieldFormatter]) {
+    def finish(fieldFormatters: js.Array[FieldFormatter]) {
       val prefixesToIgnore = new collection.mutable.HashSet[PeriodFieldAffix]()
       val suffixesToIgnore = new collection.mutable.HashSet[PeriodFieldAffix]()
       for (fieldFormatter <- fieldFormatters if fieldFormatter != null && this != fieldFormatter) {
@@ -680,7 +679,7 @@ object PeriodFormatterBuilder {
     def getFieldValue(period: ReadablePeriod): Long = {
       var `type`: PeriodType = null
       `type` = if (iPrintZeroSetting == PRINT_ZERO_ALWAYS) null else period.getPeriodType
-      if (`type` != null && isSupported(`type`, iFieldType) == false) {
+      if (`type` != null && !isSupported(`type`, iFieldType)) {
         return Long.MaxValue
       }
       var value: Long = 0l
@@ -795,19 +794,19 @@ object PeriodFormatterBuilder {
 
   class Separator(private val text: String,
                   private val finalText: String,
-                  variants: Array[String],
+                  variants: js.Array[String],
                   private val beforePrinter: PeriodPrinter,
                   private val beforeParser: PeriodParser,
                   private val useBefore: Boolean,
                   private val useAfter: Boolean) extends PeriodPrinter with PeriodParser {
 
-    private var iParsedForms: Array[String] = null
-    @volatile var iAfterPrinter: PeriodPrinter = null
-    @volatile var iAfterParser: PeriodParser = null
-    private var iFinalText: String = null
-    private var iText: String = null
-    private var iBeforePrinter: PeriodPrinter = null
-    private var iBeforeParser: PeriodParser = null
+    private var iParsedForms: js.Array[String] = _
+    @volatile var iAfterPrinter: PeriodPrinter = _
+    @volatile var iAfterParser: PeriodParser = _
+    private var iFinalText: String = _
+    private var iText: String = _
+    private var iBeforePrinter: PeriodPrinter = _
+    private var iBeforeParser: PeriodParser = _
     private var iUseBefore: Boolean = _
     private var iUseAfter: Boolean = _
 
@@ -815,7 +814,7 @@ object PeriodFormatterBuilder {
     iFinalText = finalText
 
     if ((finalText == null || text == finalText) && (variants == null || variants.length == 0)) {
-      iParsedForms = Array(text)
+      iParsedForms = js.Array(text)
     } else {
       var parsedSet = new collection.immutable.TreeSet[String]()(Ordering.comparatorToOrdering(String.CASE_INSENSITIVE_ORDER))
       parsedSet += text
@@ -829,7 +828,7 @@ object PeriodFormatterBuilder {
       }
       val parsedList = parsedSet.to[collection.mutable.ArrayBuffer]
       parsedList.reverse
-      iParsedForms = parsedList.toArray
+      iParsedForms = parsedList.toJSArray
     }
 
     iBeforePrinter = beforePrinter
@@ -961,8 +960,8 @@ object PeriodFormatterBuilder {
     val printerList = new collection.mutable.ListBuffer[Any]()
     val parserList = new collection.mutable.ListBuffer[Any]()
 
-    private val iPrinters:Array[PeriodPrinter] = if (printerList.size <= 0) null else printerList.toArray.map(_.asInstanceOf[PeriodPrinter])
-    private val iParsers:Array[PeriodParser] = if (parserList.size <= 0) null else parserList.toArray.map(_.asInstanceOf[PeriodParser])
+    private val iPrinters:js.Array[PeriodPrinter] = if (printerList.size <= 0) null else printerList.toJSArray.asInstanceOf[js.Array[PeriodPrinter]]
+    private val iParsers:js.Array[PeriodParser] = if (parserList.size <= 0) null else parserList.toJSArray.asInstanceOf[js.Array[PeriodParser]]
 
     decompose(elementPairs, printerList, parserList)
 
@@ -1044,9 +1043,9 @@ object PeriodFormatterBuilder {
       }
     }
 
-    private def addArrayToList(list: collection.mutable.ListBuffer[Any], array: Array[Any]) {
+    private def addArrayToList(list: collection.mutable.ListBuffer[Any], array: js.Array[Any]) {
       if (array != null) {
-        for (i <- 0 until array.length) {
+        for (i <- array.indices) {
           list += array(i)
         }
       }
@@ -1060,11 +1059,11 @@ class PeriodFormatterBuilder {
   private var iPrintZeroSetting: Int = _
   private var iMaxParsedDigits: Int = _
   private var iRejectSignedValues: Boolean = _
-  private var iPrefix: PeriodFieldAffix = null
-  private var iElementPairs: collection.mutable.ListBuffer[Any] = null
+  private var iPrefix: PeriodFieldAffix = _
+  private var iElementPairs: collection.mutable.ListBuffer[Any] = _
   private var iNotPrinter: Boolean = _
   private var iNotParser: Boolean = _
-  private var iFieldFormatters: Array[FieldFormatter] = null
+  private var iFieldFormatters: js.Array[FieldFormatter] = _
 
   clear()
 
@@ -1073,7 +1072,7 @@ class PeriodFormatterBuilder {
     for (fieldFormatter <- iFieldFormatters if fieldFormatter != null) {
       fieldFormatter.finish(iFieldFormatters)
     }
-    iFieldFormatters = iFieldFormatters.clone().asInstanceOf[Array[FieldFormatter]]
+    iFieldFormatters = iFieldFormatters.jsSlice(0)
     formatter
   }
 
@@ -1104,7 +1103,7 @@ class PeriodFormatterBuilder {
     }
     iNotPrinter = false
     iNotParser = false
-    iFieldFormatters = Array.ofDim[FieldFormatter](10)
+    iFieldFormatters = js.Array[FieldFormatter]()
   }
 
   def append(formatter: PeriodFormatter): PeriodFormatterBuilder = {
@@ -1190,6 +1189,14 @@ class PeriodFormatterBuilder {
   }
 
   def appendPrefix(regularExpressions: Array[String], prefixes: Array[String]): PeriodFormatterBuilder = {
+    if (regularExpressions == null || prefixes == null || regularExpressions.length < 1 ||
+      regularExpressions.length != prefixes.length) {
+      throw new IllegalArgumentException()
+    }
+    appendPrefix(new RegExAffix(regularExpressions.toJSArray, prefixes.toJSArray))
+  }
+
+  def appendPrefix(regularExpressions: js.Array[String], prefixes: js.Array[String]): PeriodFormatterBuilder = {
     if (regularExpressions == null || prefixes == null || regularExpressions.length < 1 ||
       regularExpressions.length != prefixes.length) {
       throw new IllegalArgumentException()
@@ -1295,6 +1302,14 @@ class PeriodFormatterBuilder {
       regularExpressions.length != suffixes.length) {
       throw new IllegalArgumentException()
     }
+    appendSuffix(new RegExAffix(regularExpressions.toJSArray, suffixes.toJSArray))
+  }
+
+  def appendSuffix(regularExpressions: js.Array[String], suffixes: js.Array[String]): PeriodFormatterBuilder = {
+    if (regularExpressions == null || suffixes == null || regularExpressions.length < 1 ||
+      regularExpressions.length != suffixes.length) {
+      throw new IllegalArgumentException()
+    }
     appendSuffix(new RegExAffix(regularExpressions, suffixes))
   }
 
@@ -1303,7 +1318,7 @@ class PeriodFormatterBuilder {
     var originalParser: Any = null
     if (iElementPairs.nonEmpty) {
       originalPrinter = iElementPairs(iElementPairs.size - 2)
-      originalParser = iElementPairs(iElementPairs.size - 1)
+      originalParser = iElementPairs.last
     } else {
       originalPrinter = null
       originalParser = null
@@ -1321,28 +1336,32 @@ class PeriodFormatterBuilder {
   }
 
   def appendSeparator(text: String): PeriodFormatterBuilder = {
-    appendSeparator(text, text, null, true, true)
+    appendSeparator(text, text, null, useBefore = true, useAfter = true)
   }
 
   def appendSeparatorIfFieldsAfter(text: String): PeriodFormatterBuilder = {
-    appendSeparator(text, text, null, false, true)
+    appendSeparator(text, text, null, useBefore = false, useAfter = true)
   }
 
   def appendSeparatorIfFieldsBefore(text: String): PeriodFormatterBuilder = {
-    appendSeparator(text, text, null, true, false)
+    appendSeparator(text, text, null, useBefore = true, useAfter = false)
   }
 
   def appendSeparator(text: String, finalText: String): PeriodFormatterBuilder = {
-    appendSeparator(text, finalText, null, true, true)
+    appendSeparator(text, finalText, null, useBefore = true, useAfter = true)
   }
 
   def appendSeparator(text: String, finalText: String, variants: Array[String]): PeriodFormatterBuilder = {
-    appendSeparator(text, finalText, variants, true, true)
+    appendSeparator(text, finalText, variants.toJSArray, useBefore = true, useAfter = true)
+  }
+
+  def appendSeparator(text: String, finalText: String, variants: js.Array[String]): PeriodFormatterBuilder = {
+    appendSeparator(text, finalText, variants, useBefore = true, useAfter = true)
   }
 
   private def appendSeparator(text: String,
                               finalText: String,
-                              variants: Array[String],
+                              variants: js.Array[String],
                               useBefore: Boolean,
                               useAfter: Boolean): PeriodFormatterBuilder = {
     if (text == null || finalText == null) {
@@ -1351,7 +1370,7 @@ class PeriodFormatterBuilder {
     clearPrefix()
     var pairs = iElementPairs
     if (pairs.isEmpty) {
-      if (useAfter && useBefore == false) {
+      if (useAfter && !useBefore) {
         val separator = new Separator(text, finalText, variants, Literal.EMPTY, Literal.EMPTY, useBefore,
           useAfter)
         append0(separator, separator)
@@ -1369,7 +1388,7 @@ class PeriodFormatterBuilder {
       }
       i -= 1
     }
-    if (lastSeparator != null && pairs.size == 0) {
+    if (lastSeparator != null && pairs.isEmpty) {
       throw new IllegalStateException("Cannot have two adjacent separators")
     } else {
       val comp = createComposite(pairs)

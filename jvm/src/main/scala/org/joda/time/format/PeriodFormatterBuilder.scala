@@ -266,7 +266,7 @@ object PeriodFormatterBuilder {
 
     private val iSuffixesSortedDescByLength = iSuffixes.clone()
 
-    for (i <- 0 until regExes.length) {
+    for (i <- regExes.indices) {
       var pattern = PATTERNS.get(regExes(i))
       if (pattern == null) {
         pattern = Pattern.compile(regExes(i))
@@ -279,7 +279,7 @@ object PeriodFormatterBuilder {
 
     private def selectSuffixIndex(value: Int): Int = {
       val valueString = String.valueOf(value)
-      for (i <- 0 until iPatterns.length if iPatterns(i).matcher(valueString).matches()) {
+      for (i <- iPatterns.indices if iPatterns(i).matcher(valueString).matches()) {
         return i
       }
       iPatterns.length - 1
@@ -451,7 +451,7 @@ object PeriodFormatterBuilder {
       }
       var sum = Math.max(FormatUtils.calculateDigitCount(valueLong), iMinPrintedDigits)
       if (iFieldType >= SECONDS_MILLIS) {
-        sum = (if (valueLong < 0) Math.max(sum, 5) else Math.max(sum, 4))
+        sum = if (valueLong < 0) Math.max(sum, 5) else Math.max(sum, 4)
         sum += 1
         if (iFieldType == SECONDS_OPTIONAL_MILLIS &&
           (Math.abs(valueLong) % DateTimeConstants.MILLIS_PER_SECOND) ==
@@ -539,7 +539,7 @@ object PeriodFormatterBuilder {
                   position: Int,
                   locale: Locale): Int = {
       var _position: Int = position
-      var mustParse = (iPrintZeroSetting == PRINT_ZERO_ALWAYS)
+      var mustParse = iPrintZeroSetting == PRINT_ZERO_ALWAYS
       if (_position >= text.length) {
         return if (mustParse) ~_position else _position
       }
@@ -689,7 +689,7 @@ object PeriodFormatterBuilder {
     def getFieldValue(period: ReadablePeriod): Long = {
       var `type`: PeriodType = null
       `type` = if (iPrintZeroSetting == PRINT_ZERO_ALWAYS) null else period.getPeriodType
-      if (`type` != null && isSupported(`type`, iFieldType) == false) {
+      if (`type` != null && !isSupported(`type`, iFieldType)) {
         return Long.MaxValue
       }
       var value: Long = 0l
@@ -1056,7 +1056,7 @@ object PeriodFormatterBuilder {
 
     private def addArrayToList(list: List[Any], array: Array[Any]) {
       if (array != null) {
-        for (i <- 0 until array.length) {
+        for (i <- array.indices) {
           list.add(array(i))
         }
       }
@@ -1083,7 +1083,7 @@ class PeriodFormatterBuilder {
     for (fieldFormatter <- iFieldFormatters if fieldFormatter != null) {
       fieldFormatter.finish(iFieldFormatters)
     }
-    iFieldFormatters = iFieldFormatters.clone().asInstanceOf[Array[FieldFormatter]]
+    iFieldFormatters = iFieldFormatters.clone()
     formatter
   }
 
