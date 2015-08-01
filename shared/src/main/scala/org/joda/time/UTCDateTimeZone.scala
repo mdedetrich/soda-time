@@ -1,7 +1,7 @@
 package org.joda.time
 
 object UTCDateTimeZone {
-  val INSTANCE = new UTCDateTimeZone()
+  val INSTANCE:DateTimeZone = new UTCDateTimeZone()
 }
 
 @SerialVersionUID(-3513011772763289092L)

@@ -4,13 +4,8 @@ import java.io.File
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
-import java.util.Collections
-import java.util.HashMap
 import java.util.Locale
-import java.util.Map
-import java.util.Set
 import java.util.TimeZone
-import java.util.concurrent.atomic.AtomicReference
 import org.joda.convert.{ToString, FromString}
 import org.joda.time.chrono.BaseChronology
 import org.joda.time.field.FieldUtils
@@ -27,15 +22,15 @@ import DateTimeZone._
 
 object DateTimeZone {
 
-  val UTC = UTCDateTimeZone.INSTANCE
+  val UTC:DateTimeZone = UTCDateTimeZone.INSTANCE
 
   private val MAX_MILLIS = (86400 * 1000) - 1
-  private val cProvider = new AtomicReference[Provider]()
-  private val cNameProvider = new AtomicReference[NameProvider]()
-  private val cDefault = new AtomicReference[DateTimeZone]()
+  private var cProvider:Provider = _
+  private var cNameProvider:NameProvider = _
+  private var cDefault:DateTimeZone = _
 
   def getDefault(): DateTimeZone = {
-    var zone = cDefault.get
+    var zone = cDefault
     if (zone == null) {
       try {
         try {
@@ -55,8 +50,16 @@ object DateTimeZone {
       if (zone == null) {
         zone = UTC
       }
-      if (!cDefault.compareAndSet(null, zone)) {
-        zone = cDefault.get
+      if (cDefault == null) {
+        cDefault = zone
+      } else {
+        zone = cDefault
+      }
+      
+      if (cDefault == null) {
+        cDefault = zone
+      } else {
+        zone = cDefault
       }
     }
     zone
@@ -70,7 +73,7 @@ object DateTimeZone {
     if (zone == null) {
       throw new IllegalArgumentException("The datetime zone must not be null")
     }
-    cDefault.set(zone)
+    cDefault == zone
   }
 
   @FromString
@@ -175,14 +178,16 @@ object DateTimeZone {
     new FixedDateTimeZone(id, null, offset, offset)
   }
 
-  def getAvailableIDs(): Set[String] = getProvider.getAvailableIDs
+  def getAvailableIDs(): java.util.Set[String] = getProvider.getAvailableIDs
 
   def getProvider(): Provider = {
-    var provider = cProvider.get
+    var provider = cProvider
     if (provider == null) {
       provider = getDefaultProvider
-      if (!cProvider.compareAndSet(null, provider)) {
-        provider = cProvider.get
+      if (cProvider == null) {
+        cProvider = provider
+      } else {
+        provider = cProvider
       }
     }
     provider
@@ -199,7 +204,7 @@ object DateTimeZone {
     } else {
       validateProvider(_provider)
     }
-    cProvider.set(_provider)
+    cProvider = _provider
   }
 
   private def validateProvider(provider: Provider): Provider = {
@@ -245,11 +250,13 @@ object DateTimeZone {
   }
 
   def getNameProvider(): NameProvider = {
-    var nameProvider = cNameProvider.get
+    var nameProvider = cNameProvider
     if (nameProvider == null) {
       nameProvider = getDefaultNameProvider
-      if (!cNameProvider.compareAndSet(null, nameProvider)) {
-        nameProvider = cNameProvider.get
+      if (cNameProvider == null) {
+        cNameProvider = nameProvider
+      } else {
+        nameProvider = cNameProvider
       }
     }
     nameProvider
@@ -264,7 +271,7 @@ object DateTimeZone {
     if (_nameProvider == null) {
       _nameProvider = getDefaultNameProvider
     }
-    cNameProvider.set(_nameProvider)
+    cNameProvider = _nameProvider
   }
 
   private def getDefaultNameProvider(): NameProvider = {
@@ -283,7 +290,7 @@ object DateTimeZone {
     nameProvider
   }
 
-  private def getConvertedId(id: String): String = LazyInit.CONVERSION_MAP.get(id)
+  private def getConvertedId(id: String): String = LazyInit.CONVERSION_MAP(id)
 
   private def parseOffset(str: String): Int = {
     -LazyInit.OFFSET_FORMATTER.parseMillis(str).toInt
@@ -358,41 +365,41 @@ object DateTimeZone {
     }
 
     private def buildMap(): Map[String, String] = {
-      val map = new HashMap[String, String]()
-      map.put("GMT", "UTC")
-      map.put("WET", "WET")
-      map.put("CET", "CET")
-      map.put("MET", "CET")
-      map.put("ECT", "CET")
-      map.put("EET", "EET")
-      map.put("MIT", "Pacific/Apia")
-      map.put("HST", "Pacific/Honolulu")
-      map.put("AST", "America/Anchorage")
-      map.put("PST", "America/Los_Angeles")
-      map.put("MST", "America/Denver")
-      map.put("PNT", "America/Phoenix")
-      map.put("CST", "America/Chicago")
-      map.put("EST", "America/New_York")
-      map.put("IET", "America/Indiana/Indianapolis")
-      map.put("PRT", "America/Puerto_Rico")
-      map.put("CNT", "America/St_Johns")
-      map.put("AGT", "America/Argentina/Buenos_Aires")
-      map.put("BET", "America/Sao_Paulo")
-      map.put("ART", "Africa/Cairo")
-      map.put("CAT", "Africa/Harare")
-      map.put("EAT", "Africa/Addis_Ababa")
-      map.put("NET", "Asia/Yerevan")
-      map.put("PLT", "Asia/Karachi")
-      map.put("IST", "Asia/Kolkata")
-      map.put("BST", "Asia/Dhaka")
-      map.put("VST", "Asia/Ho_Chi_Minh")
-      map.put("CTT", "Asia/Shanghai")
-      map.put("JST", "Asia/Tokyo")
-      map.put("ACT", "Australia/Darwin")
-      map.put("AET", "Australia/Sydney")
-      map.put("SST", "Pacific/Guadalcanal")
-      map.put("NST", "Pacific/Auckland")
-      Collections.unmodifiableMap(map)
+      Map(
+        "GMT" -> "UTC",
+        "WET" -> "WET",
+        "CET" -> "CET",
+        "MET" -> "CET",
+        "ECT" -> "CET",
+        "EET" -> "EET",
+        "MIT" -> "Pacific/Apia",
+        "HST" -> "Pacific/Honolulu",
+        "AST" -> "America/Anchorage",
+        "PST" -> "America/Los_Angeles",
+        "MST" -> "America/Denver",
+        "PNT" -> "America/Phoenix",
+        "CST" -> "America/Chicago",
+        "EST" -> "America/New_York",
+        "IET" -> "America/Indiana/Indianapolis",
+        "PRT" -> "America/Puerto_Rico",
+        "CNT" -> "America/St_Johns",
+        "AGT" -> "America/Argentina/Buenos_Aires",
+        "BET" -> "America/Sao_Paulo",
+        "ART" -> "Africa/Cairo",
+        "CAT" -> "Africa/Harare",
+        "EAT" -> "Africa/Addis_Ababa",
+        "NET" -> "Asia/Yerevan",
+        "PLT" -> "Asia/Karachi",
+        "IST" -> "Asia/Kolkata",
+        "BST" -> "Asia/Dhaka",
+        "VST" -> "Asia/Ho_Chi_Minh",
+        "CTT" -> "Asia/Shanghai",
+        "JST" -> "Asia/Tokyo",
+        "ACT" -> "Australia/Darwin",
+        "AET" -> "Australia/Sydney",
+        "SST" -> "Pacific/Guadalcanal",
+        "NST" -> "Pacific/Auckland"
+      )
     }
   }
 }
@@ -406,7 +413,7 @@ abstract class DateTimeZone protected (private val id: String) extends Serializa
   }
 
   iID = id
-  
+
   @ToString
   def getID(): String = iID
 
