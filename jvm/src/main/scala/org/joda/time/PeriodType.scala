@@ -290,7 +290,7 @@ class PeriodType extends Serializable() {
     iTypes = types
     iIndices = indices
   }
-  
+
   def getName(): String = iName
 
   def size(): Int = iTypes.length
