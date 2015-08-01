@@ -4,10 +4,7 @@ import java.io.Serializable
 import java.util.ArrayList
 import java.util.Arrays
 import java.util.HashMap
-import java.util.List
-import java.util.Map
 import org.joda.time.field.FieldUtils
-import PeriodType._
 
 object PeriodType {
 
@@ -22,23 +19,23 @@ object PeriodType {
   var SECOND_INDEX: Int = 6
   var MILLI_INDEX: Int = 7
 
-  private var cStandard: PeriodType = null
-  private var cYMDTime: PeriodType = null
-  private var cYMD: PeriodType = null
-  private var cYWDTime: PeriodType = null
-  private var cYWD: PeriodType = null
-  private var cYDTime: PeriodType = null
-  private var cYD: PeriodType = null
-  private var cDTime: PeriodType = null
-  private var cTime: PeriodType = null
-  private var cYears: PeriodType = null
-  private var cMonths: PeriodType = null
-  private var cWeeks: PeriodType = null
-  private var cDays: PeriodType = null
-  private var cHours: PeriodType = null
-  private var cMinutes: PeriodType = null
-  private var cSeconds: PeriodType = null
-  private var cMillis: PeriodType = null
+  private var cStandard: PeriodType = _
+  private var cYMDTime: PeriodType = _
+  private var cYMD: PeriodType = _
+  private var cYWDTime: PeriodType = _
+  private var cYWD: PeriodType = _
+  private var cYDTime: PeriodType = _
+  private var cYD: PeriodType = _
+  private var cDTime: PeriodType = _
+  private var cTime: PeriodType = _
+  private var cYears: PeriodType = _
+  private var cMonths: PeriodType = _
+  private var cWeeks: PeriodType = _
+  private var cDays: PeriodType = _
+  private var cHours: PeriodType = _
+  private var cMinutes: PeriodType = _
+  private var cSeconds: PeriodType = _
+  private var cMillis: PeriodType = _
 
   def standard(): PeriodType = {
     var `type` = cStandard
@@ -240,28 +237,28 @@ object PeriodType {
       }
       var `type` = standard()
       val list = new ArrayList[DurationFieldType](Arrays.asList(types:_*))
-      if (list.remove(DurationFieldType.years()) == false) {
+      if (!list.remove(DurationFieldType.years())) {
         `type` = `type`.withYearsRemoved()
       }
-      if (list.remove(DurationFieldType.months()) == false) {
+      if (!list.remove(DurationFieldType.months())) {
         `type` = `type`.withMonthsRemoved()
       }
-      if (list.remove(DurationFieldType.weeks()) == false) {
+      if (!list.remove(DurationFieldType.weeks())) {
         `type` = `type`.withWeeksRemoved()
       }
-      if (list.remove(DurationFieldType.days()) == false) {
+      if (!list.remove(DurationFieldType.days())) {
         `type` = `type`.withDaysRemoved()
       }
-      if (list.remove(DurationFieldType.hours()) == false) {
+      if (!list.remove(DurationFieldType.hours())) {
         `type` = `type`.withHoursRemoved()
       }
-      if (list.remove(DurationFieldType.minutes()) == false) {
+      if (!list.remove(DurationFieldType.minutes())) {
         `type` = `type`.withMinutesRemoved()
       }
-      if (list.remove(DurationFieldType.seconds()) == false) {
+      if (!list.remove(DurationFieldType.seconds())) {
         `type` = `type`.withSecondsRemoved()
       }
-      if (list.remove(DurationFieldType.millis()) == false) {
+      if (!list.remove(DurationFieldType.millis())) {
         `type` = `type`.withMillisRemoved()
       }
       if (list.size > 0) {
@@ -352,7 +349,7 @@ class PeriodType protected (private val iName: String, private val iTypes: Array
       return this
     }
     val types = Array.ofDim[DurationFieldType](size - 1)
-    for (i <- 0 until iTypes.length) {
+    for (i <- iTypes.indices) {
       if (i < fieldIndex) {
         types(i) = iTypes(i)
       } else if (i > fieldIndex) {
