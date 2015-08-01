@@ -278,9 +278,19 @@ object PeriodType {
 }
 
 @SerialVersionUID(2274324892792009998L)
-class PeriodType protected (private val iName: String, private val iTypes: Array[DurationFieldType], private val iIndices: Array[Int])
-  extends Serializable() {
+class PeriodType extends Serializable() {
 
+  private var iName: String = _
+  private var iTypes: Array[DurationFieldType] = _
+  private var iIndices: Array[Int] = _
+
+  protected def this(name: String, types: Array[DurationFieldType], indices: Array[Int]) {
+    this()
+    iName = name
+    iTypes = types
+    iIndices = indices
+  }
+  
   def getName(): String = iName
 
   def size(): Int = iTypes.length
