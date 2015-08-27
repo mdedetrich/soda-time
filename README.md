@@ -9,10 +9,18 @@ The intention is to have a cross compiled, high quality Date/Time library that c
 ## Goals
 - Be completely API compatible with `JodaTime` for both Scala (JVM) and as much as possible for `Scala.js`. Please see notable changes for more info.
 
+## Artifacts
+
+Current `SNAPSHOT` artifacts are deployed to SonaType Snapshots, so you should be able to use the current version using
+
+```scala
+"org.mdedetrich" %% "soda-time" % "0.0.1-SNAPSHOT"
+```
+
 ## What still needs to be done
 
 This is still **ALPHA** quality, Joda Time is a big library, and there is stuff that still needs to be done. Definitely try it out,
-but I wouldn't recommend using it in production. Also its not yet published to a repo, best bet is to clone it locally and use `publishLocal`
+but I wouldn't recommend using it in production.
 
 - [ ] Take a look at sections of the converted code that used `continue`/`break` to a label.
 - [ ] Tests
