@@ -9,14 +9,14 @@ import scala.scalajs.js
 
 object GregorianChronology {
 
-  private val MILLIS_PER_YEAR = (365.2425 * DateTimeConstants.MILLIS_PER_DAY).toLong
-  private val MILLIS_PER_MONTH = (365.2425 * DateTimeConstants.MILLIS_PER_DAY / 12).toLong
-  private val DAYS_0000_TO_1970 = 719527
-  private val MIN_YEAR = -292275054
-  private val MAX_YEAR = 292278993
-  private val INSTANCE_UTC = getInstance(DateTimeZone.UTC)
+  private final val MILLIS_PER_YEAR = (365.2425 * DateTimeConstants.MILLIS_PER_DAY).toLong
+  private final val MILLIS_PER_MONTH = (365.2425 * DateTimeConstants.MILLIS_PER_DAY / 12).toLong
+  private final val DAYS_0000_TO_1970 = 719527
+  private final val MIN_YEAR = -292275054
+  private final val MAX_YEAR = 292278993
+  private final val INSTANCE_UTC = getInstance(DateTimeZone.UTC)
 
-  private val cCache = new collection.mutable.HashMap[DateTimeZone, js.Array[GregorianChronology]]()
+  private final val cCache = new collection.mutable.HashMap[DateTimeZone, js.Array[GregorianChronology]]()
 
   def getInstanceUTC(): GregorianChronology = INSTANCE_UTC
 
