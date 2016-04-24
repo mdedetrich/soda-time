@@ -1,5 +1,5 @@
-val scala211Version="2.11.7"
-val scala210Version="2.10.5"
+val scala211Version="2.11.8"
+val scala210Version="2.10.6"
 
 lazy val root = project.in(file(".")).
   aggregate(sodatimeJS, sodatimeJVM).
@@ -12,7 +12,7 @@ lazy val sodatime = crossProject.in(file(".")).
   settings(
     name := "soda-time",
     version := "0.0.1-SNAPSHOT",
-    scalaVersion := "2.11.7",
+    scalaVersion := scala211Version,
     organization := "org.mdedetrich",
     crossScalaVersions := Seq(scala211Version,scala210Version),
     publishMavenStyle := true,
