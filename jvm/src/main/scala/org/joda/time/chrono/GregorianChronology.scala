@@ -9,14 +9,14 @@ import org.joda.time.chrono.AssembledChronology.Fields
 
 object GregorianChronology {
 
+  private final val cCache = new ConcurrentHashMap[DateTimeZone, Array[GregorianChronology]]()
   private final val MILLIS_PER_YEAR = (365.2425 * DateTimeConstants.MILLIS_PER_DAY).toLong
   private final val MILLIS_PER_MONTH = (365.2425 * DateTimeConstants.MILLIS_PER_DAY / 12).toLong
   private final val DAYS_0000_TO_1970 = 719527
   private final val MIN_YEAR = -292275054
   private final val MAX_YEAR = 292278993
-  private final val INSTANCE_UTC = getInstance(DateTimeZone.UTC)
 
-  private final val cCache = new ConcurrentHashMap[DateTimeZone, Array[GregorianChronology]]()
+  private final val INSTANCE_UTC = getInstance(DateTimeZone.UTC)
 
   def getInstanceUTC(): GregorianChronology = INSTANCE_UTC
 
