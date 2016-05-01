@@ -1,6 +1,9 @@
 val scala211Version="2.11.8"
 val scala210Version="2.10.6"
 
+scalaVersion in ThisBuild := scala211Version
+crossScalaVersions in ThisBuild := Seq(scala211Version,scala210Version)
+
 lazy val root = project.in(file(".")).
   aggregate(sodatimeJS, sodatimeJVM).
   settings(
@@ -12,9 +15,7 @@ lazy val sodatime = crossProject.in(file(".")).
   settings(
     name := "soda-time",
     version := "0.0.1-SNAPSHOT",
-    scalaVersion := scala211Version,
     organization := "org.mdedetrich",
-    crossScalaVersions := Seq(scala211Version,scala210Version),
     publishMavenStyle := true,
     publishTo := {
       val nexus = "https://oss.sonatype.org/"
