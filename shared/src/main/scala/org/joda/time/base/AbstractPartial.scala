@@ -80,7 +80,7 @@ abstract class AbstractPartial protected () extends ReadablePartial() with Compa
   }
 
   override def equals(partial: Any): Boolean = {
-    if (this == partial) {
+    if (super.equals(partial)) {
       return true
     }
     if (partial.isInstanceOf[ReadablePartial] == false) {

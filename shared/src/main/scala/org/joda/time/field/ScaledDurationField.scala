@@ -76,7 +76,7 @@ class ScaledDurationField(field: DurationField, `type`: DurationFieldType, priva
   def getScalar(): Int = iScalar
 
   override def equals(obj: Any): Boolean = {
-    if (this == obj) {
+    if (super.equals(obj)) {
       return true
     } else if (obj.isInstanceOf[ScaledDurationField]) {
       val other = obj.asInstanceOf[ScaledDurationField]

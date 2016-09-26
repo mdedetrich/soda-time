@@ -312,16 +312,17 @@ class LocalTime(instant: Long, private var chronology: Chronology) extends BaseL
   def getChronology(): Chronology = iChronology
 
   override def equals(partial: Any): Boolean = {
-    if (this == partial) {
-      return true
+    partial match {
+      case other: LocalTime =>
+        if (this eq other) {
+          return true
+        }
+        if (iChronology == other.iChronology) {
+          return iLocalMillis == other.iLocalMillis
+        }
+      case _ =>
     }
-    if (partial.isInstanceOf[LocalTime]) {
-      val other = partial.asInstanceOf[LocalTime]
-      if (iChronology == other.iChronology) {
-        return iLocalMillis == other.iLocalMillis
-      }
-    }
-    this == partial
+    super.equals(partial)
   }
 
   override def compareTo(partial: ReadablePartial): Int = {

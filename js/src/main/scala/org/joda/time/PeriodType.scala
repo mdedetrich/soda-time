@@ -445,7 +445,7 @@ class PeriodType extends Serializable() {
   }
 
   override def equals(obj: Any): Boolean = {
-    if (this == obj) {
+    if (super.equals(obj)) {
       return true
     }
     if (obj.isInstanceOf[PeriodType] == false) {

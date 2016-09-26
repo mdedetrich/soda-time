@@ -69,7 +69,7 @@ class UnsupportedDurationField private (private val iType: DurationFieldType)
   def compareTo(durationField: DurationField): Int = 0
 
   override def equals(obj: Any): Boolean = {
-    if (this == obj) {
+    if (super.equals(obj)) {
       return true
     } else if (obj.isInstanceOf[UnsupportedDurationField]) {
       val other = obj.asInstanceOf[UnsupportedDurationField]

@@ -212,7 +212,7 @@ object DateTimeZoneBuilder {
     }
 
     override def equals(obj: Any): Boolean = {
-      if (this == obj) {
+      if (super.equals(obj)) {
         return true
       }
       if (obj.isInstanceOf[OfYear]) {
@@ -326,7 +326,7 @@ object DateTimeZoneBuilder {
     def getSaveMillis(): Int = iSaveMillis
 
     override def equals(obj: Any): Boolean = {
-      if (this == obj) {
+      if (super.equals(obj)) {
         return true
       }
       if (obj.isInstanceOf[Recurrence]) {
@@ -662,7 +662,7 @@ object DateTimeZoneBuilder {
     }
 
     override def equals(obj: Any): Boolean = {
-      if (this == obj) {
+      if (super.equals(obj)) {
         return true
       }
       if (obj.isInstanceOf[DSTZone]) {
@@ -928,7 +928,7 @@ object DateTimeZoneBuilder {
     }
 
     override def equals(obj: Any): Boolean = {
-      if (this == obj) {
+      if (super.equals(obj)) {
         return true
       }
       if (obj.isInstanceOf[PrecalculatedZone]) {

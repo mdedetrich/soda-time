@@ -124,7 +124,7 @@ object ZonedChronology {
     private def addOffset(instant: Long): Long = iZone.convertUTCToLocal(instant)
 
     override def equals(obj: Any): Boolean = {
-      if (this == obj) {
+      if (super.equals(obj)) {
         return true
       } else if (obj.isInstanceOf[ZonedDurationField]) {
         val other = obj.asInstanceOf[ZonedDurationField]
@@ -337,7 +337,7 @@ object ZonedChronology {
     }
 
     override def equals(obj: Any): Boolean = {
-      if (this == obj) {
+      if (super.equals(obj)) {
         return true
       } else if (obj.isInstanceOf[ZonedDateTimeField]) {
         val other = obj.asInstanceOf[ZonedDateTimeField]
@@ -477,7 +477,7 @@ class ZonedChronology private (base: Chronology, zone: DateTimeZone) extends Ass
   }
 
   override def equals(obj: Any): Boolean = {
-    if (this == obj) {
+    if (super.equals(obj)) {
       return true
     }
     if (obj.isInstanceOf[ZonedChronology] == false) {

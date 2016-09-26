@@ -301,16 +301,17 @@ class LocalDateTime(instant: Long, var chronology: Chronology) extends BaseLocal
   def getChronology(): Chronology = iChronology
 
   override def equals(partial: Any): Boolean = {
-    if (this == partial) {
-      return true
+    partial match {
+      case other: LocalDateTime =>
+        if (this eq other) {
+          return true
+        }
+        if (iChronology == other.iChronology) {
+          return iLocalMillis == other.iLocalMillis
+        }
+      case _ =>
     }
-    if (partial.isInstanceOf[LocalDateTime]) {
-      val other = partial.asInstanceOf[LocalDateTime]
-      if (iChronology == other.iChronology) {
-        return iLocalMillis == other.iLocalMillis
-      }
-    }
-    this == partial
+    super.equals(partial)
   }
 
   override def compareTo(partial: ReadablePartial): Int = {

@@ -93,7 +93,7 @@ class ISOChronology private (base: Chronology) extends AssembledChronology(base,
   }
 
   override def equals(obj: Any): Boolean = {
-    if (this == obj) {
+    if (super.equals(obj)) {
       return true
     }
     if (obj.isInstanceOf[ISOChronology]) {

@@ -603,8 +603,6 @@ abstract class DateTimeZone protected (private val id: String) extends Serializa
 
   def toTimeZone(): java.util.TimeZone = TimeZone.getTimeZone(iID)
 
-  override def equals(`object`: Any): Boolean
-
   override def hashCode(): Int = 57 + getID.hashCode
 
   override def toString(): String = getID
