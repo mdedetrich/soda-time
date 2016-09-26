@@ -152,7 +152,7 @@ class LocalDateTime(instant: Long, var chronology: Chronology) extends BaseLocal
 
   chronology = DateTimeUtils.getChronology(chronology)
 
-  val localMillis = chronology.getZone.getMillisKeepLocal(DateTimeZone.UTC, instant)
+  private val localMillis = chronology.getZone.getMillisKeepLocal(DateTimeZone.UTC, instant)
 
   def this() {
     this(DateTimeUtils.currentTimeMillis(), ISOChronology.getInstance)

@@ -131,7 +131,7 @@ object LocalDate {
 @SerialVersionUID(-8775358157899L)
 class LocalDate(instant: Long, private var chronology: Chronology) extends BaseLocal with ReadablePartial with Serializable {
 
-  val localMillis = chronology.getZone.getMillisKeepLocal(DateTimeZone.UTC, instant)
+  private val localMillis = chronology.getZone.getMillisKeepLocal(DateTimeZone.UTC, instant)
 
 
   private var iChronology: Chronology = null
