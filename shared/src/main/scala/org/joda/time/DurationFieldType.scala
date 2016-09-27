@@ -5,18 +5,18 @@ import DurationFieldType._
 
 object DurationFieldType {
 
-  val ERAS:Byte = 1
-  val CENTURIES:Byte = 2
-  val WEEKYEARS:Byte = 3
-  val YEARS:Byte = 4
-  val MONTHS:Byte = 5
-  val WEEKS:Byte = 6
-  val DAYS:Byte = 7
-  val HALFDAYS:Byte = 8
-  val HOURS:Byte = 9
-  val MINUTES:Byte = 10
-  val SECONDS:Byte = 11
-  val MILLIS:Byte = 12
+  val ERAS: Byte = 1
+  val CENTURIES: Byte = 2
+  val WEEKYEARS: Byte = 3
+  val YEARS: Byte = 4
+  val MONTHS: Byte = 5
+  val WEEKS: Byte = 6
+  val DAYS: Byte = 7
+  val HALFDAYS: Byte = 8
+  val HOURS: Byte = 9
+  val MINUTES: Byte = 10
+  val SECONDS: Byte = 11
+  val MILLIS: Byte = 12
 
   val ERAS_TYPE = new StandardDurationFieldType("eras", ERAS)
   val CENTURIES_TYPE = new StandardDurationFieldType("centuries", CENTURIES)
@@ -57,7 +57,7 @@ object DurationFieldType {
 
   @SerialVersionUID(31156755687123L)
   class StandardDurationFieldType(name: String, private val iOrdinal: Byte)
-    extends DurationFieldType(name) {
+      extends DurationFieldType(name) {
 
     override def equals(obj: Any): Boolean = {
       if (super.equals(obj)) {
@@ -111,13 +111,15 @@ object DurationFieldType {
 }
 
 @SerialVersionUID(8765135187319L)
-abstract class DurationFieldType protected (private val iName: String) extends Serializable() {
+abstract class DurationFieldType protected (private val iName: String)
+    extends Serializable() {
 
   def getName(): String = iName
 
   def getField(chronology: Chronology): DurationField
 
-  def isSupported(chronology: Chronology): Boolean = getField(chronology).isSupported
+  def isSupported(chronology: Chronology): Boolean =
+    getField(chronology).isSupported
 
   override def toString(): String = getName
 }

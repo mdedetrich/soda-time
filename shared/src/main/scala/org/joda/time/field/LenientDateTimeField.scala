@@ -21,15 +21,17 @@ object LenientDateTimeField {
 }
 
 @SerialVersionUID(8714085824173290599L)
-class LenientDateTimeField protected (field: DateTimeField, private val iBase: Chronology)
-  extends DelegatedDateTimeField(field) {
+class LenientDateTimeField protected (field: DateTimeField,
+                                      private val iBase: Chronology)
+    extends DelegatedDateTimeField(field) {
 
   override def isLenient(): Boolean = true
 
   override def set(instant: Long, value: Int): Long = {
     var localInstant = iBase.getZone.convertUTCToLocal(instant)
     val difference = FieldUtils.safeSubtract(value, get(instant))
-    localInstant = getType.getField(iBase.withUTC()).add(localInstant, difference)
+    localInstant =
+      getType.getField(iBase.withUTC()).add(localInstant, difference)
     iBase.getZone.convertLocalToUTC(localInstant, strict = false, instant)
   }
 }

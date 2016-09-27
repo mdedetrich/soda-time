@@ -9,12 +9,12 @@ import org.joda.time.ReadWritablePeriod
 import org.joda.time.ReadablePeriod
 
 class PeriodFormatter {
-  
+
   private var iLocale: Locale = null
   private var iParseType: PeriodType = null
   private var iPrinter: PeriodPrinter = null
   private var iParser: PeriodParser = null
-  
+
   def this(printer: PeriodPrinter, parser: PeriodParser) {
     this()
     iPrinter = printer
@@ -115,7 +115,8 @@ class PeriodFormatter {
     } else {
       newPos = ~newPos
     }
-    throw new IllegalArgumentException(FormatUtils.createErrorMessage(text, newPos))
+    throw new IllegalArgumentException(
+      FormatUtils.createErrorMessage(text, newPos))
   }
 
   private def checkParser() {

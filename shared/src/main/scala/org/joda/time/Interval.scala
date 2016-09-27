@@ -16,11 +16,12 @@ class Interval extends BaseInterval with ReadableInterval with Serializable {
     this()
     super.auxConstructor(startInstant, endInstant, null)
   }
-  
-  
+
   def this(startInstant: Long, endInstant: Long, zone: DateTimeZone) {
     this()
-    super.auxConstructor(startInstant, endInstant, ISOChronology.getInstance(zone))
+    super.auxConstructor(startInstant,
+                         endInstant,
+                         ISOChronology.getInstance(zone))
   }
 
   def this(startInstant: Long, endInstant: Long, chronology: Chronology) {

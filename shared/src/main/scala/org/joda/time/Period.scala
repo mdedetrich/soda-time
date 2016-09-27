@@ -16,7 +16,8 @@ object Period {
   @FromString
   def parse(str: String): Period = parse(str, ISOPeriodFormat.standard())
 
-  def parse(str: String, formatter: PeriodFormatter): Period = formatter.parsePeriod(str)
+  def parse(str: String, formatter: PeriodFormatter): Period =
+    formatter.parsePeriod(str)
 
   def years(years: Int): Period = {
     new Period(Array(years, 0, 0, 0, 0, 0, 0, 0, 0), PeriodType.standard())
@@ -52,20 +53,24 @@ object Period {
 
   def fieldDifference(start: ReadablePartial, end: ReadablePartial): Period = {
     if (start == null || end == null) {
-      throw new IllegalArgumentException("ReadablePartial objects must not be null")
+      throw new IllegalArgumentException(
+        "ReadablePartial objects must not be null")
     }
     if (start.size != end.size) {
-      throw new IllegalArgumentException("ReadablePartial objects must have the same set of fields")
+      throw new IllegalArgumentException(
+        "ReadablePartial objects must have the same set of fields")
     }
     val types = Array.ofDim[DurationFieldType](start.size)
     val values = Array.ofDim[Int](start.size)
     for (i <- 0 until start.size()) {
       if (start.getFieldType(i) != end.getFieldType(i)) {
-        throw new IllegalArgumentException("ReadablePartial objects must have the same set of fields")
+        throw new IllegalArgumentException(
+          "ReadablePartial objects must have the same set of fields")
       }
       types(i) = start.getFieldType(i).getDurationType
       if (i > 0 && types(i - 1) == types(i)) {
-        throw new IllegalArgumentException("ReadablePartial objects must not have overlapping fields")
+        throw new IllegalArgumentException(
+          "ReadablePartial objects must not have overlapping fields")
       }
       values(i) = end.getValue(i) - start.getValue(i)
     }
@@ -75,15 +80,20 @@ object Period {
 
 @SerialVersionUID(741052353876488155L)
 class Period extends BasePeriod with ReadablePeriod with Serializable {
-  
+
   super.auxConstructor(0L, null, null)
 
-  def this(hours: Int,
-           minutes: Int,
-           seconds: Int,
-           millis: Int) {
+  def this(hours: Int, minutes: Int, seconds: Int, millis: Int) {
     this()
-    super.auxConstructor(0, 0, 0, 0, hours, minutes, seconds, millis, PeriodType.standard())
+    super.auxConstructor(0,
+                         0,
+                         0,
+                         0,
+                         hours,
+                         minutes,
+                         seconds,
+                         millis,
+                         PeriodType.standard())
   }
 
   def this(years: Int,
@@ -95,7 +105,15 @@ class Period extends BasePeriod with ReadablePeriod with Serializable {
            seconds: Int,
            millis: Int) {
     this()
-    super.auxConstructor(years, months, weeks, days, hours, minutes, seconds, millis, PeriodType.standard())
+    super.auxConstructor(years,
+                         months,
+                         weeks,
+                         days,
+                         hours,
+                         minutes,
+                         seconds,
+                         millis,
+                         PeriodType.standard())
   }
 
   def this(years: Int,
@@ -108,7 +126,15 @@ class Period extends BasePeriod with ReadablePeriod with Serializable {
            millis: Int,
            `type`: PeriodType) {
     this()
-    super.auxConstructor(years, months, weeks, days, hours, minutes, seconds, millis, `type`)
+    super.auxConstructor(years,
+                         months,
+                         weeks,
+                         days,
+                         hours,
+                         minutes,
+                         seconds,
+                         millis,
+                         `type`)
   }
 
   def this(duration: Long) {
@@ -159,7 +185,9 @@ class Period extends BasePeriod with ReadablePeriod with Serializable {
     super.auxConstructor(startInstant, endInstant, null)
   }
 
-  def this(startInstant: ReadableInstant, endInstant: ReadableInstant, `type`: PeriodType) {
+  def this(startInstant: ReadableInstant,
+           endInstant: ReadableInstant,
+           `type`: PeriodType) {
     this()
     super.auxConstructor(startInstant, endInstant, `type`)
   }
@@ -179,7 +207,9 @@ class Period extends BasePeriod with ReadablePeriod with Serializable {
     super.auxConstructor(startInstant, duration, null)
   }
 
-  def this(startInstant: ReadableInstant, duration: ReadableDuration, `type`: PeriodType) {
+  def this(startInstant: ReadableInstant,
+           duration: ReadableDuration,
+           `type`: PeriodType) {
     this()
     super.auxConstructor(startInstant, duration, `type`)
   }
@@ -189,7 +219,9 @@ class Period extends BasePeriod with ReadablePeriod with Serializable {
     super.auxConstructor(duration, endInstant, null)
   }
 
-  def this(duration: ReadableDuration, endInstant: ReadableInstant, `type`: PeriodType) {
+  def this(duration: ReadableDuration,
+           endInstant: ReadableInstant,
+           `type`: PeriodType) {
     this()
     super.auxConstructor(duration, endInstant, `type`)
   }
@@ -324,13 +356,15 @@ class Period extends BasePeriod with ReadablePeriod with Serializable {
 
   def withMinutes(minutes: Int): Period = {
     val values = getValues
-    getPeriodType.setIndexedField(this, PeriodType.MINUTE_INDEX, values, minutes)
+    getPeriodType
+      .setIndexedField(this, PeriodType.MINUTE_INDEX, values, minutes)
     new Period(values, getPeriodType)
   }
 
   def withSeconds(seconds: Int): Period = {
     val values = getValues
-    getPeriodType.setIndexedField(this, PeriodType.SECOND_INDEX, values, seconds)
+    getPeriodType
+      .setIndexedField(this, PeriodType.SECOND_INDEX, values, seconds)
     new Period(values, getPeriodType)
   }
 
@@ -345,14 +379,38 @@ class Period extends BasePeriod with ReadablePeriod with Serializable {
       return this
     }
     val values = getValues
-    getPeriodType.addIndexedField(this, PeriodType.YEAR_INDEX, values, period.get(DurationFieldType.YEARS_TYPE))
-    getPeriodType.addIndexedField(this, PeriodType.MONTH_INDEX, values, period.get(DurationFieldType.MONTHS_TYPE))
-    getPeriodType.addIndexedField(this, PeriodType.WEEK_INDEX, values, period.get(DurationFieldType.WEEKS_TYPE))
-    getPeriodType.addIndexedField(this, PeriodType.DAY_INDEX, values, period.get(DurationFieldType.DAYS_TYPE))
-    getPeriodType.addIndexedField(this, PeriodType.HOUR_INDEX, values, period.get(DurationFieldType.HOURS_TYPE))
-    getPeriodType.addIndexedField(this, PeriodType.MINUTE_INDEX, values, period.get(DurationFieldType.MINUTES_TYPE))
-    getPeriodType.addIndexedField(this, PeriodType.SECOND_INDEX, values, period.get(DurationFieldType.SECONDS_TYPE))
-    getPeriodType.addIndexedField(this, PeriodType.MILLI_INDEX, values, period.get(DurationFieldType.MILLIS_TYPE))
+    getPeriodType.addIndexedField(this,
+                                  PeriodType.YEAR_INDEX,
+                                  values,
+                                  period.get(DurationFieldType.YEARS_TYPE))
+    getPeriodType.addIndexedField(this,
+                                  PeriodType.MONTH_INDEX,
+                                  values,
+                                  period.get(DurationFieldType.MONTHS_TYPE))
+    getPeriodType.addIndexedField(this,
+                                  PeriodType.WEEK_INDEX,
+                                  values,
+                                  period.get(DurationFieldType.WEEKS_TYPE))
+    getPeriodType.addIndexedField(this,
+                                  PeriodType.DAY_INDEX,
+                                  values,
+                                  period.get(DurationFieldType.DAYS_TYPE))
+    getPeriodType.addIndexedField(this,
+                                  PeriodType.HOUR_INDEX,
+                                  values,
+                                  period.get(DurationFieldType.HOURS_TYPE))
+    getPeriodType.addIndexedField(this,
+                                  PeriodType.MINUTE_INDEX,
+                                  values,
+                                  period.get(DurationFieldType.MINUTES_TYPE))
+    getPeriodType.addIndexedField(this,
+                                  PeriodType.SECOND_INDEX,
+                                  values,
+                                  period.get(DurationFieldType.SECONDS_TYPE))
+    getPeriodType.addIndexedField(this,
+                                  PeriodType.MILLI_INDEX,
+                                  values,
+                                  period.get(DurationFieldType.MILLIS_TYPE))
     new Period(values, getPeriodType)
   }
 
@@ -406,7 +464,8 @@ class Period extends BasePeriod with ReadablePeriod with Serializable {
       return this
     }
     val values = getValues
-    getPeriodType.addIndexedField(this, PeriodType.MINUTE_INDEX, values, minutes)
+    getPeriodType
+      .addIndexedField(this, PeriodType.MINUTE_INDEX, values, minutes)
     new Period(values, getPeriodType)
   }
 
@@ -415,7 +474,8 @@ class Period extends BasePeriod with ReadablePeriod with Serializable {
       return this
     }
     val values = getValues
-    getPeriodType.addIndexedField(this, PeriodType.SECOND_INDEX, values, seconds)
+    getPeriodType
+      .addIndexedField(this, PeriodType.SECOND_INDEX, values, seconds)
     new Period(values, getPeriodType)
   }
 
@@ -433,14 +493,38 @@ class Period extends BasePeriod with ReadablePeriod with Serializable {
       return this
     }
     val values = getValues
-    getPeriodType.addIndexedField(this, PeriodType.YEAR_INDEX, values, -period.get(DurationFieldType.YEARS_TYPE))
-    getPeriodType.addIndexedField(this, PeriodType.MONTH_INDEX, values, -period.get(DurationFieldType.MONTHS_TYPE))
-    getPeriodType.addIndexedField(this, PeriodType.WEEK_INDEX, values, -period.get(DurationFieldType.WEEKS_TYPE))
-    getPeriodType.addIndexedField(this, PeriodType.DAY_INDEX, values, -period.get(DurationFieldType.DAYS_TYPE))
-    getPeriodType.addIndexedField(this, PeriodType.HOUR_INDEX, values, -period.get(DurationFieldType.HOURS_TYPE))
-    getPeriodType.addIndexedField(this, PeriodType.MINUTE_INDEX, values, -period.get(DurationFieldType.MINUTES_TYPE))
-    getPeriodType.addIndexedField(this, PeriodType.SECOND_INDEX, values, -period.get(DurationFieldType.SECONDS_TYPE))
-    getPeriodType.addIndexedField(this, PeriodType.MILLI_INDEX, values, -period.get(DurationFieldType.MILLIS_TYPE))
+    getPeriodType.addIndexedField(this,
+                                  PeriodType.YEAR_INDEX,
+                                  values,
+                                  -period.get(DurationFieldType.YEARS_TYPE))
+    getPeriodType.addIndexedField(this,
+                                  PeriodType.MONTH_INDEX,
+                                  values,
+                                  -period.get(DurationFieldType.MONTHS_TYPE))
+    getPeriodType.addIndexedField(this,
+                                  PeriodType.WEEK_INDEX,
+                                  values,
+                                  -period.get(DurationFieldType.WEEKS_TYPE))
+    getPeriodType.addIndexedField(this,
+                                  PeriodType.DAY_INDEX,
+                                  values,
+                                  -period.get(DurationFieldType.DAYS_TYPE))
+    getPeriodType.addIndexedField(this,
+                                  PeriodType.HOUR_INDEX,
+                                  values,
+                                  -period.get(DurationFieldType.HOURS_TYPE))
+    getPeriodType.addIndexedField(this,
+                                  PeriodType.MINUTE_INDEX,
+                                  values,
+                                  -period.get(DurationFieldType.MINUTES_TYPE))
+    getPeriodType.addIndexedField(this,
+                                  PeriodType.SECOND_INDEX,
+                                  values,
+                                  -period.get(DurationFieldType.SECONDS_TYPE))
+    getPeriodType.addIndexedField(this,
+                                  PeriodType.MILLI_INDEX,
+                                  values,
+                                  -period.get(DurationFieldType.MILLIS_TYPE))
     new Period(values, getPeriodType)
   }
 
@@ -475,7 +559,7 @@ class Period extends BasePeriod with ReadablePeriod with Serializable {
 
   def toStandardWeeks(): Weeks = {
     checkYearsAndMonths("Weeks")
-    var millis:Long = getMillis
+    var millis: Long = getMillis
     millis += getSeconds.toLong * DateTimeConstants.MILLIS_PER_SECOND
     millis += getMinutes.toLong * DateTimeConstants.MILLIS_PER_MINUTE
     millis += getHours.toLong * DateTimeConstants.MILLIS_PER_HOUR
@@ -486,54 +570,72 @@ class Period extends BasePeriod with ReadablePeriod with Serializable {
 
   def toStandardDays(): Days = {
     checkYearsAndMonths("Days")
-    var millis:Long = getMillis
+    var millis: Long = getMillis
     millis += getSeconds.toLong * DateTimeConstants.MILLIS_PER_SECOND
     millis += getMinutes.toLong * DateTimeConstants.MILLIS_PER_MINUTE
     millis += getHours.toLong * DateTimeConstants.MILLIS_PER_HOUR
-    var days:Long = millis / DateTimeConstants.MILLIS_PER_DAY
+    var days: Long = millis / DateTimeConstants.MILLIS_PER_DAY
     days = FieldUtils.safeAdd(days, getDays)
-    days = FieldUtils.safeAdd(days, getWeeks.toLong * DateTimeConstants.DAYS_PER_WEEK.toLong)
+    days = FieldUtils
+      .safeAdd(days, getWeeks.toLong * DateTimeConstants.DAYS_PER_WEEK.toLong)
     Days.days(FieldUtils.safeToInt(days))
   }
 
   def toStandardHours(): Hours = {
     checkYearsAndMonths("Hours")
-    var millis:Long = getMillis
+    var millis: Long = getMillis
     millis += getSeconds.toLong * DateTimeConstants.MILLIS_PER_SECOND
     millis += getMinutes.toLong * DateTimeConstants.MILLIS_PER_MINUTE
-    var hours:Long = millis / DateTimeConstants.MILLIS_PER_HOUR
+    var hours: Long = millis / DateTimeConstants.MILLIS_PER_HOUR
     hours = FieldUtils.safeAdd(hours, getHours)
-    hours = FieldUtils.safeAdd(hours, getDays.toLong * DateTimeConstants.HOURS_PER_DAY.toLong)
-    hours = FieldUtils.safeAdd(hours, getWeeks.toLong * DateTimeConstants.HOURS_PER_WEEK.toLong)
+    hours = FieldUtils
+      .safeAdd(hours, getDays.toLong * DateTimeConstants.HOURS_PER_DAY.toLong)
+    hours = FieldUtils.safeAdd(
+      hours,
+      getWeeks.toLong * DateTimeConstants.HOURS_PER_WEEK.toLong)
     Hours.hours(FieldUtils.safeToInt(hours))
   }
 
   def toStandardMinutes(): Minutes = {
     checkYearsAndMonths("Minutes")
-    var millis:Long = getMillis
+    var millis: Long = getMillis
     millis += getSeconds.toLong * DateTimeConstants.MILLIS_PER_SECOND
-    var minutes:Long = millis / DateTimeConstants.MILLIS_PER_MINUTE
+    var minutes: Long = millis / DateTimeConstants.MILLIS_PER_MINUTE
     minutes = FieldUtils.safeAdd(minutes, getMinutes)
-    minutes = FieldUtils.safeAdd(minutes, getHours.toLong * DateTimeConstants.MINUTES_PER_HOUR.toLong)
-    minutes = FieldUtils.safeAdd(minutes, getDays.toLong * DateTimeConstants.MINUTES_PER_DAY.toLong)
-    minutes = FieldUtils.safeAdd(minutes, getWeeks.toLong * DateTimeConstants.MINUTES_PER_WEEK.toLong)
+    minutes = FieldUtils.safeAdd(
+      minutes,
+      getHours.toLong * DateTimeConstants.MINUTES_PER_HOUR.toLong)
+    minutes = FieldUtils.safeAdd(
+      minutes,
+      getDays.toLong * DateTimeConstants.MINUTES_PER_DAY.toLong)
+    minutes = FieldUtils.safeAdd(
+      minutes,
+      getWeeks.toLong * DateTimeConstants.MINUTES_PER_WEEK.toLong)
     Minutes.minutes(FieldUtils.safeToInt(minutes))
   }
 
   def toStandardSeconds(): Seconds = {
     checkYearsAndMonths("Seconds")
-    var seconds:Long = getMillis / DateTimeConstants.MILLIS_PER_SECOND
+    var seconds: Long = getMillis / DateTimeConstants.MILLIS_PER_SECOND
     seconds = FieldUtils.safeAdd(seconds, getSeconds)
-    seconds = FieldUtils.safeAdd(seconds, getMinutes.toLong * DateTimeConstants.SECONDS_PER_MINUTE.toLong)
-    seconds = FieldUtils.safeAdd(seconds, getHours.toLong * DateTimeConstants.SECONDS_PER_HOUR.toLong)
-    seconds = FieldUtils.safeAdd(seconds, getDays.toLong * DateTimeConstants.SECONDS_PER_DAY.toLong)
-    seconds = FieldUtils.safeAdd(seconds, getWeeks.toLong * DateTimeConstants.SECONDS_PER_WEEK.toLong)
+    seconds = FieldUtils.safeAdd(
+      seconds,
+      getMinutes.toLong * DateTimeConstants.SECONDS_PER_MINUTE.toLong)
+    seconds = FieldUtils.safeAdd(
+      seconds,
+      getHours.toLong * DateTimeConstants.SECONDS_PER_HOUR.toLong)
+    seconds = FieldUtils.safeAdd(
+      seconds,
+      getDays.toLong * DateTimeConstants.SECONDS_PER_DAY.toLong)
+    seconds = FieldUtils.safeAdd(
+      seconds,
+      getWeeks.toLong * DateTimeConstants.SECONDS_PER_WEEK.toLong)
     Seconds.seconds(FieldUtils.safeToInt(seconds))
   }
 
   def toStandardDuration(): Duration = {
     checkYearsAndMonths("Duration")
-    var millis:Long = getMillis
+    var millis: Long = getMillis
     millis += (getSeconds.toLong * DateTimeConstants.MILLIS_PER_SECOND.toLong)
     millis += (getMinutes.toLong * DateTimeConstants.MILLIS_PER_MINUTE.toLong)
     millis += (getHours.toLong * DateTimeConstants.MILLIS_PER_HOUR.toLong)
@@ -544,12 +646,14 @@ class Period extends BasePeriod with ReadablePeriod with Serializable {
 
   private def checkYearsAndMonths(destintionType: String) {
     if (getMonths != 0) {
-      throw new UnsupportedOperationException("Cannot convert to " + destintionType +
-        " as this period contains months and months vary in length")
+      throw new UnsupportedOperationException(
+        "Cannot convert to " + destintionType +
+          " as this period contains months and months vary in length")
     }
     if (getYears != 0) {
-      throw new UnsupportedOperationException("Cannot convert to " + destintionType +
-        " as this period contains years and years vary in length")
+      throw new UnsupportedOperationException(
+        "Cannot convert to " + destintionType +
+          " as this period contains years and years vary in length")
     }
   }
 
@@ -560,7 +664,7 @@ class Period extends BasePeriod with ReadablePeriod with Serializable {
   def normalizedStandard(`type`: PeriodType): Period = {
     var _type = `type`
     _type = DateTimeUtils.getPeriodType(_type)
-    var millis:Long = getMillis
+    var millis: Long = getMillis
     millis += (getSeconds.toLong * DateTimeConstants.MILLIS_PER_SECOND.toLong)
     millis += (getMinutes.toLong * DateTimeConstants.MILLIS_PER_MINUTE.toLong)
     millis += (getHours.toLong * DateTimeConstants.MILLIS_PER_HOUR.toLong)
@@ -582,8 +686,9 @@ class Period extends BasePeriod with ReadablePeriod with Serializable {
         totalMonths = totalMonths - normalizedMonths
       }
       if (totalMonths != 0) {
-        throw new UnsupportedOperationException("Unable to normalize as PeriodType is missing either years or months but period has a month/year amount: " +
-          toString)
+        throw new UnsupportedOperationException(
+          "Unable to normalize as PeriodType is missing either years or months but period has a month/year amount: " +
+            toString)
       }
     }
     result

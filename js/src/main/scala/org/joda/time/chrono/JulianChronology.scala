@@ -12,19 +12,22 @@ import scala.scalajs.js
 
 object JulianChronology {
 
-  private val MILLIS_PER_YEAR = (365.25 * DateTimeConstants.MILLIS_PER_DAY).toLong
-  private val MILLIS_PER_MONTH = (365.25 * DateTimeConstants.MILLIS_PER_DAY / 12).toLong
+  private val MILLIS_PER_YEAR =
+    (365.25 * DateTimeConstants.MILLIS_PER_DAY).toLong
+  private val MILLIS_PER_MONTH =
+    (365.25 * DateTimeConstants.MILLIS_PER_DAY / 12).toLong
   private val MIN_YEAR = -292269054
   private val MAX_YEAR = 292272992
   private val INSTANCE_UTC = getInstance(DateTimeZone.UTC)
-  private val cCache = new collection.mutable.HashMap[DateTimeZone, js.Array[JulianChronology]]()
+  private val cCache =
+    new collection.mutable.HashMap[DateTimeZone, js.Array[JulianChronology]]()
 
   def adjustYearForSet(year: Int): Int = {
     var _year: Int = year
     if (_year <= 0) {
       if (_year == 0) {
-        throw IllegalFieldValueException.create(DateTimeFieldType.year(), Integer.valueOf(_year),
-          null, null)
+        throw IllegalFieldValueException
+          .create(DateTimeFieldType.year(), Integer.valueOf(_year), null, null)
       }
       _year += 1
     }
@@ -37,7 +40,8 @@ object JulianChronology {
 
   def getInstance(zone: DateTimeZone): JulianChronology = getInstance(zone, 4)
 
-  def getInstance(zone: DateTimeZone, minDaysInFirstWeek: Int): JulianChronology = {
+  def getInstance(zone: DateTimeZone,
+                  minDaysInFirstWeek: Int): JulianChronology = {
     var _zone: DateTimeZone = zone
     if (_zone == null) {
       _zone = DateTimeZone.getDefault
@@ -65,7 +69,10 @@ object JulianChronology {
             chrono = new JulianChronology(null, null, minDaysInFirstWeek)
           } else {
             chrono = getInstance(DateTimeZone.UTC, minDaysInFirstWeek)
-            chrono = new JulianChronology(ZonedChronology.getInstance(chrono, _zone), null, minDaysInFirstWeek)
+            chrono =
+              new JulianChronology(ZonedChronology.getInstance(chrono, _zone),
+                                   null,
+                                   minDaysInFirstWeek)
           }
           chronos(minDaysInFirstWeek - 1) = chrono
         }
@@ -76,14 +83,17 @@ object JulianChronology {
 }
 
 @SerialVersionUID(-8731039522547897247L)
-class JulianChronology(base: Chronology, param: AnyRef, minDaysInFirstWeek: Int)
-  extends BasicGJChronology(base, param, minDaysInFirstWeek) {
+class JulianChronology(base: Chronology,
+                       param: AnyRef,
+                       minDaysInFirstWeek: Int)
+    extends BasicGJChronology(base, param, minDaysInFirstWeek) {
 
   private def readResolve(): AnyRef = {
     val base = getBase
     var minDays = getMinimumDaysInFirstWeek
     minDays = if (minDays == 0) 4 else minDays
-    if (base == null) getInstance(DateTimeZone.UTC, minDays) else getInstance(base.getZone, minDays)
+    if (base == null) getInstance(DateTimeZone.UTC, minDays)
+    else getInstance(base.getZone, minDays)
   }
 
   def withUTC(): Chronology = INSTANCE_UTC
@@ -99,8 +109,11 @@ class JulianChronology(base: Chronology, param: AnyRef, minDaysInFirstWeek: Int)
     getInstance(_zone)
   }
 
-  override def getDateMidnightMillis(year: Int, monthOfYear: Int, dayOfMonth: Int): Long = {
-    super.getDateMidnightMillis(adjustYearForSet(year), monthOfYear, dayOfMonth)
+  override def getDateMidnightMillis(year: Int,
+                                     monthOfYear: Int,
+                                     dayOfMonth: Int): Long = {
+    super
+      .getDateMidnightMillis(adjustYearForSet(year), monthOfYear, dayOfMonth)
   }
 
   def isLeapYear(year: Int): Boolean = (year & 3) == 0

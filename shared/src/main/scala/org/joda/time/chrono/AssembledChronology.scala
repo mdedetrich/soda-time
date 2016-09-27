@@ -63,112 +63,112 @@ object AssembledChronology {
       {
         var f: DurationField = null
 
-        if (Fields.isSupported({f = chrono.millis();f})) {
+        if (Fields.isSupported({ f = chrono.millis(); f })) {
           millis = f
         }
-        if (Fields.isSupported({f = chrono.seconds();f})) {
+        if (Fields.isSupported({ f = chrono.seconds(); f })) {
           seconds = f
         }
-        if (Fields.isSupported({f = chrono.minutes();f})) {
+        if (Fields.isSupported({ f = chrono.minutes(); f })) {
           minutes = f
         }
-        if (Fields.isSupported({f = chrono.hours();f})) {
+        if (Fields.isSupported({ f = chrono.hours(); f })) {
           hours = f
         }
-        if (Fields.isSupported({f = chrono.halfdays();f})) {
+        if (Fields.isSupported({ f = chrono.halfdays(); f })) {
           halfdays = f
         }
-        if (Fields.isSupported({f = chrono.days();f})) {
+        if (Fields.isSupported({ f = chrono.days(); f })) {
           days = f
         }
-        if (Fields.isSupported({f = chrono.weeks();f})) {
+        if (Fields.isSupported({ f = chrono.weeks(); f })) {
           weeks = f
         }
-        if (Fields.isSupported({f = chrono.weekyears();f})) {
+        if (Fields.isSupported({ f = chrono.weekyears(); f })) {
           weekyears = f
         }
-        if (Fields.isSupported({f = chrono.months();f})) {
+        if (Fields.isSupported({ f = chrono.months(); f })) {
           months = f
         }
-        if (Fields.isSupported({f = chrono.years();f})) {
+        if (Fields.isSupported({ f = chrono.years(); f })) {
           years = f
         }
-        if (Fields.isSupported({f = chrono.centuries();f})) {
+        if (Fields.isSupported({ f = chrono.centuries(); f })) {
           centuries = f
         }
-        if (Fields.isSupported({f = chrono.eras();f})) {
+        if (Fields.isSupported({ f = chrono.eras(); f })) {
           eras = f
         }
       }
       {
         var f: DateTimeField = null
-        if (Fields.isSupported({f = chrono.millisOfSecond();f})) {
+        if (Fields.isSupported({ f = chrono.millisOfSecond(); f })) {
           millisOfSecond = f
         }
-        if (Fields.isSupported({f = chrono.millisOfDay();f})) {
+        if (Fields.isSupported({ f = chrono.millisOfDay(); f })) {
           millisOfDay = f
         }
-        if (Fields.isSupported({f = chrono.secondOfMinute();f})) {
+        if (Fields.isSupported({ f = chrono.secondOfMinute(); f })) {
           secondOfMinute = f
         }
-        if (Fields.isSupported({f = chrono.secondOfDay();f})) {
+        if (Fields.isSupported({ f = chrono.secondOfDay(); f })) {
           secondOfDay = f
         }
-        if (Fields.isSupported({f = chrono.minuteOfHour();f})) {
+        if (Fields.isSupported({ f = chrono.minuteOfHour(); f })) {
           minuteOfHour = f
         }
-        if (Fields.isSupported({f = chrono.minuteOfDay();f})) {
+        if (Fields.isSupported({ f = chrono.minuteOfDay(); f })) {
           minuteOfDay = f
         }
-        if (Fields.isSupported({f = chrono.hourOfDay();f})) {
+        if (Fields.isSupported({ f = chrono.hourOfDay(); f })) {
           hourOfDay = f
         }
-        if (Fields.isSupported({f = chrono.clockhourOfDay();f})) {
+        if (Fields.isSupported({ f = chrono.clockhourOfDay(); f })) {
           clockhourOfDay = f
         }
-        if (Fields.isSupported({f = chrono.hourOfHalfday();f})) {
+        if (Fields.isSupported({ f = chrono.hourOfHalfday(); f })) {
           hourOfHalfday = f
         }
-        if (Fields.isSupported({f = chrono.clockhourOfHalfday();f})) {
+        if (Fields.isSupported({ f = chrono.clockhourOfHalfday(); f })) {
           clockhourOfHalfday = f
         }
-        if (Fields.isSupported({f = chrono.halfdayOfDay();f})) {
+        if (Fields.isSupported({ f = chrono.halfdayOfDay(); f })) {
           halfdayOfDay = f
         }
-        if (Fields.isSupported({f = chrono.dayOfWeek();f})) {
+        if (Fields.isSupported({ f = chrono.dayOfWeek(); f })) {
           dayOfWeek = f
         }
-        if (Fields.isSupported({f = chrono.dayOfMonth();f})) {
+        if (Fields.isSupported({ f = chrono.dayOfMonth(); f })) {
           dayOfMonth = f
         }
-        if (Fields.isSupported({f = chrono.dayOfYear();f})) {
+        if (Fields.isSupported({ f = chrono.dayOfYear(); f })) {
           dayOfYear = f
         }
-        if (Fields.isSupported({f = chrono.weekOfWeekyear();f})) {
+        if (Fields.isSupported({ f = chrono.weekOfWeekyear(); f })) {
           weekOfWeekyear = f
         }
-        if (Fields.isSupported({f = chrono.weekyear();f})) {
+        if (Fields.isSupported({ f = chrono.weekyear(); f })) {
           weekyear = f
         }
-        if (Fields.isSupported({f = chrono.weekyearOfCentury();f})) {
+        if (Fields.isSupported({ f = chrono.weekyearOfCentury(); f })) {
           weekyearOfCentury = f
         }
-        if (Fields.isSupported({f = chrono.monthOfYear();f})) {
+        if (Fields.isSupported({ f = chrono.monthOfYear(); f })) {
           monthOfYear = f
         }
-        if (Fields.isSupported({f = chrono.year();f})) {
+        if (Fields.isSupported({ f = chrono.year(); f })) {
           year = f
         }
-        if (Fields.isSupported({f = chrono.yearOfEra();f})) {
+        if (Fields.isSupported({ f = chrono.yearOfEra(); f })) {
           yearOfEra = f
         }
-        if (Fields.isSupported({f = chrono.yearOfCentury();f})) {
+        if (Fields.isSupported({ f = chrono.yearOfCentury(); f })) {
           yearOfCentury = f
         }
-        if (Fields.isSupported({f = chrono.centuryOfEra();f})) {
+        if (Fields.isSupported({ f = chrono.centuryOfEra(); f })) {
           centuryOfEra = f
         }
-        if (Fields.isSupported({f = chrono.era();f})) {
+        if (Fields.isSupported({ f = chrono.era(); f })) {
           era = f
         }
       }
@@ -177,9 +177,8 @@ object AssembledChronology {
 }
 
 @SerialVersionUID(-6728465968995518215L)
-abstract class AssembledChronology
-  extends BaseChronology {
-  
+abstract class AssembledChronology extends BaseChronology {
+
   private var iBase: Chronology = null
   private var iParam: AnyRef = null
 
@@ -220,15 +219,14 @@ abstract class AssembledChronology
   @transient private var iEra: DateTimeField = null
   @transient private var iBaseFlags: Int = _
 
-
-  protected def this(base: Chronology,param: AnyRef) {
+  protected def this(base: Chronology, param: AnyRef) {
     this()
     iBase = base
     iParam = param
     setFields()
   }
-  
-  protected def auxConstructor(base: Chronology,param: AnyRef): Unit = {
+
+  protected def auxConstructor(base: Chronology, param: AnyRef): Unit = {
     iBase = base
     iParam = param
     setFields()
@@ -236,7 +234,7 @@ abstract class AssembledChronology
 
   def getZone(): DateTimeZone = {
     var base: Chronology = null
-    if ( {
+    if ({
       base = iBase; base
     } != null) {
       return base.getZone
@@ -245,11 +243,11 @@ abstract class AssembledChronology
   }
 
   override def getDateTimeMillis(year: Int,
-                        monthOfYear: Int,
-                        dayOfMonth: Int,
-                        millisOfDay: Int): Long = {
+                                 monthOfYear: Int,
+                                 dayOfMonth: Int,
+                                 millisOfDay: Int): Long = {
     var base: Chronology = null
-    if ( {
+    if ({
       base = iBase; base
     } != null && (iBaseFlags & 6) == 6) {
       return base.getDateTimeMillis(year, monthOfYear, dayOfMonth, millisOfDay)
@@ -258,34 +256,53 @@ abstract class AssembledChronology
   }
 
   override def getDateTimeMillis(year: Int,
-                        monthOfYear: Int,
-                        dayOfMonth: Int,
-                        hourOfDay: Int,
-                        minuteOfHour: Int,
-                        secondOfMinute: Int,
-                        millisOfSecond: Int): Long = {
+                                 monthOfYear: Int,
+                                 dayOfMonth: Int,
+                                 hourOfDay: Int,
+                                 minuteOfHour: Int,
+                                 secondOfMinute: Int,
+                                 millisOfSecond: Int): Long = {
     var base: Chronology = null
-    if ( {
+    if ({
       base = iBase; base
     } != null && (iBaseFlags & 5) == 5) {
-      return base.getDateTimeMillis(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute,
-        millisOfSecond)
+      return base.getDateTimeMillis(year,
+                                    monthOfYear,
+                                    dayOfMonth,
+                                    hourOfDay,
+                                    minuteOfHour,
+                                    secondOfMinute,
+                                    millisOfSecond)
     }
-    super.getDateTimeMillis(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond)
+    super.getDateTimeMillis(year,
+                            monthOfYear,
+                            dayOfMonth,
+                            hourOfDay,
+                            minuteOfHour,
+                            secondOfMinute,
+                            millisOfSecond)
   }
 
   override def getDateTimeMillis(instant: Long,
-                        hourOfDay: Int,
-                        minuteOfHour: Int,
-                        secondOfMinute: Int,
-                        millisOfSecond: Int): Long = {
+                                 hourOfDay: Int,
+                                 minuteOfHour: Int,
+                                 secondOfMinute: Int,
+                                 millisOfSecond: Int): Long = {
     var base: Chronology = null
-    if ( {
+    if ({
       base = iBase; base
     } != null && (iBaseFlags & 1) == 1) {
-      return base.getDateTimeMillis(instant, hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond)
+      return base.getDateTimeMillis(instant,
+                                    hourOfDay,
+                                    minuteOfHour,
+                                    secondOfMinute,
+                                    millisOfSecond)
     }
-    super.getDateTimeMillis(instant, hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond)
+    super.getDateTimeMillis(instant,
+                            hourOfDay,
+                            minuteOfHour,
+                            secondOfMinute,
+                            millisOfSecond)
   }
 
   override def millis(): DurationField = iMillis
@@ -370,55 +387,86 @@ abstract class AssembledChronology
       fields.copyFieldsFrom(iBase)
     }
     assemble(fields)
-    
+
     {
       var f: DurationField = null
-      iMillis = if ({f = fields.millis;f} != null) f else super.millis()
-      iSeconds = if ({f = fields.seconds;f} != null) f else super.seconds()
-      iMinutes = if ({f = fields.minutes;f} != null) f else super.minutes()
-      iHours = if ({f = fields.hours;f} != null) f else super.hours()
-      iHalfdays = if ({f = fields.halfdays;f} != null) f else super.halfdays()
-      iDays = if ({f = fields.days;f} != null) f else super.days()
-      iWeeks = if ({f = fields.weeks;f} != null) f else super.weeks()
-      iWeekyears = if ({f = fields.weekyears;f} != null) f else super.weekyears()
-      iMonths = if ({f = fields.months;f} != null) f else super.months()
-      iYears = if ({f = fields.years;f} != null) f else super.years()
-      iCenturies = if ({f = fields.centuries;f} != null) f else super.centuries()
-      iEras = if ({f = fields.eras;f} != null) f else super.eras()
+      iMillis = if ({ f = fields.millis; f } != null) f else super.millis()
+      iSeconds = if ({ f = fields.seconds; f } != null) f else super.seconds()
+      iMinutes = if ({ f = fields.minutes; f } != null) f else super.minutes()
+      iHours = if ({ f = fields.hours; f } != null) f else super.hours()
+      iHalfdays =
+        if ({ f = fields.halfdays; f } != null) f else super.halfdays()
+      iDays = if ({ f = fields.days; f } != null) f else super.days()
+      iWeeks = if ({ f = fields.weeks; f } != null) f else super.weeks()
+      iWeekyears =
+        if ({ f = fields.weekyears; f } != null) f else super.weekyears()
+      iMonths = if ({ f = fields.months; f } != null) f else super.months()
+      iYears = if ({ f = fields.years; f } != null) f else super.years()
+      iCenturies =
+        if ({ f = fields.centuries; f } != null) f else super.centuries()
+      iEras = if ({ f = fields.eras; f } != null) f else super.eras()
     }
 
     {
       var f: DateTimeField = null
-      iMillisOfSecond = if ({f = fields.millisOfSecond;f} != null) f else super.millisOfSecond()
-      iMillisOfDay = if ({f = fields.millisOfDay;f} != null) f else super.millisOfDay()
-      iSecondOfMinute = if ({f = fields.secondOfMinute;f} != null) f else super.secondOfMinute()
-      iSecondOfDay = if ({f = fields.secondOfDay;f} != null) f else super.secondOfDay()
-      iMinuteOfHour = if ({f = fields.minuteOfHour;f} != null) f else super.minuteOfHour()
-      iMinuteOfDay = if ({f = fields.minuteOfDay;f} != null) f else super.minuteOfDay()
-      iHourOfDay = if ({f = fields.hourOfDay;f} != null) f else super.hourOfDay()
-      iClockhourOfDay = if ({f = fields.clockhourOfDay;f} != null) f else super.clockhourOfDay()
-      iHourOfHalfday = if ({f = fields.hourOfHalfday;f} != null) f else super.hourOfHalfday()
-      iClockhourOfHalfday = if ({f = fields.clockhourOfHalfday;f} != null) f else super.clockhourOfHalfday()
-      iHalfdayOfDay = if ({f = fields.halfdayOfDay;f} != null) f else super.halfdayOfDay()
-      iDayOfWeek = if ({f = fields.dayOfWeek;f} != null) f else super.dayOfWeek()
-      iDayOfMonth = if ({f = fields.dayOfMonth;f} != null) f else super.dayOfMonth()
-      iDayOfYear = if ({f = fields.dayOfYear;f} != null) f else super.dayOfYear()
-      iWeekOfWeekyear = if ({f = fields.weekOfWeekyear;f} != null) f else super.weekOfWeekyear()
-      iWeekyear = if ({f = fields.weekyear;f} != null) f else super.weekyear()
-      iWeekyearOfCentury = if ({f = fields.weekyearOfCentury;f} != null) f else super.weekyearOfCentury()
-      iMonthOfYear = if ({f = fields.monthOfYear;f} != null) f else super.monthOfYear()
-      iYear = if ({f = fields.year;f} != null) f else super.year()
-      iYearOfEra = if ({f = fields.yearOfEra;f} != null) f else super.yearOfEra()
-      iYearOfCentury = if ({f = fields.yearOfCentury;f} != null) f else super.yearOfCentury()
-      iCenturyOfEra = if ({f = fields.centuryOfEra;f} != null) f else super.centuryOfEra()
-      iEra = if ({f = fields.era;f} != null) f else super.era()
+      iMillisOfSecond = if ({ f = fields.millisOfSecond; f } != null) f
+      else super.millisOfSecond()
+      iMillisOfDay =
+        if ({ f = fields.millisOfDay; f } != null) f else super.millisOfDay()
+      iSecondOfMinute = if ({ f = fields.secondOfMinute; f } != null) f
+      else super.secondOfMinute()
+      iSecondOfDay =
+        if ({ f = fields.secondOfDay; f } != null) f else super.secondOfDay()
+      iMinuteOfHour =
+        if ({ f = fields.minuteOfHour; f } != null) f else super.minuteOfHour()
+      iMinuteOfDay =
+        if ({ f = fields.minuteOfDay; f } != null) f else super.minuteOfDay()
+      iHourOfDay =
+        if ({ f = fields.hourOfDay; f } != null) f else super.hourOfDay()
+      iClockhourOfDay = if ({ f = fields.clockhourOfDay; f } != null) f
+      else super.clockhourOfDay()
+      iHourOfHalfday = if ({ f = fields.hourOfHalfday; f } != null) f
+      else super.hourOfHalfday()
+      iClockhourOfHalfday = if ({ f = fields.clockhourOfHalfday; f } != null) f
+      else super.clockhourOfHalfday()
+      iHalfdayOfDay =
+        if ({ f = fields.halfdayOfDay; f } != null) f else super.halfdayOfDay()
+      iDayOfWeek =
+        if ({ f = fields.dayOfWeek; f } != null) f else super.dayOfWeek()
+      iDayOfMonth =
+        if ({ f = fields.dayOfMonth; f } != null) f else super.dayOfMonth()
+      iDayOfYear =
+        if ({ f = fields.dayOfYear; f } != null) f else super.dayOfYear()
+      iWeekOfWeekyear = if ({ f = fields.weekOfWeekyear; f } != null) f
+      else super.weekOfWeekyear()
+      iWeekyear =
+        if ({ f = fields.weekyear; f } != null) f else super.weekyear()
+      iWeekyearOfCentury = if ({ f = fields.weekyearOfCentury; f } != null) f
+      else super.weekyearOfCentury()
+      iMonthOfYear =
+        if ({ f = fields.monthOfYear; f } != null) f else super.monthOfYear()
+      iYear = if ({ f = fields.year; f } != null) f else super.year()
+      iYearOfEra =
+        if ({ f = fields.yearOfEra; f } != null) f else super.yearOfEra()
+      iYearOfCentury = if ({ f = fields.yearOfCentury; f } != null) f
+      else super.yearOfCentury()
+      iCenturyOfEra =
+        if ({ f = fields.centuryOfEra; f } != null) f else super.centuryOfEra()
+      iEra = if ({ f = fields.era; f } != null) f else super.era()
       var flags: Int = 0
-      flags = if (iBase == null) 0 else (if (iHourOfDay == iBase.hourOfDay() && iMinuteOfHour == iBase.minuteOfHour() &&
-        iSecondOfMinute == iBase.secondOfMinute() &&
-        iMillisOfSecond == iBase.millisOfSecond()) 1 else 0) |
-        (if (iMillisOfDay == iBase.millisOfDay()) 2 else 0) |
-        (if (iYear == iBase.year() && iMonthOfYear == iBase.monthOfYear() &&
-          iDayOfMonth == iBase.dayOfMonth()) 4 else 0)
+      flags =
+        if (iBase == null) 0
+        else
+          (if (iHourOfDay == iBase.hourOfDay() && iMinuteOfHour == iBase
+                 .minuteOfHour() &&
+               iSecondOfMinute == iBase.secondOfMinute() &&
+               iMillisOfSecond == iBase.millisOfSecond()) 1
+           else 0) |
+            (if (iMillisOfDay == iBase.millisOfDay()) 2 else 0) |
+            (if (iYear == iBase.year() && iMonthOfYear == iBase
+                   .monthOfYear() &&
+                 iDayOfMonth == iBase.dayOfMonth()) 4
+             else 0)
       iBaseFlags = flags
     }
   }

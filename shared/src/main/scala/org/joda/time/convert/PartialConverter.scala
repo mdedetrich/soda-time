@@ -9,7 +9,9 @@ trait PartialConverter extends Converter {
 
   def getChronology(`object`: AnyRef, chrono: Chronology): Chronology
 
-  def getPartialValues(fieldSource: ReadablePartial, `object`: AnyRef, chrono: Chronology): Array[Int]
+  def getPartialValues(fieldSource: ReadablePartial,
+                       `object`: AnyRef,
+                       chrono: Chronology): Array[Int]
 
   def getPartialValues(fieldSource: ReadablePartial,
                        `object`: AnyRef,

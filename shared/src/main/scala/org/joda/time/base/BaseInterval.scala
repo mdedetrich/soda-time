@@ -14,13 +14,18 @@ import org.joda.time.convert.ConverterManager
 import org.joda.time.field.FieldUtils
 
 @SerialVersionUID(576586928732749278L)
-abstract class BaseInterval protected () extends AbstractInterval with ReadableInterval with Serializable {
+abstract class BaseInterval protected ()
+    extends AbstractInterval
+    with ReadableInterval
+    with Serializable {
 
   @volatile private var iChronology: Chronology = null
   @volatile private var iStartMillis: Long = _
   @volatile private var iEndMillis: Long = _
-  
-  protected def this(startInstant: Long, endInstant: Long, chrono: Chronology) {
+
+  protected def this(startInstant: Long,
+                     endInstant: Long,
+                     chrono: Chronology) {
     this()
     checkInterval(startInstant, endInstant)
     iChronology = DateTimeUtils.getChronology(chrono)
@@ -65,7 +70,8 @@ abstract class BaseInterval protected () extends AbstractInterval with ReadableI
     val chrono = DateTimeUtils.getInstantChronology(start)
     iChronology = chrono
     iStartMillis = DateTimeUtils.getInstantMillis(start)
-    iEndMillis = if (period == null) iStartMillis else chrono.add(period, iStartMillis, 1)
+    iEndMillis =
+      if (period == null) iStartMillis else chrono.add(period, iStartMillis, 1)
     checkInterval(iStartMillis, iEndMillis)
   }
 
@@ -74,7 +80,8 @@ abstract class BaseInterval protected () extends AbstractInterval with ReadableI
     val chrono = DateTimeUtils.getInstantChronology(end)
     iChronology = chrono
     iEndMillis = DateTimeUtils.getInstantMillis(end)
-    iStartMillis = if (period == null) iEndMillis else chrono.add(period, iEndMillis, -1)
+    iStartMillis =
+      if (period == null) iEndMillis else chrono.add(period, iEndMillis, -1)
     checkInterval(iStartMillis, iEndMillis)
   }
 
@@ -87,7 +94,8 @@ abstract class BaseInterval protected () extends AbstractInterval with ReadableI
       iStartMillis = input.getStartMillis
       iEndMillis = input.getEndMillis
     } else if (this.isInstanceOf[ReadWritableInterval]) {
-      converter.setInto(this.asInstanceOf[ReadWritableInterval], interval, chrono)
+      converter
+        .setInto(this.asInstanceOf[ReadWritableInterval], interval, chrono)
     } else {
       val mi = new MutableInterval()
       converter.setInto(mi, interval, chrono)
@@ -97,15 +105,18 @@ abstract class BaseInterval protected () extends AbstractInterval with ReadableI
     }
     checkInterval(iStartMillis, iEndMillis)
   }
-  
-  protected def auxConstructor(startInstant: Long, endInstant: Long, chrono: Chronology): Unit = {
+
+  protected def auxConstructor(startInstant: Long,
+                               endInstant: Long,
+                               chrono: Chronology): Unit = {
     checkInterval(startInstant, endInstant)
     iChronology = DateTimeUtils.getChronology(chrono)
     iStartMillis = startInstant
     iEndMillis = endInstant
   }
-  
-  protected def auxConstructor(start: ReadableInstant, end: ReadableInstant): Unit = {
+
+  protected def auxConstructor(start: ReadableInstant,
+                               end: ReadableInstant): Unit = {
     if (start == null && end == null) {
       iEndMillis = DateTimeUtils.currentTimeMillis()
       iStartMillis = iEndMillis
@@ -117,39 +128,45 @@ abstract class BaseInterval protected () extends AbstractInterval with ReadableI
       checkInterval(iStartMillis, iEndMillis)
     }
   }
-  
-  protected def auxConstructor(start: ReadableInstant, duration: ReadableDuration): Unit = {
+
+  protected def auxConstructor(start: ReadableInstant,
+                               duration: ReadableDuration): Unit = {
     iChronology = DateTimeUtils.getInstantChronology(start)
     iStartMillis = DateTimeUtils.getInstantMillis(start)
     val durationMillis = DateTimeUtils.getDurationMillis(duration)
     iEndMillis = FieldUtils.safeAdd(iStartMillis, durationMillis)
     checkInterval(iStartMillis, iEndMillis)
   }
-  
-  protected def auxConstructor(duration: ReadableDuration, end: ReadableInstant): Unit = {
+
+  protected def auxConstructor(duration: ReadableDuration,
+                               end: ReadableInstant): Unit = {
     iChronology = DateTimeUtils.getInstantChronology(end)
     iEndMillis = DateTimeUtils.getInstantMillis(end)
     val durationMillis = DateTimeUtils.getDurationMillis(duration)
     iStartMillis = FieldUtils.safeAdd(iEndMillis, -durationMillis)
     checkInterval(iStartMillis, iEndMillis)
   }
-  
-  protected def auxConstructor(start: ReadableInstant, period: ReadablePeriod): Unit = {
+
+  protected def auxConstructor(start: ReadableInstant,
+                               period: ReadablePeriod): Unit = {
     val chrono = DateTimeUtils.getInstantChronology(start)
     iChronology = chrono
     iStartMillis = DateTimeUtils.getInstantMillis(start)
-    iEndMillis = if (period == null) iStartMillis else chrono.add(period, iStartMillis, 1)
+    iEndMillis =
+      if (period == null) iStartMillis else chrono.add(period, iStartMillis, 1)
     checkInterval(iStartMillis, iEndMillis)
   }
-  
-  protected def auxConstructor(period: ReadablePeriod, end: ReadableInstant): Unit = {
+
+  protected def auxConstructor(period: ReadablePeriod,
+                               end: ReadableInstant): Unit = {
     val chrono = DateTimeUtils.getInstantChronology(end)
     iChronology = chrono
     iEndMillis = DateTimeUtils.getInstantMillis(end)
-    iStartMillis = if (period == null) iEndMillis else chrono.add(period, iEndMillis, -1)
+    iStartMillis =
+      if (period == null) iEndMillis else chrono.add(period, iEndMillis, -1)
     checkInterval(iStartMillis, iEndMillis)
   }
-  
+
   protected def auxConstructor(interval: AnyRef, chrono: Chronology): Unit = {
     val converter = ConverterManager.getInstance.getIntervalConverter(interval)
     if (converter.isReadableInterval(interval, chrono)) {
@@ -158,7 +175,8 @@ abstract class BaseInterval protected () extends AbstractInterval with ReadableI
       iStartMillis = input.getStartMillis
       iEndMillis = input.getEndMillis
     } else if (this.isInstanceOf[ReadWritableInterval]) {
-      converter.setInto(this.asInstanceOf[ReadWritableInterval], interval, chrono)
+      converter
+        .setInto(this.asInstanceOf[ReadWritableInterval], interval, chrono)
     } else {
       val mi = new MutableInterval()
       converter.setInto(mi, interval, chrono)
@@ -175,7 +193,9 @@ abstract class BaseInterval protected () extends AbstractInterval with ReadableI
 
   def getEndMillis(): Long = iEndMillis
 
-  protected def setInterval(startInstant: Long, endInstant: Long, chrono: Chronology) {
+  protected def setInterval(startInstant: Long,
+                            endInstant: Long,
+                            chrono: Chronology) {
     checkInterval(startInstant, endInstant)
     iStartMillis = startInstant
     iEndMillis = endInstant

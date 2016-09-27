@@ -33,7 +33,9 @@ abstract class Chronology {
 
   def set(partial: ReadablePartial, instant: Long): Long
 
-  def get(period: ReadablePeriod, startInstant: Long, endInstant: Long): Array[Int]
+  def get(period: ReadablePeriod,
+          startInstant: Long,
+          endInstant: Long): Array[Int]
 
   def get(period: ReadablePeriod, duration: Long): Array[Int]
 

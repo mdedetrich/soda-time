@@ -22,7 +22,8 @@ object BuddhistChronology {
 
   private val ERA_FIELD = new BasicSingleEraDateTimeField("BE")
   private val BUDDHIST_OFFSET = 543
-  private val cCache = new ConcurrentHashMap[DateTimeZone, BuddhistChronology]()
+  private val cCache =
+    new ConcurrentHashMap[DateTimeZone, BuddhistChronology]()
   private val INSTANCE_UTC = getInstance(DateTimeZone.UTC)
 
   def getInstanceUTC(): BuddhistChronology = INSTANCE_UTC
@@ -36,9 +37,12 @@ object BuddhistChronology {
     }
     var chrono = cCache.get(_zone)
     if (chrono == null) {
-      chrono = new BuddhistChronology(GJChronology.getInstance(_zone, null), null)
+      chrono =
+        new BuddhistChronology(GJChronology.getInstance(_zone, null), null)
       val lowerLimit = new DateTime(1, 1, 1, 0, 0, 0, 0, chrono)
-      chrono = new BuddhistChronology(LimitChronology.getInstance(chrono, lowerLimit, null), "")
+      chrono = new BuddhistChronology(
+        LimitChronology.getInstance(chrono, lowerLimit, null),
+        "")
       val oldChrono = cCache.putIfAbsent(_zone, chrono)
       if (oldChrono != null) {
         chrono = oldChrono
@@ -49,8 +53,8 @@ object BuddhistChronology {
 }
 
 @SerialVersionUID(-3474595157769370126L)
-class BuddhistChronology private (base: Chronology, param: AnyRef) extends AssembledChronology(base,
-  param) {
+class BuddhistChronology private (base: Chronology, param: AnyRef)
+    extends AssembledChronology(base, param) {
 
   private def readResolve(): AnyRef = {
     val base = getBase
@@ -96,22 +100,39 @@ class BuddhistChronology private (base: Chronology, param: AnyRef) extends Assem
 
   protected def assemble(fields: Fields) {
     if (getParam == null) {
-      fields.eras = UnsupportedDurationField.getInstance(DurationFieldType.eras())
+      fields.eras =
+        UnsupportedDurationField.getInstance(DurationFieldType.eras())
       var field = fields.year
-      fields.year = new OffsetDateTimeField(new SkipUndoDateTimeField(this, field), BUDDHIST_OFFSET)
+      fields.year = new OffsetDateTimeField(
+        new SkipUndoDateTimeField(this, field),
+        BUDDHIST_OFFSET)
       field = fields.yearOfEra
-      fields.yearOfEra = new DelegatedDateTimeField(fields.year, fields.eras, DateTimeFieldType.yearOfEra())
+      fields.yearOfEra = new DelegatedDateTimeField(
+        fields.year,
+        fields.eras,
+        DateTimeFieldType.yearOfEra())
       field = fields.weekyear
-      fields.weekyear = new OffsetDateTimeField(new SkipUndoDateTimeField(this, field), BUDDHIST_OFFSET)
+      fields.weekyear = new OffsetDateTimeField(
+        new SkipUndoDateTimeField(this, field),
+        BUDDHIST_OFFSET)
       field = new OffsetDateTimeField(fields.yearOfEra, 99)
-      fields.centuryOfEra = new DividedDateTimeField(field, fields.eras, DateTimeFieldType.centuryOfEra(),
+      fields.centuryOfEra = new DividedDateTimeField(
+        field,
+        fields.eras,
+        DateTimeFieldType.centuryOfEra(),
         100)
       fields.centuries = fields.centuryOfEra.getDurationField
-      field = new RemainderDateTimeField(fields.centuryOfEra.asInstanceOf[DividedDateTimeField])
-      fields.yearOfCentury = new OffsetDateTimeField(field, DateTimeFieldType.yearOfCentury(), 1)
-      field = new RemainderDateTimeField(fields.weekyear, fields.centuries, DateTimeFieldType.weekyearOfCentury(),
-        100)
-      fields.weekyearOfCentury = new OffsetDateTimeField(field, DateTimeFieldType.weekyearOfCentury(),
+      field = new RemainderDateTimeField(
+        fields.centuryOfEra.asInstanceOf[DividedDateTimeField])
+      fields.yearOfCentury =
+        new OffsetDateTimeField(field, DateTimeFieldType.yearOfCentury(), 1)
+      field = new RemainderDateTimeField(fields.weekyear,
+                                         fields.centuries,
+                                         DateTimeFieldType.weekyearOfCentury(),
+                                         100)
+      fields.weekyearOfCentury = new OffsetDateTimeField(
+        field,
+        DateTimeFieldType.weekyearOfCentury(),
         1)
       fields.era = ERA_FIELD
     }

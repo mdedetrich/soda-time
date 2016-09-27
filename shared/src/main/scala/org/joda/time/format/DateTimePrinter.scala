@@ -24,7 +24,9 @@ trait DateTimePrinter {
               displayZone: DateTimeZone,
               locale: Locale): Unit
 
-  def printTo(buf: StringBuffer, partial: ReadablePartial, locale: Locale): Unit
+  def printTo(buf: StringBuffer,
+              partial: ReadablePartial,
+              locale: Locale): Unit
 
   def printTo(out: Writer, partial: ReadablePartial, locale: Locale): Unit
 }

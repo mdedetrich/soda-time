@@ -1,6 +1,10 @@
 package org.joda.time.field
 
-import org.joda.time.{DateTimeField, DateTimeFieldType, IllegalFieldValueException}
+import org.joda.time.{
+  DateTimeField,
+  DateTimeFieldType,
+  IllegalFieldValueException
+}
 
 object FieldUtils {
 
@@ -14,8 +18,9 @@ object FieldUtils {
   def safeAdd(val1: Int, val2: Int): Int = {
     val sum = val1 + val2
     if ((val1 ^ sum) < 0 && (val1 ^ val2) >= 0) {
-      throw new ArithmeticException("The calculation caused an overflow: " + val1 + " + " +
-        val2)
+      throw new ArithmeticException(
+        "The calculation caused an overflow: " + val1 + " + " +
+          val2)
     }
     sum
   }
@@ -23,8 +28,9 @@ object FieldUtils {
   def safeAdd(val1: Long, val2: Long): Long = {
     val sum = val1 + val2
     if ((val1 ^ sum) < 0 && (val1 ^ val2) >= 0) {
-      throw new ArithmeticException("The calculation caused an overflow: " + val1 + " + " +
-        val2)
+      throw new ArithmeticException(
+        "The calculation caused an overflow: " + val1 + " + " +
+          val2)
     }
     sum
   }
@@ -32,8 +38,9 @@ object FieldUtils {
   def safeSubtract(val1: Long, val2: Long): Long = {
     val diff = val1 - val2
     if ((val1 ^ diff) < 0 && (val1 ^ val2) < 0) {
-      throw new ArithmeticException("The calculation caused an overflow: " + val1 + " - " +
-        val2)
+      throw new ArithmeticException(
+        "The calculation caused an overflow: " + val1 + " - " +
+          val2)
     }
     diff
   }
@@ -41,7 +48,8 @@ object FieldUtils {
   def safeMultiply(val1: Int, val2: Int): Int = {
     val total = val1.toLong * val2.toLong
     if (total < Integer.MIN_VALUE || total > Integer.MAX_VALUE) {
-      throw new ArithmeticException("Multiplication overflows an int: " + val1 + " * " + val2)
+      throw new ArithmeticException(
+        "Multiplication overflows an int: " + val1 + " * " + val2)
     }
     total.toInt
   }
@@ -49,7 +57,8 @@ object FieldUtils {
   def safeMultiply(val1: Long, val2: Int): Long = val2 match {
     case -1 =>
       if (val1 == Long.MinValue) {
-        throw new ArithmeticException("Multiplication overflows a long: " + val1 + " * " + val2)
+        throw new ArithmeticException(
+          "Multiplication overflows a long: " + val1 + " * " + val2)
       }
       -val1
 
@@ -69,16 +78,18 @@ object FieldUtils {
     }
     val total = val1 * val2
     if (total / val2 != val1 || val1 == Long.MinValue && val2 == -1 ||
-      val2 == Long.MinValue && val1 == -1) {
-      throw new ArithmeticException("Multiplication overflows a long: " + val1 + " * " + val2)
+        val2 == Long.MinValue && val1 == -1) {
+      throw new ArithmeticException(
+        "Multiplication overflows a long: " + val1 + " * " + val2)
     }
     total
   }
 
   def safeDivide(dividend: Long, divisor: Long): Long = {
     if (dividend == Long.MinValue && divisor == -1L) {
-      throw new ArithmeticException("Multiplication overflows a long: " + dividend + " / " +
-        divisor)
+      throw new ArithmeticException(
+        "Multiplication overflows a long: " + dividend + " / " +
+          divisor)
     }
     dividend / divisor
   }
@@ -100,8 +111,10 @@ object FieldUtils {
                         lowerBound: Int,
                         upperBound: Int) {
     if ((value < lowerBound) || (value > upperBound)) {
-      throw IllegalFieldValueException.create(field.getType, Integer.valueOf(value), Integer.valueOf(lowerBound),
-        Integer.valueOf(upperBound))
+      throw IllegalFieldValueException.create(field.getType,
+                                              Integer.valueOf(value),
+                                              Integer.valueOf(lowerBound),
+                                              Integer.valueOf(upperBound))
     }
   }
 
@@ -110,8 +123,10 @@ object FieldUtils {
                         lowerBound: Int,
                         upperBound: Int) {
     if ((value < lowerBound) || (value > upperBound)) {
-      throw IllegalFieldValueException.create(fieldType, Integer.valueOf(value), Integer.valueOf(lowerBound),
-        Integer.valueOf(upperBound))
+      throw IllegalFieldValueException.create(fieldType,
+                                              Integer.valueOf(value),
+                                              Integer.valueOf(lowerBound),
+                                              Integer.valueOf(upperBound))
     }
   }
 
@@ -120,8 +135,10 @@ object FieldUtils {
                         lowerBound: Int,
                         upperBound: Int) {
     if ((value < lowerBound) || (value > upperBound)) {
-      throw IllegalFieldValueException.create(fieldName, Integer.valueOf(value), Integer.valueOf(lowerBound),
-        Integer.valueOf(upperBound))
+      throw IllegalFieldValueException.create(fieldName,
+                                              Integer.valueOf(value),
+                                              Integer.valueOf(lowerBound),
+                                              Integer.valueOf(upperBound))
     }
   }
 
@@ -133,7 +150,7 @@ object FieldUtils {
   }
 
   def getWrappedValue(value: Int, minValue: Int, maxValue: Int): Int = {
-    var _value:Int = value
+    var _value: Int = value
     if (minValue >= maxValue) {
       throw new IllegalArgumentException("MIN > MAX")
     }

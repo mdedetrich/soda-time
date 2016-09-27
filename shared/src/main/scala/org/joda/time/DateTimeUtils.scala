@@ -13,7 +13,8 @@ object DateTimeUtils {
 
   private val SYSTEM_MILLIS_PROVIDER = new SystemMillisProvider()
 
-  @volatile private var cMillisProvider: MillisProvider = SYSTEM_MILLIS_PROVIDER
+  @volatile private var cMillisProvider: MillisProvider =
+    SYSTEM_MILLIS_PROVIDER
 
   private val cZoneNames = new AtomicReference[Map[String, DateTimeZone]]()
 
@@ -31,7 +32,9 @@ object DateTimeUtils {
 
   def setCurrentMillisOffset(offsetMillis: Long) {
     checkPermission()
-    cMillisProvider = if (offsetMillis == 0) SYSTEM_MILLIS_PROVIDER else new OffsetMillisProvider(offsetMillis)
+    cMillisProvider =
+      if (offsetMillis == 0) SYSTEM_MILLIS_PROVIDER
+      else new OffsetMillisProvider(offsetMillis)
   }
 
   def setCurrentMillisProvider(millisProvider: MillisProvider) {
@@ -67,7 +70,8 @@ object DateTimeUtils {
     chrono
   }
 
-  def getIntervalChronology(start: ReadableInstant, end: ReadableInstant): Chronology = {
+  def getIntervalChronology(start: ReadableInstant,
+                            end: ReadableInstant): Chronology = {
     var chrono: Chronology = null
     if (start != null) {
       chrono = start.getChronology
@@ -137,7 +141,7 @@ object DateTimeUtils {
       val loopField = partial.getField(i)
       if (i > 0) {
         if (loopField.getRangeDurationField == null ||
-          loopField.getRangeDurationField.getType != lastType) {
+            loopField.getRangeDurationField.getType != lastType) {
           return false
         }
       }
@@ -166,7 +170,8 @@ object DateTimeUtils {
   }
 
   def setDefaultTimeZoneNames(names: Map[String, DateTimeZone]) {
-    cZoneNames.set(Collections.unmodifiableMap(new HashMap[String, DateTimeZone](names)))
+    cZoneNames.set(
+      Collections.unmodifiableMap(new HashMap[String, DateTimeZone](names)))
   }
 
   private def buildDefaultTimeZoneNames(): Map[String, DateTimeZone] = {
@@ -219,7 +224,8 @@ object DateTimeUtils {
     def getMillis(): Long = iMillis
   }
 
-  class OffsetMillisProvider(private val iMillis: Long) extends MillisProvider {
+  class OffsetMillisProvider(private val iMillis: Long)
+      extends MillisProvider {
     def getMillis(): Long = System.currentTimeMillis() + iMillis
   }
 }

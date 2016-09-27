@@ -15,12 +15,15 @@ object DateTimeParserInternalParser {
   }
 }
 
-class DateTimeParserInternalParser private (@BeanProperty val underlying: DateTimeParser)
-  extends InternalParser {
+class DateTimeParserInternalParser private (
+    @BeanProperty val underlying: DateTimeParser)
+    extends InternalParser {
 
   def estimateParsedLength(): Int = underlying.estimateParsedLength()
 
-  def parseInto(bucket: DateTimeParserBucket, text: CharSequence, position: Int): Int = {
+  def parseInto(bucket: DateTimeParserBucket,
+                text: CharSequence,
+                position: Int): Int = {
     underlying.parseInto(bucket, text.toString, position)
   }
 }

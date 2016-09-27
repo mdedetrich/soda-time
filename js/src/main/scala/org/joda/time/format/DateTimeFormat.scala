@@ -23,16 +23,19 @@ object DateTimeFormat {
 
   private val PATTERN_CACHE_SIZE = 500
 
-  private val cPatternCache = new collection.mutable.HashMap[String, DateTimeFormatter]()
+  private val cPatternCache =
+    new collection.mutable.HashMap[String, DateTimeFormatter]()
 
   private val cStyleCache = new js.Array[DateTimeFormatter]()
 
-  def forPattern(pattern: String): DateTimeFormatter = createFormatterForPattern(pattern)
+  def forPattern(pattern: String): DateTimeFormatter =
+    createFormatterForPattern(pattern)
 
-  def forStyle(style: String): DateTimeFormatter = createFormatterForStyle(style)
+  def forStyle(style: String): DateTimeFormatter =
+    createFormatterForStyle(style)
 
   def patternForStyle(style: String, locale: Locale): String = {
-    var _locale:Locale = locale
+    var _locale: Locale = locale
     val formatter = createFormatterForStyle(style)
     if (_locale == null) {
       _locale = Locale.getDefault
@@ -92,12 +95,13 @@ object DateTimeFormat {
     parsePatternTo(builder, pattern)
   }
 
-  private def parsePatternTo(builder: DateTimeFormatterBuilder, pattern: String) {
+  private def parsePatternTo(builder: DateTimeFormatterBuilder,
+                             pattern: String) {
     val length = pattern.length
     val indexRef = js.Array[Int](1)
 
     var i = 0
-    while(i<length) {
+    while (i < length) {
       indexRef(0) = i
       val token = parseToken(pattern, indexRef)
       i = indexRef(0)
@@ -109,43 +113,49 @@ object DateTimeFormat {
       c match {
         case 'G' => builder.appendEraText()
         case 'C' => builder.appendCenturyOfEra(tokenLen, tokenLen)
-        case 'x' | 'y' | 'Y' => if (tokenLen == 2) {
-          var lenientParse = true
-          if (i + 1 < length) {
-            indexRef(0) += 1
-            if (isNumericToken(parseToken(pattern, indexRef))) {
-              lenientParse = false
+        case 'x' | 'y' | 'Y' =>
+          if (tokenLen == 2) {
+            var lenientParse = true
+            if (i + 1 < length) {
+              indexRef(0) += 1
+              if (isNumericToken(parseToken(pattern, indexRef))) {
+                lenientParse = false
+              }
+              indexRef(0) -= 1
             }
-            indexRef(0) -= 1
-          }
-          c match {
-            case 'x' => builder.appendTwoDigitWeekyear(new DateTime().getWeekyear - 30, lenientParse)
-            case 'y' | 'Y' | _ => builder.appendTwoDigitYear(new DateTime().getYear - 30, lenientParse)
-          }
-        } else {
-          var maxDigits = 9
-          if (i + 1 < length) {
-            indexRef(0) += 1
-            if (isNumericToken(parseToken(pattern, indexRef))) {
-              maxDigits = tokenLen
+            c match {
+              case 'x' =>
+                builder.appendTwoDigitWeekyear(new DateTime().getWeekyear - 30,
+                                               lenientParse)
+              case 'y' | 'Y' | _ =>
+                builder.appendTwoDigitYear(new DateTime().getYear - 30,
+                                           lenientParse)
             }
-            indexRef(0) -= 1
-          }
-          c match {
-            case 'x' => builder.appendWeekyear(tokenLen, maxDigits)
-            case 'y' => builder.appendYear(tokenLen, maxDigits)
-            case 'Y' => builder.appendYearOfEra(tokenLen, maxDigits)
-          }
-        }
-        case 'M' => if (tokenLen >= 3) {
-          if (tokenLen >= 4) {
-            builder.appendMonthOfYearText()
           } else {
-            builder.appendMonthOfYearShortText()
+            var maxDigits = 9
+            if (i + 1 < length) {
+              indexRef(0) += 1
+              if (isNumericToken(parseToken(pattern, indexRef))) {
+                maxDigits = tokenLen
+              }
+              indexRef(0) -= 1
+            }
+            c match {
+              case 'x' => builder.appendWeekyear(tokenLen, maxDigits)
+              case 'y' => builder.appendYear(tokenLen, maxDigits)
+              case 'Y' => builder.appendYearOfEra(tokenLen, maxDigits)
+            }
           }
-        } else {
-          builder.appendMonthOfYear(tokenLen)
-        }
+        case 'M' =>
+          if (tokenLen >= 3) {
+            if (tokenLen >= 4) {
+              builder.appendMonthOfYearText()
+            } else {
+              builder.appendMonthOfYearShortText()
+            }
+          } else {
+            builder.appendMonthOfYear(tokenLen)
+          }
         case 'd' => builder.appendDayOfMonth(tokenLen)
         case 'a' => builder.appendHalfdayOfDayText()
         case 'h' => builder.appendClockhourOfHalfday(tokenLen)
@@ -156,25 +166,30 @@ object DateTimeFormat {
         case 's' => builder.appendSecondOfMinute(tokenLen)
         case 'S' => builder.appendFractionOfSecond(tokenLen, tokenLen)
         case 'e' => builder.appendDayOfWeek(tokenLen)
-        case 'E' => if (tokenLen >= 4) {
-          builder.appendDayOfWeekText()
-        } else {
-          builder.appendDayOfWeekShortText()
-        }
+        case 'E' =>
+          if (tokenLen >= 4) {
+            builder.appendDayOfWeekText()
+          } else {
+            builder.appendDayOfWeekShortText()
+          }
         case 'D' => builder.appendDayOfYear(tokenLen)
         case 'w' => builder.appendWeekOfWeekyear(tokenLen)
-        case 'z' => if (tokenLen >= 4) {
-          builder.appendTimeZoneName()
-        } else {
-          builder.appendTimeZoneShortName(null)
-        }
-        case 'Z' => if (tokenLen == 1) {
-          builder.appendTimeZoneOffset(null, "Z", showSeparators = false, 2, 2)
-        } else if (tokenLen == 2) {
-          builder.appendTimeZoneOffset(null, "Z", showSeparators = true, 2, 2)
-        } else {
-          builder.appendTimeZoneId()
-        }
+        case 'z' =>
+          if (tokenLen >= 4) {
+            builder.appendTimeZoneName()
+          } else {
+            builder.appendTimeZoneShortName(null)
+          }
+        case 'Z' =>
+          if (tokenLen == 1) {
+            builder
+              .appendTimeZoneOffset(null, "Z", showSeparators = false, 2, 2)
+          } else if (tokenLen == 2) {
+            builder
+              .appendTimeZoneOffset(null, "Z", showSeparators = true, 2, 2)
+          } else {
+            builder.appendTimeZoneId()
+          }
         case '\'' =>
           var sub = token.substring(1)
           if (sub.length == 1) {
@@ -183,7 +198,9 @@ object DateTimeFormat {
             builder.appendLiteral(new String(sub))
           }
 
-        case _ => throw new IllegalArgumentException("Illegal pattern component: " + token)
+        case _ =>
+          throw new IllegalArgumentException(
+            "Illegal pattern component: " + token)
       }
       i = i + 1
     }
@@ -235,10 +252,13 @@ object DateTimeFormat {
     if (tokenLen > 0) {
       val c = token.charAt(0)
       c match {
-        case 'c' | 'C' | 'x' | 'y' | 'Y' | 'd' | 'h' | 'H' | 'm' | 's' | 'S' | 'e' | 'D' | 'F' | 'w' | 'W' | 'k' | 'K' => return true
-        case 'M' => if (tokenLen <= 2) {
+        case 'c' | 'C' | 'x' | 'y' | 'Y' | 'd' | 'h' | 'H' | 'm' | 's' | 'S' |
+            'e' | 'D' | 'F' | 'w' | 'W' | 'k' | 'K' =>
           return true
-        }
+        case 'M' =>
+          if (tokenLen <= 2) {
+            return true
+          }
       }
     }
     false
@@ -270,7 +290,8 @@ object DateTimeFormat {
 
   private def createFormatterForStyle(style: String): DateTimeFormatter = {
     if (style == null || style.length != 2) {
-      throw new IllegalArgumentException("Invalid style specification: " + style)
+      throw new IllegalArgumentException(
+        "Invalid style specification: " + style)
     }
     val dateStyle = selectStyle(style.charAt(0))
     val timeStyle = selectStyle(style.charAt(1))
@@ -280,7 +301,9 @@ object DateTimeFormat {
     createFormatterForStyleIndex(dateStyle, timeStyle)
   }
 
-  private def createFormatterForStyleIndex(dateStyle: Int, timeStyle: Int): DateTimeFormatter = {
+  private def createFormatterForStyleIndex(
+      dateStyle: Int,
+      timeStyle: Int): DateTimeFormatter = {
     val index = ((dateStyle << 2) + dateStyle) + timeStyle
     if (index >= cStyleCache.length) {
       return createDateTimeFormatter(dateStyle, timeStyle)
@@ -297,7 +320,8 @@ object DateTimeFormat {
     f
   }
 
-  private def createDateTimeFormatter(dateStyle: Int, timeStyle: Int): DateTimeFormatter = {
+  private def createDateTimeFormatter(dateStyle: Int,
+                                      timeStyle: Int): DateTimeFormatter = {
     var `type` = DATETIME
     if (dateStyle == NONE) {
       `type` = TIME
@@ -314,16 +338,21 @@ object DateTimeFormat {
     case 'L' => LONG
     case 'F' => FULL
     case '-' => NONE
-    case _ => throw new IllegalArgumentException("Invalid style character: " + ch)
+    case _ =>
+      throw new IllegalArgumentException("Invalid style character: " + ch)
   }
 
   object StyleFormatter {
 
-    private val cCache = new collection.mutable.HashMap[StyleFormatterCacheKey, DateTimeFormatter]()
+    private val cCache = new collection.mutable.HashMap[StyleFormatterCacheKey,
+                                                        DateTimeFormatter]()
   }
 
-  class StyleFormatter(private val iDateStyle: Int, private val iTimeStyle: Int, private val iType: Int)
-    extends InternalPrinter() with InternalParser {
+  class StyleFormatter(private val iDateStyle: Int,
+                       private val iTimeStyle: Int,
+                       private val iType: Int)
+      extends InternalPrinter()
+      with InternalParser {
     import StyleFormatter._
 
     def estimatePrintedLength(): Int = 40
@@ -335,17 +364,26 @@ object DateTimeFormat {
                 displayZone: DateTimeZone,
                 locale: Locale) {
       val p = getFormatter(locale).getPrinter0
-      p.printTo(appenadble, instant, chrono, displayOffset, displayZone, locale)
+      p.printTo(appenadble,
+                instant,
+                chrono,
+                displayOffset,
+                displayZone,
+                locale)
     }
 
-    def printTo(appendable: Appendable, partial: ReadablePartial, locale: Locale) {
+    def printTo(appendable: Appendable,
+                partial: ReadablePartial,
+                locale: Locale) {
       val p = getFormatter(locale).getPrinter0
       p.printTo(appendable, partial, locale)
     }
 
     def estimateParsedLength(): Int = 40
 
-    def parseInto(bucket: DateTimeParserBucket, text: CharSequence, position: Int): Int = {
+    def parseInto(bucket: DateTimeParserBucket,
+                  text: CharSequence,
+                  position: Int): Int = {
       val p = getFormatter(bucket.getLocale).getParser0
       p.parseInto(bucket, text, position)
     }
@@ -353,7 +391,8 @@ object DateTimeFormat {
     private def getFormatter(locale: Locale): DateTimeFormatter = {
       var _locale = locale
       _locale = if (_locale == null) Locale.getDefault else _locale
-      val key = new StyleFormatterCacheKey(iType, iDateStyle, iTimeStyle, _locale)
+      val key =
+        new StyleFormatterCacheKey(iType, iDateStyle, iTimeStyle, _locale)
       var f = cCache.get(key).orNull
       if (f == null) {
         f = DateTimeFormat.forPattern(getPattern(_locale))
@@ -377,10 +416,12 @@ object DateTimeFormat {
       iType match {
         case DATE => f = DateFormat.getDateInstance(iDateStyle, locale)
         case TIME => f = DateFormat.getTimeInstance(iTimeStyle, locale)
-        case DATETIME => f = DateFormat.getDateTimeInstance(iDateStyle, iTimeStyle, locale)
+        case DATETIME =>
+          f = DateFormat.getDateTimeInstance(iDateStyle, iTimeStyle, locale)
       }
       if (f.isInstanceOf[SimpleDateFormat] == false) {
-        throw new IllegalArgumentException("No datetime pattern for locale: " + locale)
+        throw new IllegalArgumentException(
+          "No datetime pattern for locale: " + locale)
       }
       f.asInstanceOf[SimpleDateFormat].toPattern()
     }

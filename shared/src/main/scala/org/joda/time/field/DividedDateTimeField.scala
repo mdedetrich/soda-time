@@ -8,7 +8,8 @@ import org.joda.time.DurationField
 class DividedDateTimeField(field: DateTimeField,
                            val rangeField: DurationField,
                            `type`: DateTimeFieldType,
-                           val divisor: Int) extends DecoratedDateTimeField(field, `type`) {
+                           val divisor: Int)
+    extends DecoratedDateTimeField(field, `type`) {
 
   var iDivisor: Int = _
   var iRangeDurationField: DurationField = null
@@ -24,8 +25,9 @@ class DividedDateTimeField(field: DateTimeField,
 
   val unitField = field.getDurationField
 
-  var iDurationField: DurationField = if (unitField == null) null else new ScaledDurationField(unitField, `type`.getDurationType,
-    divisor)
+  var iDurationField: DurationField =
+    if (unitField == null) null
+    else new ScaledDurationField(unitField, `type`.getDurationType, divisor)
 
   val i = field.getMinimumValue
   val min = if (i >= 0) i / divisor else (i + 1) / divisor - 1
@@ -36,10 +38,10 @@ class DividedDateTimeField(field: DateTimeField,
     this(field, field.getRangeDurationField, `type`, divisor)
   }
 
-
-
-  def this(remainderField: RemainderDateTimeField, rangeField: DurationField, `type`: DateTimeFieldType) {
-    this(remainderField, `type`,remainderField.iDivisor)
+  def this(remainderField: RemainderDateTimeField,
+           rangeField: DurationField,
+           `type`: DateTimeFieldType) {
+    this(remainderField, `type`, remainderField.iDivisor)
     iDivisor = remainderField.iDivisor
     val divisor = iDivisor
     iDurationField = remainderField.iRangeField
@@ -85,12 +87,14 @@ class DividedDateTimeField(field: DateTimeField,
     set(instant, FieldUtils.getWrappedValue(get(instant), amount, iMin, iMax))
   }
 
-  override def getDifference(minuendInstant: Long, subtrahendInstant: Long): Int = {
+  override def getDifference(minuendInstant: Long,
+                             subtrahendInstant: Long): Int = {
     getWrappedField.getDifference(minuendInstant, subtrahendInstant) /
       iDivisor
   }
 
-  override def getDifferenceAsLong(minuendInstant: Long, subtrahendInstant: Long): Long = {
+  override def getDifferenceAsLong(minuendInstant: Long,
+                                   subtrahendInstant: Long): Long = {
     getWrappedField.getDifferenceAsLong(minuendInstant, subtrahendInstant) /
       iDivisor
   }

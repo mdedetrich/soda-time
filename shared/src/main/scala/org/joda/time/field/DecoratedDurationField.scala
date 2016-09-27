@@ -4,9 +4,10 @@ import org.joda.time.DurationField
 import org.joda.time.DurationFieldType
 
 @SerialVersionUID(8019982251647420015L)
-class DecoratedDurationField(private val field: DurationField, `type`: DurationFieldType)
-  extends BaseDurationField(`type`) {
-  
+class DecoratedDurationField(private val field: DurationField,
+                             `type`: DurationFieldType)
+    extends BaseDurationField(`type`) {
+
   private var iField: DurationField = null
 
   if (field == null) {
@@ -16,7 +17,7 @@ class DecoratedDurationField(private val field: DurationField, `type`: DurationF
   if (!field.isSupported) {
     throw new IllegalArgumentException("The field must be supported")
   }
-  
+
   iField = field
 
   def getWrappedField(): DurationField = iField
@@ -27,15 +28,18 @@ class DecoratedDurationField(private val field: DurationField, `type`: DurationF
     iField.getValueAsLong(duration, instant)
   }
 
-  def getMillis(value: Int, instant: Long): Long = iField.getMillis(value, instant)
+  def getMillis(value: Int, instant: Long): Long =
+    iField.getMillis(value, instant)
 
-  def getMillis(value: Long, instant: Long): Long = iField.getMillis(value, instant)
+  def getMillis(value: Long, instant: Long): Long =
+    iField.getMillis(value, instant)
 
   def add(instant: Long, value: Int): Long = iField.add(instant, value)
 
   def add(instant: Long, value: Long): Long = iField.add(instant, value)
 
-  def getDifferenceAsLong(minuendInstant: Long, subtrahendInstant: Long): Long = {
+  def getDifferenceAsLong(minuendInstant: Long,
+                          subtrahendInstant: Long): Long = {
     iField.getDifferenceAsLong(minuendInstant, subtrahendInstant)
   }
 

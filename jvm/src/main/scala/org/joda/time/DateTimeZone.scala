@@ -95,12 +95,15 @@ object DateTimeZone {
         return fixedOffsetZone(_id, offset)
       }
     }
-    throw new IllegalArgumentException("The datetime zone id '" + _id + "' is not recognised")
+    throw new IllegalArgumentException(
+      "The datetime zone id '" + _id + "' is not recognised")
   }
 
-  def forOffsetHours(hoursOffset: Int): DateTimeZone = forOffsetHoursMinutes(hoursOffset, 0)
+  def forOffsetHours(hoursOffset: Int): DateTimeZone =
+    forOffsetHoursMinutes(hoursOffset, 0)
 
-  def forOffsetHoursMinutes(hoursOffset: Int, minutesOffset: Int): DateTimeZone = {
+  def forOffsetHoursMinutes(hoursOffset: Int,
+                            minutesOffset: Int): DateTimeZone = {
     var _minutesOffset: Int = minutesOffset
     if (hoursOffset == 0 && _minutesOffset == 0) {
       return DateTimeZone.UTC
@@ -109,21 +112,27 @@ object DateTimeZone {
       throw new IllegalArgumentException("Hours out of range: " + hoursOffset)
     }
     if (_minutesOffset < -59 || _minutesOffset > 59) {
-      throw new IllegalArgumentException("Minutes out of range: " + _minutesOffset)
+      throw new IllegalArgumentException(
+        "Minutes out of range: " + _minutesOffset)
     }
     if (hoursOffset > 0 && _minutesOffset < 0) {
-      throw new IllegalArgumentException("Positive hours must not have negative minutes: " + _minutesOffset)
+      throw new IllegalArgumentException(
+        "Positive hours must not have negative minutes: " + _minutesOffset)
     }
     var offset = 0
     val hoursInMinutes = hoursOffset * 60
-    _minutesOffset = if (hoursInMinutes < 0) hoursInMinutes - Math.abs(_minutesOffset) else hoursInMinutes + _minutesOffset
-    offset = FieldUtils.safeMultiply(_minutesOffset, DateTimeConstants.MILLIS_PER_MINUTE)
+    _minutesOffset =
+      if (hoursInMinutes < 0) hoursInMinutes - Math.abs(_minutesOffset)
+      else hoursInMinutes + _minutesOffset
+    offset = FieldUtils
+      .safeMultiply(_minutesOffset, DateTimeConstants.MILLIS_PER_MINUTE)
     forOffsetMillis(offset)
   }
 
   def forOffsetMillis(millisOffset: Int): DateTimeZone = {
     if (millisOffset < -MAX_MILLIS || millisOffset > MAX_MILLIS) {
-      throw new IllegalArgumentException("Millis out of range: " + millisOffset)
+      throw new IllegalArgumentException(
+        "Millis out of range: " + millisOffset)
     }
     val id = printOffset(millisOffset)
     fixedOffsetZone(id, millisOffset)
@@ -165,7 +174,8 @@ object DateTimeZone {
         }
       }
     }
-    throw new IllegalArgumentException("The datetime zone id '" + id + "' is not recognised")
+    throw new IllegalArgumentException(
+      "The datetime zone id '" + id + "' is not recognised")
   }
 
   private def fixedOffsetZone(id: String, offset: Int): DateTimeZone = {
@@ -205,7 +215,8 @@ object DateTimeZone {
   private def validateProvider(provider: Provider): Provider = {
     val ids = provider.getAvailableIDs
     if (ids == null || ids.size == 0) {
-      throw new IllegalArgumentException("The provider doesn't have any available ids")
+      throw new IllegalArgumentException(
+        "The provider doesn't have any available ids")
     }
     if (!ids.contains("UTC")) {
       throw new IllegalArgumentException("The provider doesn't support UTC")
@@ -218,9 +229,11 @@ object DateTimeZone {
 
   private def getDefaultProvider(): Provider = {
     try {
-      val providerClass = System.getProperty("org.joda.time.DateTimeZone.Provider")
+      val providerClass =
+        System.getProperty("org.joda.time.DateTimeZone.Provider")
       if (providerClass != null) {
-        val provider = Class.forName(providerClass).newInstance().asInstanceOf[Provider]
+        val provider =
+          Class.forName(providerClass).newInstance().asInstanceOf[Provider]
         return validateProvider(provider)
       }
     } catch {
@@ -259,7 +272,8 @@ object DateTimeZone {
     var _nameProvider: NameProvider = nameProvider
     val sm = System.getSecurityManager
     if (sm != null) {
-      sm.checkPermission(new JodaTimePermission("DateTimeZone.setNameProvider"))
+      sm.checkPermission(
+        new JodaTimePermission("DateTimeZone.setNameProvider"))
     }
     if (_nameProvider == null) {
       _nameProvider = getDefaultNameProvider
@@ -270,9 +284,11 @@ object DateTimeZone {
   private def getDefaultNameProvider(): NameProvider = {
     var nameProvider: NameProvider = null
     try {
-      val providerClass = System.getProperty("org.joda.time.DateTimeZone.NameProvider")
+      val providerClass =
+        System.getProperty("org.joda.time.DateTimeZone.NameProvider")
       if (providerClass != null) {
-        nameProvider = Class.forName(providerClass).newInstance().asInstanceOf[NameProvider]
+        nameProvider =
+          Class.forName(providerClass).newInstance().asInstanceOf[NameProvider]
       }
     } catch {
       case ex: SecurityException =>
@@ -283,7 +299,8 @@ object DateTimeZone {
     nameProvider
   }
 
-  private def getConvertedId(id: String): String = LazyInit.CONVERSION_MAP.get(id)
+  private def getConvertedId(id: String): String =
+    LazyInit.CONVERSION_MAP.get(id)
 
   private def parseOffset(str: String): Int = {
     -LazyInit.OFFSET_FORMATTER.parseMillis(str).toInt
@@ -352,7 +369,8 @@ object DateTimeZone {
 
         override def toString(): String = getClass.getName
       }
-      new DateTimeFormatterBuilder().appendTimeZoneOffset(null, showSeparators = true, 2, 4)
+      new DateTimeFormatterBuilder()
+        .appendTimeZoneOffset(null, showSeparators = true, 2, 4)
         .toFormatter()
         .withChronology(chrono)
     }
@@ -398,7 +416,8 @@ object DateTimeZone {
 }
 
 @SerialVersionUID(5546345482340108586L)
-abstract class DateTimeZone protected (private val id: String) extends Serializable {
+abstract class DateTimeZone protected (private val id: String)
+    extends Serializable {
   private var iID: String = null
 
   if (id == null) {
@@ -425,8 +444,11 @@ abstract class DateTimeZone protected (private val id: String) extends Serializa
     }
     var name: String = null
     val np = getNameProvider
-    name = if (np.isInstanceOf[DefaultNameProvider]) np.asInstanceOf[DefaultNameProvider].getShortName(_locale,
-      iID, nameKey, isStandardOffset(instant)) else np.getShortName(_locale, iID, nameKey)
+    name =
+      if (np.isInstanceOf[DefaultNameProvider])
+        np.asInstanceOf[DefaultNameProvider]
+          .getShortName(_locale, iID, nameKey, isStandardOffset(instant))
+      else np.getShortName(_locale, iID, nameKey)
     if (name != null) {
       return name
     }
@@ -446,8 +468,11 @@ abstract class DateTimeZone protected (private val id: String) extends Serializa
     }
     var name: String = null
     val np = getNameProvider
-    name = if (np.isInstanceOf[DefaultNameProvider]) np.asInstanceOf[DefaultNameProvider].getName(_locale,
-      iID, nameKey, isStandardOffset(instant)) else np.getName(_locale, iID, nameKey)
+    name =
+      if (np.isInstanceOf[DefaultNameProvider])
+        np.asInstanceOf[DefaultNameProvider]
+          .getName(_locale, iID, nameKey, isStandardOffset(instant))
+      else np.getName(_locale, iID, nameKey)
     if (name != null) {
       return name
     }
@@ -509,7 +534,9 @@ abstract class DateTimeZone protected (private val id: String) extends Serializa
     instantLocal
   }
 
-  def convertLocalToUTC(instantLocal: Long, strict: Boolean, originalInstantUTC: Long): Long = {
+  def convertLocalToUTC(instantLocal: Long,
+                        strict: Boolean,
+                        originalInstantUTC: Long): Long = {
     val offsetOriginal = getOffset(originalInstantUTC)
     val instantUTC = instantLocal - offsetOriginal
     val offsetLocalFromOriginal = getOffset(instantUTC)
@@ -534,7 +561,7 @@ abstract class DateTimeZone protected (private val id: String) extends Serializa
         }
         if (nextLocal != nextAdjusted) {
           if (strict) {
-            throw IllegalInstantException.create(instantLocal,getID)
+            throw IllegalInstantException.create(instantLocal, getID)
           } else {
             offset = offsetLocal
           }
@@ -543,7 +570,8 @@ abstract class DateTimeZone protected (private val id: String) extends Serializa
     }
     val instantUTC = instantLocal - offset
     if ((instantLocal ^ instantUTC) < 0 && (instantLocal ^ offset) < 0) {
-      throw new ArithmeticException("Subtracting time zone offset caused overflow")
+      throw new ArithmeticException(
+        "Subtracting time zone offset caused overflow")
     }
     instantUTC
   }

@@ -2,16 +2,26 @@ package org.joda.time.convert
 
 import java.util.{Calendar, GregorianCalendar}
 
-import org.joda.time.chrono.{BuddhistChronology, GJChronology, GregorianChronology, ISOChronology, JulianChronology}
+import org.joda.time.chrono.{
+  BuddhistChronology,
+  GJChronology,
+  GregorianChronology,
+  ISOChronology,
+  JulianChronology
+}
 import org.joda.time.{Chronology, DateTimeZone}
 
 object CalendarConverter {
   val INSTANCE = new CalendarConverter()
 }
 
-class CalendarConverter extends AbstractConverter with InstantConverter with PartialConverter {
+class CalendarConverter
+    extends AbstractConverter
+    with InstantConverter
+    with PartialConverter {
 
-  override def getChronology(`object`: AnyRef, chrono: Chronology): Chronology = {
+  override def getChronology(`object`: AnyRef,
+                             chrono: Chronology): Chronology = {
     if (chrono != null) {
       return chrono
     }
@@ -25,7 +35,8 @@ class CalendarConverter extends AbstractConverter with InstantConverter with Par
     getChronology(cal, zone)
   }
 
-  override def getChronology(`object`: AnyRef, zone: DateTimeZone): Chronology = {
+  override def getChronology(`object`: AnyRef,
+                             zone: DateTimeZone): Chronology = {
     if (`object`.getClass.getName.endsWith(".BuddhistCalendar")) {
       BuddhistChronology.getInstance(zone)
     } else if (`object`.isInstanceOf[GregorianCalendar]) {

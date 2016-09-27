@@ -70,7 +70,9 @@ object ZoneInfoCompiler {
     val sources = Array.ofDim[File](args.length - i)
     var j = 0
     while (i < args.length) {
-      sources(j) = if (inputDir == null) new File(args(i)) else new File(inputDir, args(i))
+      sources(j) =
+        if (inputDir == null) new File(args(i))
+        else new File(inputDir, args(i))
       i += 1
       j += 1
     }
@@ -80,7 +82,8 @@ object ZoneInfoCompiler {
   }
 
   private def printUsage() {
-    println("Usage: java org.joda.time.tz.ZoneInfoCompiler <options> <source files>")
+    println(
+      "Usage: java org.joda.time.tz.ZoneInfoCompiler <options> <source files>")
     println("where possible options include:")
     println("  -src <directory>    Specify where to read source files")
     println("  -dst <directory>    Specify where to write generated files")
@@ -101,41 +104,40 @@ object ZoneInfoCompiler {
     cLenientISO
   }
 
-  def writeZoneInfoMap(dout: DataOutputStream, zimap: collection.immutable.Map[String, DateTimeZone]) {
+  def writeZoneInfoMap(dout: DataOutputStream,
+                       zimap: collection.immutable.Map[String, DateTimeZone]) {
     val idToIndex = new collection.mutable.HashMap[String, Short]()
     var indexToId = new collection.immutable.TreeMap[Short, String]()
-    var count:Short = 0
-    
-    zimap.foreach{case(id,dateTimeZone) =>
-      var id_ = id
-      if (!idToIndex.contains(id_)) {
-        val index: Short = Short.box(count)
-        idToIndex(id_) = index
-        indexToId += index -> id_
-        if ( {
-          count = (count + 1).toShort
-          count
-        } == 0) {
-          throw new InternalError("Too many time zone ids")
+    var count: Short = 0
+
+    zimap.foreach {
+      case (id, dateTimeZone) =>
+        var id_ = id
+        if (!idToIndex.contains(id_)) {
+          val index: Short = Short.box(count)
+          idToIndex(id_) = index
+          indexToId += index -> id_
+          if ({
+            count = (count + 1).toShort
+            count
+          } == 0) {
+            throw new InternalError("Too many time zone ids")
+          }
         }
-      }
-      id_ = dateTimeZone.getID()
-      if (!idToIndex.contains(id_)) {
-        val index: Short = Short.box(count)
-        idToIndex(id) = index
-        indexToId += index -> id
-        if ( {
-          count = (count + 1).toShort
-          count
-        } == 0) {
-          throw new InternalError("Too many time zone ids")
+        id_ = dateTimeZone.getID()
+        if (!idToIndex.contains(id_)) {
+          val index: Short = Short.box(count)
+          idToIndex(id) = index
+          indexToId += index -> id
+          if ({
+            count = (count + 1).toShort
+            count
+          } == 0) {
+            throw new InternalError("Too many time zone ids")
+          }
         }
-      }
-    
+
     }
-    
-    
-    
 
     dout.writeShort(indexToId.size)
     for (id <- indexToId.values) {
@@ -196,7 +198,7 @@ object ZoneInfoCompiler {
   def parseZoneChar(c: Char): Char = c match {
     case 's' | 'S' => 's'
     case 'u' | 'U' | 'g' | 'G' | 'z' | 'Z' => 'u'
-    case 'w' | 'W'  => 'w'
+    case 'w' | 'W' => 'w'
     case _ => 'w'
   }
 
@@ -218,13 +220,19 @@ object ZoneInfoCompiler {
       val nextOffset = tz.getOffset(millis)
       val nextKey = tz.getNameKey(millis)
       if (offset == nextOffset && key == nextKey) {
-        println("*d* Error in " + tz.getID + " " + new DateTime(millis, ISOChronology.getInstanceUTC))
+        println(
+          "*d* Error in " + tz.getID + " " + new DateTime(
+            millis,
+            ISOChronology.getInstanceUTC))
         return false
       }
       if (nextKey == null || (nextKey.length < 3 && "??" != nextKey)) {
-        println("*s* Error in " + tz.getID + " " + new DateTime(millis, ISOChronology.getInstanceUTC) +
-          ", nameKey=" +
-          nextKey)
+        println(
+          "*s* Error in " + tz.getID + " " + new DateTime(
+            millis,
+            ISOChronology.getInstanceUTC) +
+            ", nameKey=" +
+            nextKey)
         return false
       }
       transitions += Long.box(millis)
@@ -242,9 +250,12 @@ object ZoneInfoCompiler {
       millis = prev
       val trans = transitions(i).longValue()
       if (trans - 1 != millis) {
-        println("*r* Error in " + tz.getID + " " + new DateTime(millis, ISOChronology.getInstanceUTC) +
-          " != " +
-          new DateTime(trans - 1, ISOChronology.getInstanceUTC))
+        println(
+          "*r* Error in " + tz.getID + " " + new DateTime(
+            millis,
+            ISOChronology.getInstanceUTC) +
+            " != " +
+            new DateTime(trans - 1, ISOChronology.getInstanceUTC))
         return false
       }
     }
@@ -308,9 +319,9 @@ object ZoneInfoCompiler {
               if (month == 12 && day == 31) {
                 millis = parseTime("23:59:59.999")
               } else {
-                val date = if (day == -1) new LocalDate(2001, month, 1).plusMonths(1)
-                else new LocalDate(2001,
-                  month, day).plusDays(1)
+                val date =
+                  if (day == -1) new LocalDate(2001, month, 1).plusMonths(1)
+                  else new LocalDate(2001, month, day).plusDays(1)
                 advance = day != -1 && dayOfWeek != 0
                 month = date.getMonthOfYear
                 day = date.getDayOfMonth
@@ -337,12 +348,26 @@ object ZoneInfoCompiler {
                      saveMillis: Int,
                      fromYear: Int,
                      toYear: Int) {
-      builder.addRecurringSavings(nameKey, saveMillis, fromYear, toYear, iZoneChar, iMonthOfYear, iDayOfMonth,
-        iDayOfWeek, iAdvanceDayOfWeek, iMillisOfDay)
+      builder.addRecurringSavings(nameKey,
+                                  saveMillis,
+                                  fromYear,
+                                  toYear,
+                                  iZoneChar,
+                                  iMonthOfYear,
+                                  iDayOfMonth,
+                                  iDayOfWeek,
+                                  iAdvanceDayOfWeek,
+                                  iMillisOfDay)
     }
 
     def addCutover(builder: DateTimeZoneBuilder, year: Int) {
-      builder.addCutover(year, iZoneChar, iMonthOfYear, iDayOfMonth, iDayOfWeek, iAdvanceDayOfWeek, iMillisOfDay)
+      builder.addCutover(year,
+                         iZoneChar,
+                         iMonthOfYear,
+                         iDayOfMonth,
+                         iDayOfWeek,
+                         iAdvanceDayOfWeek,
+                         iMillisOfDay)
     }
 
     override def toString(): String = {
@@ -386,7 +411,8 @@ object ZoneInfoCompiler {
 
     def addRecurring(builder: DateTimeZoneBuilder, nameFormat: String) {
       val nameKey = formatName(nameFormat)
-      iDateTimeOfYear.addRecurring(builder, nameKey, iSaveMillis, iFromYear, iToYear)
+      iDateTimeOfYear
+        .addRecurring(builder, nameKey, iSaveMillis, iFromYear, iToYear)
     }
 
     private def formatName(nameFormat: String): String = {
@@ -405,7 +431,8 @@ object ZoneInfoCompiler {
       val left = nameFormat.substring(0, index)
       val right = nameFormat.substring(index + 2)
       var name: String = null
-      name = if (iLetterS == null) left.concat(right) else left + iLetterS + right
+      name =
+        if (iLetterS == null) left.concat(right) else left + iLetterS + right
       name.intern()
     }
 
@@ -431,7 +458,8 @@ object ZoneInfoCompiler {
 
   private class RuleSet(rule: Rule) {
 
-    private val iRules: collection.mutable.ListBuffer[Rule] = new collection.mutable.ListBuffer[Rule]()
+    private val iRules: collection.mutable.ListBuffer[Rule] =
+      new collection.mutable.ListBuffer[Rule]()
 
     iRules += rule
 
@@ -452,7 +480,10 @@ object ZoneInfoCompiler {
 
   object Zone {
 
-    private def addToBuilder(zone: Zone, builder: DateTimeZoneBuilder, ruleSets: collection.mutable.Map[String, RuleSet]) {
+    private def addToBuilder(
+        zone: Zone,
+        builder: DateTimeZoneBuilder,
+        ruleSets: collection.mutable.Map[String, RuleSet]) {
       var _zone: Zone = zone
       while (_zone != null) {
         builder.setStandardOffset(_zone.iOffsetMillis)
@@ -466,7 +497,8 @@ object ZoneInfoCompiler {
             case e: Exception =>
               val rs = ruleSets(_zone.iRules)
               if (rs == null) {
-                throw new IllegalArgumentException("Rules not found: " + _zone.iRules)
+                throw new IllegalArgumentException(
+                  "Rules not found: " + _zone.iRules)
               }
               rs.addRecurring(builder, _zone.iFormat)
           }
@@ -513,24 +545,25 @@ object ZoneInfoCompiler {
       }
     }
 
-    def addToBuilder(builder: DateTimeZoneBuilder, ruleSets: collection.mutable.Map[String, RuleSet]) {
+    def addToBuilder(builder: DateTimeZoneBuilder,
+                     ruleSets: collection.mutable.Map[String, RuleSet]) {
       Zone.addToBuilder(this, builder, ruleSets)
     }
 
     override def toString(): String = {
       val str = "[Zone]\n" + "Name: " + iName + "\n" + "OffsetMillis: " +
-        iOffsetMillis +
-        "\n" +
-        "Rules: " +
-        iRules +
-        "\n" +
-        "Format: " +
-        iFormat +
-        "\n" +
-        "UntilYear: " +
-        iUntilYear +
-        "\n" +
-        iUntilDateTimeOfYear
+          iOffsetMillis +
+          "\n" +
+          "Rules: " +
+          iRules +
+          "\n" +
+          "Format: " +
+          iFormat +
+          "\n" +
+          "UntilYear: " +
+          iUntilYear +
+          "\n" +
+          iUntilDateTimeOfYear
       if (iNext == null) {
         return str
       }
@@ -541,11 +574,16 @@ object ZoneInfoCompiler {
 
 class ZoneInfoCompiler {
 
-  private val iRuleSets: collection.mutable.HashMap[String, RuleSet] = new collection.mutable.HashMap[String, RuleSet]()
-  private val iZones: collection.mutable.ListBuffer[Zone] = new collection.mutable.ListBuffer[Zone]()
-  private val iLinks: collection.mutable.ListBuffer[String] = new collection.mutable.ListBuffer[String]()
+  private val iRuleSets: collection.mutable.HashMap[String, RuleSet] =
+    new collection.mutable.HashMap[String, RuleSet]()
+  private val iZones: collection.mutable.ListBuffer[Zone] =
+    new collection.mutable.ListBuffer[Zone]()
+  private val iLinks: collection.mutable.ListBuffer[String] =
+    new collection.mutable.ListBuffer[String]()
 
-  def compile(outputDir: File, sources: Array[File]): collection.immutable.Map[String, DateTimeZone] = {
+  def compile(
+      outputDir: File,
+      sources: Array[File]): collection.immutable.Map[String, DateTimeZone] = {
     if (sources != null) {
       for (i <- 0 until sources.length) {
         val in = new BufferedReader(new FileReader(sources(i)))
@@ -556,8 +594,9 @@ class ZoneInfoCompiler {
     if (outputDir != null) {
       if (!outputDir.exists()) {
         if (!outputDir.mkdirs()) {
-          throw new IOException("Destination directory doesn't exist and cannot be created: " +
-            outputDir)
+          throw new IOException(
+            "Destination directory doesn't exist and cannot be created: " +
+              outputDir)
         }
       }
       if (!outputDir.isDirectory) {
@@ -592,7 +631,8 @@ class ZoneInfoCompiler {
           val tz2 = DateTimeZoneBuilder.readFrom(in, tz.getID)
           in.close()
           if (original != tz2) {
-            println("*e* Error in " + tz.getID + ": Didn't read properly from file")
+            println(
+              "*e* Error in " + tz.getID + ": Didn't read properly from file")
           }
         }
       }
@@ -605,9 +645,10 @@ class ZoneInfoCompiler {
         val tz = map(id)
         if (tz == null) {
           if (pass > 0) {
-            println("Cannot find time zone '" + id + "' to link alias '" +
-              alias +
-              "' to")
+            println(
+              "Cannot find time zone '" + id + "' to link alias '" +
+                alias +
+                "' to")
           }
         } else {
           map += alias -> tz
@@ -624,7 +665,8 @@ class ZoneInfoCompiler {
       val out = new FileOutputStream(file)
       val dout = new DataOutputStream(out)
       try {
-        var zimap = new collection.immutable.TreeMap[String, DateTimeZone]()(Ordering.comparatorToOrdering(String.CASE_INSENSITIVE_ORDER))
+        var zimap = new collection.immutable.TreeMap[String, DateTimeZone]()(
+          Ordering.comparatorToOrdering(String.CASE_INSENSITIVE_ORDER))
         zimap ++= map
         writeZoneInfoMap(dout, zimap)
       } finally {
@@ -637,7 +679,7 @@ class ZoneInfoCompiler {
   def parseDataFile(in: BufferedReader) {
     var zone: Zone = null
     var line: String = null
-    while ( {
+    while ({
       line = in.readLine(); in
     } != null) {
       var continueFlag = true

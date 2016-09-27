@@ -15,8 +15,8 @@ import org.joda.time.ReadWritableInstant
 import org.joda.time.ReadableInstant
 import org.joda.time.ReadablePartial
 
-class DateTimeFormatter(private val iPrinter: InternalPrinter, private val iParser: InternalParser)
-{
+class DateTimeFormatter(private val iPrinter: InternalPrinter,
+                        private val iParser: InternalParser) {
 
   private var iLocale: Locale = null
   private var iOffsetParsed: Boolean = false
@@ -26,7 +26,8 @@ class DateTimeFormatter(private val iPrinter: InternalPrinter, private val iPars
   private var iDefaultYear: Int = 2000
 
   def this(printer: DateTimePrinter, parser: DateTimeParser) {
-    this(DateTimePrinterInternalPrinter.of(printer), DateTimeParserInternalParser.of(parser))
+    this(DateTimePrinterInternalPrinter.of(printer),
+         DateTimeParserInternalParser.of(parser))
   }
 
   private def this(printer: InternalPrinter,
@@ -37,7 +38,7 @@ class DateTimeFormatter(private val iPrinter: InternalPrinter, private val iPars
                    zone: DateTimeZone,
                    pivotYear: Integer,
                    defaultYear: Int) {
-    this(printer,parser)
+    this(printer, parser)
     iLocale = locale
     iOffsetParsed = offsetParsed
     iChrono = chrono
@@ -66,7 +67,14 @@ class DateTimeFormatter(private val iPrinter: InternalPrinter, private val iPars
     if (locale == getLocale || (locale != null && locale == getLocale)) {
       return this
     }
-    new DateTimeFormatter(iPrinter, iParser, locale, iOffsetParsed, iChrono, iZone, iPivotYear, iDefaultYear)
+    new DateTimeFormatter(iPrinter,
+                          iParser,
+                          locale,
+                          iOffsetParsed,
+                          iChrono,
+                          iZone,
+                          iPivotYear,
+                          iDefaultYear)
   }
 
   def getLocale(): Locale = iLocale
@@ -75,7 +83,14 @@ class DateTimeFormatter(private val iPrinter: InternalPrinter, private val iPars
     if (iOffsetParsed == true) {
       return this
     }
-    new DateTimeFormatter(iPrinter, iParser, iLocale, true, iChrono, null, iPivotYear, iDefaultYear)
+    new DateTimeFormatter(iPrinter,
+                          iParser,
+                          iLocale,
+                          true,
+                          iChrono,
+                          null,
+                          iPivotYear,
+                          iDefaultYear)
   }
 
   def isOffsetParsed(): Boolean = iOffsetParsed
@@ -84,7 +99,14 @@ class DateTimeFormatter(private val iPrinter: InternalPrinter, private val iPars
     if (iChrono == chrono) {
       return this
     }
-    new DateTimeFormatter(iPrinter, iParser, iLocale, iOffsetParsed, chrono, iZone, iPivotYear, iDefaultYear)
+    new DateTimeFormatter(iPrinter,
+                          iParser,
+                          iLocale,
+                          iOffsetParsed,
+                          chrono,
+                          iZone,
+                          iPivotYear,
+                          iDefaultYear)
   }
 
   def getChronology(): Chronology = iChrono
@@ -98,7 +120,14 @@ class DateTimeFormatter(private val iPrinter: InternalPrinter, private val iPars
     if (iZone == zone) {
       return this
     }
-    new DateTimeFormatter(iPrinter, iParser, iLocale, false, iChrono, zone, iPivotYear, iDefaultYear)
+    new DateTimeFormatter(iPrinter,
+                          iParser,
+                          iLocale,
+                          false,
+                          iChrono,
+                          zone,
+                          iPivotYear,
+                          iDefaultYear)
   }
 
   def getZone(): DateTimeZone = iZone
@@ -107,7 +136,14 @@ class DateTimeFormatter(private val iPrinter: InternalPrinter, private val iPars
     if (iPivotYear == pivotYear || (iPivotYear != null && iPivotYear == pivotYear)) {
       return this
     }
-    new DateTimeFormatter(iPrinter, iParser, iLocale, iOffsetParsed, iChrono, iZone, pivotYear, iDefaultYear)
+    new DateTimeFormatter(iPrinter,
+                          iParser,
+                          iLocale,
+                          iOffsetParsed,
+                          iChrono,
+                          iZone,
+                          pivotYear,
+                          iDefaultYear)
   }
 
   def withPivotYear(pivotYear: Int): DateTimeFormatter = {
@@ -117,7 +153,14 @@ class DateTimeFormatter(private val iPrinter: InternalPrinter, private val iPars
   def getPivotYear(): Integer = iPivotYear
 
   def withDefaultYear(defaultYear: Int): DateTimeFormatter = {
-    new DateTimeFormatter(iPrinter, iParser, iLocale, iOffsetParsed, iChrono, iZone, iPivotYear, defaultYear)
+    new DateTimeFormatter(iPrinter,
+                          iParser,
+                          iLocale,
+                          iOffsetParsed,
+                          iChrono,
+                          iZone,
+                          iPivotYear,
+                          defaultYear)
   }
 
   def getDefaultYear(): Int = iDefaultYear
@@ -206,7 +249,9 @@ class DateTimeFormatter(private val iPrinter: InternalPrinter, private val iPars
     buf.toString
   }
 
-  private def printTo(appendable: Appendable, instant: Long, chrono: Chronology) {
+  private def printTo(appendable: Appendable,
+                      instant: Long,
+                      chrono: Chronology) {
     var _chrono = chrono
     val printer = requirePrinter()
     _chrono = selectChronology(_chrono)
@@ -218,7 +263,12 @@ class DateTimeFormatter(private val iPrinter: InternalPrinter, private val iPars
       offset = 0
       adjustedInstant = instant
     }
-    printer.printTo(appendable, adjustedInstant, _chrono.withUTC(), offset, zone, iLocale)
+    printer.printTo(appendable,
+                    adjustedInstant,
+                    _chrono.withUTC(),
+                    offset,
+                    zone,
+                    iLocale)
   }
 
   private def requirePrinter(): InternalPrinter = {
@@ -229,17 +279,24 @@ class DateTimeFormatter(private val iPrinter: InternalPrinter, private val iPars
     printer
   }
 
-  def parseInto(instant: ReadWritableInstant, text: String, position: Int): Int = {
+  def parseInto(instant: ReadWritableInstant,
+                text: String,
+                position: Int): Int = {
     val parser = requireParser()
     if (instant == null) {
       throw new IllegalArgumentException("Instant must not be null")
     }
     val instantMillis = instant.getMillis
     var chrono = instant.getChronology
-    val defaultYear = DateTimeUtils.getChronology(chrono).year().get(instantMillis)
+    val defaultYear =
+      DateTimeUtils.getChronology(chrono).year().get(instantMillis)
     val instantLocal = instantMillis + chrono.getZone.getOffset(instantMillis)
     chrono = selectChronology(chrono)
-    val bucket = new DateTimeParserBucket(instantLocal, chrono, iLocale, iPivotYear, defaultYear)
+    val bucket = new DateTimeParserBucket(instantLocal,
+                                          chrono,
+                                          iLocale,
+                                          iPivotYear,
+                                          defaultYear)
     val newPos = parser.parseInto(bucket, text, position)
     instant.setMillis(bucket.computeMillis(false, text))
     if (iOffsetParsed && bucket.getOffsetInteger != null) {
@@ -259,18 +316,22 @@ class DateTimeFormatter(private val iPrinter: InternalPrinter, private val iPars
   def parseMillis(text: String): Long = {
     val parser = requireParser()
     val chrono = selectChronology(iChrono)
-    val bucket = new DateTimeParserBucket(0, chrono, iLocale, iPivotYear, iDefaultYear)
+    val bucket =
+      new DateTimeParserBucket(0, chrono, iLocale, iPivotYear, iDefaultYear)
     bucket.doParseMillis(parser, text)
   }
 
-  def parseLocalDate(text: String): LocalDate = parseLocalDateTime(text).toLocalDate()
+  def parseLocalDate(text: String): LocalDate =
+    parseLocalDateTime(text).toLocalDate()
 
-  def parseLocalTime(text: String): LocalTime = parseLocalDateTime(text).toLocalTime()
+  def parseLocalTime(text: String): LocalTime =
+    parseLocalDateTime(text).toLocalTime()
 
   def parseLocalDateTime(text: String): LocalDateTime = {
     val parser = requireParser()
     var chrono = selectChronology(null).withUTC()
-    val bucket = new DateTimeParserBucket(0, chrono, iLocale, iPivotYear, iDefaultYear)
+    val bucket =
+      new DateTimeParserBucket(0, chrono, iLocale, iPivotYear, iDefaultYear)
     var newPos = parser.parseInto(bucket, text, 0)
     if (newPos >= 0) {
       if (newPos >= text.length) {
@@ -287,13 +348,15 @@ class DateTimeFormatter(private val iPrinter: InternalPrinter, private val iPars
     } else {
       newPos = ~newPos
     }
-    throw new IllegalArgumentException(FormatUtils.createErrorMessage(text, newPos))
+    throw new IllegalArgumentException(
+      FormatUtils.createErrorMessage(text, newPos))
   }
 
   def parseDateTime(text: String): DateTime = {
     val parser = requireParser()
     var chrono = selectChronology(null)
-    val bucket = new DateTimeParserBucket(0, chrono, iLocale, iPivotYear, iDefaultYear)
+    val bucket =
+      new DateTimeParserBucket(0, chrono, iLocale, iPivotYear, iDefaultYear)
     var newPos = parser.parseInto(bucket, text, 0)
     if (newPos >= 0) {
       if (newPos >= text.length) {
@@ -314,13 +377,15 @@ class DateTimeFormatter(private val iPrinter: InternalPrinter, private val iPars
     } else {
       newPos = ~newPos
     }
-    throw new IllegalArgumentException(FormatUtils.createErrorMessage(text, newPos))
+    throw new IllegalArgumentException(
+      FormatUtils.createErrorMessage(text, newPos))
   }
 
   def parseMutableDateTime(text: String): MutableDateTime = {
     val parser = requireParser()
     var chrono = selectChronology(null)
-    val bucket = new DateTimeParserBucket(0, chrono, iLocale, iPivotYear, iDefaultYear)
+    val bucket =
+      new DateTimeParserBucket(0, chrono, iLocale, iPivotYear, iDefaultYear)
     var newPos = parser.parseInto(bucket, text, 0)
     if (newPos >= 0) {
       if (newPos >= text.length) {
@@ -341,7 +406,8 @@ class DateTimeFormatter(private val iPrinter: InternalPrinter, private val iPars
     } else {
       newPos = ~newPos
     }
-    throw new IllegalArgumentException(FormatUtils.createErrorMessage(text, newPos))
+    throw new IllegalArgumentException(
+      FormatUtils.createErrorMessage(text, newPos))
   }
 
   private def requireParser(): InternalParser = {

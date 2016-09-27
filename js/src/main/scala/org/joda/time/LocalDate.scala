@@ -21,7 +21,8 @@ object LocalDate {
   private val YEAR = 0
   private val MONTH_OF_YEAR = 1
   private val DAY_OF_MONTH = 2
-  private val DATE_DURATION_TYPES = new collection.mutable.HashSet[DurationFieldType]()
+  private val DATE_DURATION_TYPES =
+    new collection.mutable.HashSet[DurationFieldType]()
 
   DATE_DURATION_TYPES.add(DurationFieldType.days())
   DATE_DURATION_TYPES.add(DurationFieldType.weeks())
@@ -52,18 +53,20 @@ object LocalDate {
     parse(str, ISODateTimeFormat.localDateParser())
   }
 
-  def parse(str: String, formatter: DateTimeFormatter): LocalDate = formatter.parseLocalDate(str)
-  
+  def parse(str: String, formatter: DateTimeFormatter): LocalDate =
+    formatter.parseLocalDate(str)
+
   def fromDateFields(date: js.Date): LocalDate = {
     if (date == null) {
       throw new IllegalArgumentException("The date must not be null")
     }
-    new LocalDate(date.getFullYear(), date.getMonth +1, date.getDate())
+    new LocalDate(date.getFullYear(), date.getMonth + 1, date.getDate())
   }
 
   @SerialVersionUID(-3193829732634L)
-  class Property(@transient private var iInstant: LocalDate, @transient private var iField: DateTimeField)
-    extends AbstractReadableInstantFieldProperty() {
+  class Property(@transient private var iInstant: LocalDate,
+                 @transient private var iField: DateTimeField)
+      extends AbstractReadableInstantFieldProperty() {
 
     private def writeObject(oos: ObjectOutputStream) {
       oos.writeObject(iInstant)
@@ -89,7 +92,8 @@ object LocalDate {
     }
 
     def addWrapFieldToCopy(value: Int): LocalDate = {
-      iInstant.withLocalMillis(iField.addWrapField(iInstant.getLocalMillis, value))
+      iInstant.withLocalMillis(
+        iField.addWrapField(iInstant.getLocalMillis, value))
     }
 
     def setCopy(value: Int): LocalDate = {
@@ -97,7 +101,8 @@ object LocalDate {
     }
 
     def setCopy(text: String, locale: Locale): LocalDate = {
-      iInstant.withLocalMillis(iField.set(iInstant.getLocalMillis, text, locale))
+      iInstant.withLocalMillis(
+        iField.set(iInstant.getLocalMillis, text, locale))
     }
 
     def setCopy(text: String): LocalDate = setCopy(text, null)
@@ -119,7 +124,8 @@ object LocalDate {
     }
 
     def roundHalfCeilingCopy(): LocalDate = {
-      iInstant.withLocalMillis(iField.roundHalfCeiling(iInstant.getLocalMillis))
+      iInstant.withLocalMillis(
+        iField.roundHalfCeiling(iInstant.getLocalMillis))
     }
 
     def roundHalfEvenCopy(): LocalDate = {
@@ -129,10 +135,13 @@ object LocalDate {
 }
 
 @SerialVersionUID(-8775358157899L)
-class LocalDate(instant: Long, private var chronology: Chronology) extends BaseLocal with ReadablePartial with Serializable {
+class LocalDate(instant: Long, private var chronology: Chronology)
+    extends BaseLocal
+    with ReadablePartial
+    with Serializable {
 
-  private val localMillis = chronology.getZone.getMillisKeepLocal(DateTimeZone.UTC, instant)
-
+  private val localMillis =
+    chronology.getZone.getMillisKeepLocal(DateTimeZone.UTC, instant)
 
   private var iChronology: Chronology = null
   private var iLocalMillis = chronology.dayOfMonth().roundFloor(localMillis)
@@ -171,8 +180,13 @@ class LocalDate(instant: Long, private var chronology: Chronology) extends BaseL
     var chronology = converter.getChronology(instant, zone)
     chronology = DateTimeUtils.getChronology(chronology)
     iChronology = chronology.withUTC()
-    val values = converter.getPartialValues(this, instant, chronology, ISODateTimeFormat.localDateParser())
-    iLocalMillis = iChronology.getDateTimeMillis(values(0), values(1), values(2), 0)
+    val values = converter.getPartialValues(
+      this,
+      instant,
+      chronology,
+      ISODateTimeFormat.localDateParser())
+    iLocalMillis =
+      iChronology.getDateTimeMillis(values(0), values(1), values(2), 0)
   }
 
   def this(instant: AnyRef, chronology: Chronology) {
@@ -182,8 +196,13 @@ class LocalDate(instant: Long, private var chronology: Chronology) extends BaseL
     _chronology = converter.getChronology(instant, _chronology)
     _chronology = DateTimeUtils.getChronology(_chronology)
     iChronology = _chronology.withUTC()
-    val values = converter.getPartialValues(this, instant, _chronology, ISODateTimeFormat.localDateParser())
-    iLocalMillis = iChronology.getDateTimeMillis(values(0), values(1), values(2), 0)
+    val values = converter.getPartialValues(
+      this,
+      instant,
+      _chronology,
+      ISODateTimeFormat.localDateParser())
+    iLocalMillis =
+      iChronology.getDateTimeMillis(values(0), values(1), values(2), 0)
   }
 
   def this(instant: AnyRef) {
@@ -197,7 +216,8 @@ class LocalDate(instant: Long, private var chronology: Chronology) extends BaseL
     this()
     var _chronology: Chronology = chronology
     _chronology = DateTimeUtils.getChronology(_chronology).withUTC()
-    val instant = _chronology.getDateTimeMillis(year, monthOfYear, dayOfMonth, 0)
+    val instant =
+      _chronology.getDateTimeMillis(year, monthOfYear, dayOfMonth, 0)
     iChronology = _chronology
     iLocalMillis = instant
   }
@@ -218,12 +238,13 @@ class LocalDate(instant: Long, private var chronology: Chronology) extends BaseL
 
   def size(): Int = 3
 
-  protected def getField(index: Int, chrono: Chronology): DateTimeField = index match {
-    case YEAR => chrono.year()
-    case MONTH_OF_YEAR => chrono.monthOfYear()
-    case DAY_OF_MONTH => chrono.dayOfMonth()
-    case _ => throw new IndexOutOfBoundsException("Invalid index: " + index)
-  }
+  protected def getField(index: Int, chrono: Chronology): DateTimeField =
+    index match {
+      case YEAR => chrono.year()
+      case MONTH_OF_YEAR => chrono.monthOfYear()
+      case DAY_OF_MONTH => chrono.dayOfMonth()
+      case _ => throw new IndexOutOfBoundsException("Invalid index: " + index)
+    }
 
   def getValue(index: Int): Int = index match {
     case YEAR => getChronology.year().get(getLocalMillis)
@@ -234,10 +255,12 @@ class LocalDate(instant: Long, private var chronology: Chronology) extends BaseL
 
   override def get(fieldType: DateTimeFieldType): Int = {
     if (fieldType == null) {
-      throw new IllegalArgumentException("The DateTimeFieldType must not be null")
+      throw new IllegalArgumentException(
+        "The DateTimeFieldType must not be null")
     }
     if (isSupported(fieldType) == false) {
-      throw new IllegalArgumentException("Field '" + fieldType + "' is not supported")
+      throw new IllegalArgumentException(
+        "Field '" + fieldType + "' is not supported")
     }
     fieldType.getField(getChronology).get(getLocalMillis)
   }
@@ -248,7 +271,9 @@ class LocalDate(instant: Long, private var chronology: Chronology) extends BaseL
     }
     val durType = `type`.getDurationType
     if (DATE_DURATION_TYPES.contains(durType) ||
-      durType.getField(getChronology).getUnitMillis >= getChronology.days().getUnitMillis) {
+        durType
+          .getField(getChronology)
+          .getUnitMillis >= getChronology.days().getUnitMillis) {
       return `type`.getField(getChronology).isSupported
     }
     false
@@ -260,7 +285,7 @@ class LocalDate(instant: Long, private var chronology: Chronology) extends BaseL
     }
     val field = `type`.getField(getChronology)
     if (DATE_DURATION_TYPES.contains(`type`) ||
-      field.getUnitMillis >= getChronology.days().getUnitMillis) {
+        field.getUnitMillis >= getChronology.days().getUnitMillis) {
       return field.isSupported
     }
     false
@@ -300,7 +325,9 @@ class LocalDate(instant: Long, private var chronology: Chronology) extends BaseL
     if (partial.isInstanceOf[LocalDate]) {
       val other = partial.asInstanceOf[LocalDate]
       if (iChronology == other.iChronology) {
-        return if (iLocalMillis < other.iLocalMillis) -1 else if (iLocalMillis == other.iLocalMillis) 0 else 1
+        return if (iLocalMillis < other.iLocalMillis) -1
+        else if (iLocalMillis == other.iLocalMillis) 0
+        else 1
       }
     }
     super.compareTo(partial)
@@ -356,7 +383,8 @@ class LocalDate(instant: Long, private var chronology: Chronology) extends BaseL
       throw new IllegalArgumentException("The time must not be null")
     }
     if (getChronology != time.getChronology) {
-      throw new IllegalArgumentException("The chronology of the time does not match")
+      throw new IllegalArgumentException(
+        "The chronology of the time does not match")
     }
     val localMillis = getLocalMillis + time.getLocalMillis
     new LocalDateTime(localMillis, getChronology)
@@ -369,11 +397,18 @@ class LocalDate(instant: Long, private var chronology: Chronology) extends BaseL
       return toDateTimeAtCurrentTime(zone)
     }
     if (getChronology != time.getChronology) {
-      throw new IllegalArgumentException("The chronology of the time does not match")
+      throw new IllegalArgumentException(
+        "The chronology of the time does not match")
     }
     val chrono = getChronology.withZone(zone)
-    new DateTime(getYear, getMonthOfYear, getDayOfMonth, time.getHourOfDay, time.getMinuteOfHour, time.getSecondOfMinute,
-      time.getMillisOfSecond, chrono)
+    new DateTime(getYear,
+                 getMonthOfYear,
+                 getDayOfMonth,
+                 time.getHourOfDay,
+                 time.getMinuteOfHour,
+                 time.getSecondOfMinute,
+                 time.getMillisOfSecond,
+                 chrono)
   }
 
   def toInterval(): Interval = toInterval(null)
@@ -411,7 +446,8 @@ class LocalDate(instant: Long, private var chronology: Chronology) extends BaseL
   def withLocalMillis(newMillis: Long): LocalDate = {
     var _newMillis: Long = newMillis
     _newMillis = iChronology.dayOfMonth().roundFloor(_newMillis)
-    if (_newMillis == getLocalMillis) this else new LocalDate(_newMillis, getChronology)
+    if (_newMillis == getLocalMillis) this
+    else new LocalDate(_newMillis, getChronology)
   }
 
   def withFields(partial: ReadablePartial): LocalDate = {
@@ -426,7 +462,8 @@ class LocalDate(instant: Long, private var chronology: Chronology) extends BaseL
       throw new IllegalArgumentException("Field must not be null")
     }
     if (isSupported(fieldType) == false) {
-      throw new IllegalArgumentException("Field '" + fieldType + "' is not supported")
+      throw new IllegalArgumentException(
+        "Field '" + fieldType + "' is not supported")
     }
     val instant = fieldType.getField(getChronology).set(getLocalMillis, value)
     withLocalMillis(instant)
@@ -437,7 +474,8 @@ class LocalDate(instant: Long, private var chronology: Chronology) extends BaseL
       throw new IllegalArgumentException("Field must not be null")
     }
     if (isSupported(fieldType) == false) {
-      throw new IllegalArgumentException("Field '" + fieldType + "' is not supported")
+      throw new IllegalArgumentException(
+        "Field '" + fieldType + "' is not supported")
     }
     if (amount == 0) {
       return this
@@ -532,10 +570,12 @@ class LocalDate(instant: Long, private var chronology: Chronology) extends BaseL
 
   def property(fieldType: DateTimeFieldType): Property = {
     if (fieldType == null) {
-      throw new IllegalArgumentException("The DateTimeFieldType must not be null")
+      throw new IllegalArgumentException(
+        "The DateTimeFieldType must not be null")
     }
     if (isSupported(fieldType) == false) {
-      throw new IllegalArgumentException("Field '" + fieldType + "' is not supported")
+      throw new IllegalArgumentException(
+        "Field '" + fieldType + "' is not supported")
     }
     new Property(this, fieldType.getField(getChronology))
   }
@@ -587,7 +627,8 @@ class LocalDate(instant: Long, private var chronology: Chronology) extends BaseL
   }
 
   def withCenturyOfEra(centuryOfEra: Int): LocalDate = {
-    withLocalMillis(getChronology.centuryOfEra().set(getLocalMillis, centuryOfEra))
+    withLocalMillis(
+      getChronology.centuryOfEra().set(getLocalMillis, centuryOfEra))
   }
 
   def withYearOfEra(yearOfEra: Int): LocalDate = {
@@ -595,7 +636,8 @@ class LocalDate(instant: Long, private var chronology: Chronology) extends BaseL
   }
 
   def withYearOfCentury(yearOfCentury: Int): LocalDate = {
-    withLocalMillis(getChronology.yearOfCentury().set(getLocalMillis, yearOfCentury))
+    withLocalMillis(
+      getChronology.yearOfCentury().set(getLocalMillis, yearOfCentury))
   }
 
   def withYear(year: Int): LocalDate = {
@@ -607,11 +649,13 @@ class LocalDate(instant: Long, private var chronology: Chronology) extends BaseL
   }
 
   def withMonthOfYear(monthOfYear: Int): LocalDate = {
-    withLocalMillis(getChronology.monthOfYear().set(getLocalMillis, monthOfYear))
+    withLocalMillis(
+      getChronology.monthOfYear().set(getLocalMillis, monthOfYear))
   }
 
   def withWeekOfWeekyear(weekOfWeekyear: Int): LocalDate = {
-    withLocalMillis(getChronology.weekOfWeekyear().set(getLocalMillis, weekOfWeekyear))
+    withLocalMillis(
+      getChronology.weekOfWeekyear().set(getLocalMillis, weekOfWeekyear))
   }
 
   def withDayOfYear(dayOfYear: Int): LocalDate = {
@@ -682,7 +726,6 @@ class LocalDate(instant: Long, private var chronology: Chronology) extends BaseL
     if (pattern == null) {
       return toString
     }
-    DateTimeFormat.forPattern(pattern).withLocale(locale)
-      .print(this)
+    DateTimeFormat.forPattern(pattern).withLocale(locale).print(this)
   }
 }

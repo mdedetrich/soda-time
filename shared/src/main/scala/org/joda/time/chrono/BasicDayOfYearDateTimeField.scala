@@ -6,8 +6,9 @@ import org.joda.time.ReadablePartial
 import org.joda.time.field.PreciseDurationDateTimeField
 
 @SerialVersionUID(-6821236822336841037L)
-class BasicDayOfYearDateTimeField(private val iChronology: BasicChronology, days: DurationField)
-  extends PreciseDurationDateTimeField(DateTimeFieldType.dayOfYear(), days) {
+class BasicDayOfYearDateTimeField(private val iChronology: BasicChronology,
+                                  days: DurationField)
+    extends PreciseDurationDateTimeField(DateTimeFieldType.dayOfYear(), days) {
 
   def get(instant: Long): Int = iChronology.getDayOfYear(instant)
 
@@ -30,18 +31,22 @@ class BasicDayOfYearDateTimeField(private val iChronology: BasicChronology, days
     iChronology.getDaysInYearMax
   }
 
-  override def getMaximumValue(partial: ReadablePartial, values: Array[Int]): Int = {
+  override def getMaximumValue(partial: ReadablePartial,
+                               values: Array[Int]): Int = {
     val size = partial.size
-    for (i <- 0 until size if partial.getFieldType(i) == DateTimeFieldType.year()) {
+    for (i <- 0 until size
+         if partial.getFieldType(i) == DateTimeFieldType.year()) {
       val year = values(i)
       return iChronology.getDaysInYear(year)
     }
     iChronology.getDaysInYearMax
   }
 
-  override protected def getMaximumValueForSet(instant: Long, value: Int): Int = {
+  override protected def getMaximumValueForSet(instant: Long,
+                                               value: Int): Int = {
     val maxLessOne = iChronology.getDaysInYearMax - 1
-    if ((value > maxLessOne || value < 1)) getMaximumValue(instant) else maxLessOne
+    if ((value > maxLessOne || value < 1)) getMaximumValue(instant)
+    else maxLessOne
   }
 
   override def isLeap(instant: Long): Boolean = iChronology.isLeapDay(instant)

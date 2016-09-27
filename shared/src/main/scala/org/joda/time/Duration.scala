@@ -16,28 +16,32 @@ object Duration {
     if (days == 0) {
       return ZERO
     }
-    new Duration(FieldUtils.safeMultiply(days, DateTimeConstants.MILLIS_PER_DAY))
+    new Duration(
+      FieldUtils.safeMultiply(days, DateTimeConstants.MILLIS_PER_DAY))
   }
 
   def standardHours(hours: Long): Duration = {
     if (hours == 0) {
       return ZERO
     }
-    new Duration(FieldUtils.safeMultiply(hours, DateTimeConstants.MILLIS_PER_HOUR))
+    new Duration(
+      FieldUtils.safeMultiply(hours, DateTimeConstants.MILLIS_PER_HOUR))
   }
 
   def standardMinutes(minutes: Long): Duration = {
     if (minutes == 0) {
       return ZERO
     }
-    new Duration(FieldUtils.safeMultiply(minutes, DateTimeConstants.MILLIS_PER_MINUTE))
+    new Duration(
+      FieldUtils.safeMultiply(minutes, DateTimeConstants.MILLIS_PER_MINUTE))
   }
 
   def standardSeconds(seconds: Long): Duration = {
     if (seconds == 0) {
       return ZERO
     }
-    new Duration(FieldUtils.safeMultiply(seconds, DateTimeConstants.MILLIS_PER_SECOND))
+    new Duration(
+      FieldUtils.safeMultiply(seconds, DateTimeConstants.MILLIS_PER_SECOND))
   }
 
   def millis(millis: Long): Duration = {
@@ -49,13 +53,16 @@ object Duration {
 }
 
 @SerialVersionUID(2471658376918L)
-class Duration() extends BaseDuration(DummyImplicit) with ReadableDuration with Serializable {
+class Duration()
+    extends BaseDuration(DummyImplicit)
+    with ReadableDuration
+    with Serializable {
 
   def this(duration: Long) {
     this()
     super.auxConstructor(duration)
   }
-  
+
   def this(startInstant: Long, endInstant: Long) {
     this()
     super.auxConstructor(startInstant, endInstant)
@@ -63,7 +70,7 @@ class Duration() extends BaseDuration(DummyImplicit) with ReadableDuration with 
 
   def this(start: ReadableInstant, end: ReadableInstant) {
     this()
-    super.auxConstructor(start,end)
+    super.auxConstructor(start, end)
   }
 
   def this(duration: AnyRef) {
@@ -125,7 +132,8 @@ class Duration() extends BaseDuration(DummyImplicit) with ReadableDuration with 
     new Duration(duration)
   }
 
-  def withDurationAdded(durationToAdd: ReadableDuration, scalar: Int): Duration = {
+  def withDurationAdded(durationToAdd: ReadableDuration,
+                        scalar: Int): Duration = {
     if (durationToAdd == null || scalar == 0) {
       return this
     }

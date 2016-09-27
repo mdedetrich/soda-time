@@ -7,15 +7,16 @@ import org.joda.time.DurationField
 import org.joda.time.ReadablePartial
 import scala.util.control.Breaks._
 
-abstract class BaseDateTimeField protected (private val `type`: DateTimeFieldType)
-  extends DateTimeField() {
-  
+abstract class BaseDateTimeField protected (
+    private val `type`: DateTimeFieldType)
+    extends DateTimeField() {
+
   private var iType: DateTimeFieldType = null
 
   if (`type` == null) {
     throw new IllegalArgumentException("The type must not be null")
   }
-  
+
   iType = `type`
 
   def getType(): DateTimeFieldType = iType
@@ -26,33 +27,44 @@ abstract class BaseDateTimeField protected (private val `type`: DateTimeFieldTyp
 
   def get(instant: Long): Int
 
-  def getAsText(instant: Long, locale: Locale): String = getAsText(get(instant), locale)
+  def getAsText(instant: Long, locale: Locale): String =
+    getAsText(get(instant), locale)
 
   def getAsText(instant: Long): String = getAsText(instant, null)
 
-  def getAsText(partial: ReadablePartial, fieldValue: Int, locale: Locale): String = getAsText(fieldValue, locale)
+  def getAsText(partial: ReadablePartial,
+                fieldValue: Int,
+                locale: Locale): String = getAsText(fieldValue, locale)
 
   def getAsText(partial: ReadablePartial, locale: Locale): String = {
     getAsText(partial, partial.get(getType), locale)
   }
 
-  def getAsText(fieldValue: Int, locale: Locale): String = Integer.toString(fieldValue)
+  def getAsText(fieldValue: Int, locale: Locale): String =
+    Integer.toString(fieldValue)
 
-  def getAsShortText(instant: Long, locale: Locale): String = getAsShortText(get(instant), locale)
+  def getAsShortText(instant: Long, locale: Locale): String =
+    getAsShortText(get(instant), locale)
 
   def getAsShortText(instant: Long): String = getAsShortText(instant, null)
 
-  def getAsShortText(partial: ReadablePartial, fieldValue: Int, locale: Locale): String = getAsShortText(fieldValue, locale)
+  def getAsShortText(partial: ReadablePartial,
+                     fieldValue: Int,
+                     locale: Locale): String =
+    getAsShortText(fieldValue, locale)
 
   def getAsShortText(partial: ReadablePartial, locale: Locale): String = {
     getAsShortText(partial, partial.get(getType), locale)
   }
 
-  def getAsShortText(fieldValue: Int, locale: Locale): String = getAsText(fieldValue, locale)
+  def getAsShortText(fieldValue: Int, locale: Locale): String =
+    getAsText(fieldValue, locale)
 
-  def add(instant: Long, value: Int): Long = getDurationField.add(instant, value)
+  def add(instant: Long, value: Int): Long =
+    getDurationField.add(instant, value)
 
-  def add(instant: Long, value: Long): Long = getDurationField.add(instant, value)
+  def add(instant: Long, value: Long): Long =
+    getDurationField.add(instant, value)
 
   def add(instant: ReadablePartial,
           fieldIndex: Int,
@@ -111,13 +123,13 @@ abstract class BaseDateTimeField protected (private val `type`: DateTimeFieldTyp
                      fieldIndex: Int,
                      values: Array[Int],
                      valueToAdd: Int): Array[Int] = {
-    var _valueToAdd:Int = valueToAdd
+    var _valueToAdd: Int = valueToAdd
     var _values: Array[Int] = values
     if (_valueToAdd == 0) {
       return _values
     }
     var nextField: DateTimeField = null
-    
+
     while (_valueToAdd > 0) {
       var continueFlag = true
       val max = getMaximumValue(instant, _values)
@@ -145,7 +157,7 @@ abstract class BaseDateTimeField protected (private val `type`: DateTimeFieldTyp
         _values(fieldIndex) = getMinimumValue(instant, _values)
       }
     }
-    
+
     while (_valueToAdd < 0) {
       var continueFlag = true
       val min = getMinimumValue(instant, _values)
@@ -177,7 +189,10 @@ abstract class BaseDateTimeField protected (private val `type`: DateTimeFieldTyp
 
   def addWrapField(instant: Long, value: Int): Long = {
     val current = get(instant)
-    val wrapped = FieldUtils.getWrappedValue(current, value, getMinimumValue(instant), getMaximumValue(instant))
+    val wrapped = FieldUtils.getWrappedValue(current,
+                                             value,
+                                             getMinimumValue(instant),
+                                             getMaximumValue(instant))
     set(instant, wrapped)
   }
 
@@ -186,7 +201,10 @@ abstract class BaseDateTimeField protected (private val `type`: DateTimeFieldTyp
                    values: Array[Int],
                    valueToAdd: Int): Array[Int] = {
     val current = values(fieldIndex)
-    val wrapped = FieldUtils.getWrappedValue(current, valueToAdd, getMinimumValue(instant), getMaximumValue(instant))
+    val wrapped = FieldUtils.getWrappedValue(current,
+                                             valueToAdd,
+                                             getMinimumValue(instant),
+                                             getMaximumValue(instant))
     set(instant, fieldIndex, values, wrapped)
   }
 
@@ -194,7 +212,8 @@ abstract class BaseDateTimeField protected (private val `type`: DateTimeFieldTyp
     getDurationField.getDifference(minuendInstant, subtrahendInstant)
   }
 
-  def getDifferenceAsLong(minuendInstant: Long, subtrahendInstant: Long): Long = {
+  def getDifferenceAsLong(minuendInstant: Long,
+                          subtrahendInstant: Long): Long = {
     getDurationField.getDifferenceAsLong(minuendInstant, subtrahendInstant)
   }
 
@@ -204,8 +223,10 @@ abstract class BaseDateTimeField protected (private val `type`: DateTimeFieldTyp
           fieldIndex: Int,
           values: Array[Int],
           newValue: Int): Array[Int] = {
-    FieldUtils.verifyValueBounds(this, newValue, getMinimumValue(partial, values), getMaximumValue(partial,
-      values))
+    FieldUtils.verifyValueBounds(this,
+                                 newValue,
+                                 getMinimumValue(partial, values),
+                                 getMaximumValue(partial, values))
     values(fieldIndex) = newValue
     for (i <- fieldIndex + 1 until partial.size) {
       val field = partial.getField(i)
@@ -235,7 +256,8 @@ abstract class BaseDateTimeField protected (private val `type`: DateTimeFieldTyp
     set(instant, fieldIndex, values, value)
   }
 
-  protected def convertText(text: String, locale: Locale): Int = Integer.parseInt(text)
+  protected def convertText(text: String, locale: Locale): Int =
+    Integer.parseInt(text)
 
   def getDurationField(): DurationField
 
@@ -253,7 +275,8 @@ abstract class BaseDateTimeField protected (private val `type`: DateTimeFieldTyp
 
   def getMinimumValue(instant: ReadablePartial): Int = getMinimumValue
 
-  def getMinimumValue(instant: ReadablePartial, values: Array[Int]): Int = getMinimumValue(instant)
+  def getMinimumValue(instant: ReadablePartial, values: Array[Int]): Int =
+    getMinimumValue(instant)
 
   def getMaximumValue(): Int
 
@@ -261,7 +284,8 @@ abstract class BaseDateTimeField protected (private val `type`: DateTimeFieldTyp
 
   def getMaximumValue(instant: ReadablePartial): Int = getMaximumValue
 
-  def getMaximumValue(instant: ReadablePartial, values: Array[Int]): Int = getMaximumValue(instant)
+  def getMaximumValue(instant: ReadablePartial, values: Array[Int]): Int =
+    getMaximumValue(instant)
 
   def getMaximumTextLength(locale: Locale): Int = {
     val max = getMaximumValue
@@ -277,12 +301,13 @@ abstract class BaseDateTimeField protected (private val `type`: DateTimeFieldTyp
     Integer.toString(max).length
   }
 
-  def getMaximumShortTextLength(locale: Locale): Int = getMaximumTextLength(locale)
+  def getMaximumShortTextLength(locale: Locale): Int =
+    getMaximumTextLength(locale)
 
   def roundFloor(instant: Long): Long
 
   def roundCeiling(instant: Long): Long = {
-    var _instant:Long = instant
+    var _instant: Long = instant
     val newInstant = roundFloor(_instant)
     if (newInstant != _instant) {
       _instant = add(newInstant, 1)

@@ -35,11 +35,13 @@ object DateTime {
     parse(str, ISODateTimeFormat.dateTimeParser().withOffsetParsed())
   }
 
-  def parse(str: String, formatter: DateTimeFormatter): DateTime = formatter.parseDateTime(str)
+  def parse(str: String, formatter: DateTimeFormatter): DateTime =
+    formatter.parseDateTime(str)
 
   @SerialVersionUID(-6983323811635733510L)
-  class Property(private var iInstant: DateTime, private var iField: DateTimeField)
-    extends AbstractReadableInstantFieldProperty() {
+  class Property(private var iInstant: DateTime,
+                 private var iField: DateTimeField)
+      extends AbstractReadableInstantFieldProperty() {
 
     private def writeObject(oos: ObjectOutputStream) {
       oos.writeObject(iInstant)
@@ -88,7 +90,8 @@ object DateTime {
       } catch {
         case ex: RuntimeException => {
           if (IllegalInstantException.isIllegalInstant(ex)) {
-            val beforeGap = getChronology.getZone.previousTransition(getMillis + DateTimeConstants.MILLIS_PER_DAY)
+            val beforeGap = getChronology.getZone.previousTransition(
+              getMillis + DateTimeConstants.MILLIS_PER_DAY)
             return new DateTime(beforeGap, getChronology)
           }
           throw ex
@@ -102,7 +105,8 @@ object DateTime {
       } catch {
         case ex: RuntimeException => {
           if (IllegalInstantException.isIllegalInstant(ex)) {
-            val afterGap = getChronology.getZone.nextTransition(getMillis - DateTimeConstants.MILLIS_PER_DAY)
+            val afterGap = getChronology.getZone.nextTransition(
+              getMillis - DateTimeConstants.MILLIS_PER_DAY)
             return new DateTime(afterGap, getChronology)
           }
           throw ex
@@ -181,7 +185,13 @@ class DateTime extends BaseDateTime with ReadableDateTime with Serializable {
            hourOfDay: Int,
            minuteOfHour: Int) {
     this()
-    super.auxConstructor(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, 0, 0)
+    super.auxConstructor(year,
+                         monthOfYear,
+                         dayOfMonth,
+                         hourOfDay,
+                         minuteOfHour,
+                         0,
+                         0)
   }
 
   def this(year: Int,
@@ -191,7 +201,14 @@ class DateTime extends BaseDateTime with ReadableDateTime with Serializable {
            minuteOfHour: Int,
            zone: DateTimeZone) {
     this()
-    super.auxConstructor(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, 0, 0, zone)
+    super.auxConstructor(year,
+                         monthOfYear,
+                         dayOfMonth,
+                         hourOfDay,
+                         minuteOfHour,
+                         0,
+                         0,
+                         zone)
   }
 
   def this(year: Int,
@@ -201,7 +218,14 @@ class DateTime extends BaseDateTime with ReadableDateTime with Serializable {
            minuteOfHour: Int,
            chronology: Chronology) {
     this()
-    super.auxConstructor(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, 0, 0, chronology)
+    super.auxConstructor(year,
+                         monthOfYear,
+                         dayOfMonth,
+                         hourOfDay,
+                         minuteOfHour,
+                         0,
+                         0,
+                         chronology)
   }
 
   def this(year: Int,
@@ -211,7 +235,13 @@ class DateTime extends BaseDateTime with ReadableDateTime with Serializable {
            minuteOfHour: Int,
            secondOfMinute: Int) {
     this()
-    super.auxConstructor(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, 0)
+    super.auxConstructor(year,
+                         monthOfYear,
+                         dayOfMonth,
+                         hourOfDay,
+                         minuteOfHour,
+                         secondOfMinute,
+                         0)
   }
 
   def this(year: Int,
@@ -222,7 +252,14 @@ class DateTime extends BaseDateTime with ReadableDateTime with Serializable {
            secondOfMinute: Int,
            zone: DateTimeZone) {
     this()
-    super.auxConstructor(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, 0, zone)
+    super.auxConstructor(year,
+                         monthOfYear,
+                         dayOfMonth,
+                         hourOfDay,
+                         minuteOfHour,
+                         secondOfMinute,
+                         0,
+                         zone)
   }
 
   def this(year: Int,
@@ -233,7 +270,14 @@ class DateTime extends BaseDateTime with ReadableDateTime with Serializable {
            secondOfMinute: Int,
            chronology: Chronology) {
     this()
-    super.auxConstructor(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, 0, chronology)
+    super.auxConstructor(year,
+                         monthOfYear,
+                         dayOfMonth,
+                         hourOfDay,
+                         minuteOfHour,
+                         secondOfMinute,
+                         0,
+                         chronology)
   }
 
   def this(year: Int,
@@ -244,7 +288,13 @@ class DateTime extends BaseDateTime with ReadableDateTime with Serializable {
            secondOfMinute: Int,
            millisOfSecond: Int) {
     this()
-    super.auxConstructor(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond)
+    super.auxConstructor(year,
+                         monthOfYear,
+                         dayOfMonth,
+                         hourOfDay,
+                         minuteOfHour,
+                         secondOfMinute,
+                         millisOfSecond)
   }
 
   def this(year: Int,
@@ -256,7 +306,14 @@ class DateTime extends BaseDateTime with ReadableDateTime with Serializable {
            millisOfSecond: Int,
            zone: DateTimeZone) {
     this()
-    super.auxConstructor(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond, zone)
+    super.auxConstructor(year,
+                         monthOfYear,
+                         dayOfMonth,
+                         hourOfDay,
+                         minuteOfHour,
+                         secondOfMinute,
+                         millisOfSecond,
+                         zone)
   }
 
   def this(year: Int,
@@ -268,7 +325,14 @@ class DateTime extends BaseDateTime with ReadableDateTime with Serializable {
            millisOfSecond: Int,
            chronology: Chronology) {
     this()
-    super.auxConstructor(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond, chronology)
+    super.auxConstructor(year,
+                         monthOfYear,
+                         dayOfMonth,
+                         hourOfDay,
+                         minuteOfHour,
+                         secondOfMinute,
+                         millisOfSecond,
+                         chronology)
   }
 
   override def toDateTime(): DateTime = this
@@ -299,13 +363,15 @@ class DateTime extends BaseDateTime with ReadableDateTime with Serializable {
   }
 
   def withMillis(newMillis: Long): DateTime = {
-    if (newMillis == getMillis) this else new DateTime(newMillis, getChronology)
+    if (newMillis == getMillis) this
+    else new DateTime(newMillis, getChronology)
   }
 
   def withChronology(newChronology: Chronology): DateTime = {
     var _newChronology = newChronology
     _newChronology = DateTimeUtils.getChronology(_newChronology)
-    if (_newChronology == getChronology) this else new DateTime(getMillis, _newChronology)
+    if (_newChronology == getChronology) this
+    else new DateTime(getMillis, _newChronology)
   }
 
   def withZone(newZone: DateTimeZone): DateTime = {
@@ -360,7 +426,10 @@ class DateTime extends BaseDateTime with ReadableDateTime with Serializable {
   }
 
   def withTime(time: LocalTime): DateTime = {
-    withTime(time.getHourOfDay, time.getMinuteOfHour, time.getSecondOfMinute, time.getMillisOfSecond)
+    withTime(time.getHourOfDay,
+             time.getMinuteOfHour,
+             time.getSecondOfMinute,
+             time.getMillisOfSecond)
   }
 
   def withTimeAtStartOfDay(): DateTime = {
@@ -401,7 +470,8 @@ class DateTime extends BaseDateTime with ReadableDateTime with Serializable {
     withMillis(instant)
   }
 
-  def withDurationAdded(durationToAdd: ReadableDuration, scalar: Int): DateTime = {
+  def withDurationAdded(durationToAdd: ReadableDuration,
+                        scalar: Int): DateTime = {
     if (durationToAdd == null || scalar == 0) {
       return this
     }
@@ -418,7 +488,8 @@ class DateTime extends BaseDateTime with ReadableDateTime with Serializable {
 
   def plus(duration: Long): DateTime = withDurationAdded(duration, 1)
 
-  def plus(duration: ReadableDuration): DateTime = withDurationAdded(duration, 1)
+  def plus(duration: ReadableDuration): DateTime =
+    withDurationAdded(duration, 1)
 
   def plus(period: ReadablePeriod): DateTime = withPeriodAdded(period, 1)
 
@@ -488,7 +559,8 @@ class DateTime extends BaseDateTime with ReadableDateTime with Serializable {
 
   def minus(duration: Long): DateTime = withDurationAdded(duration, -1)
 
-  def minus(duration: ReadableDuration): DateTime = withDurationAdded(duration, -1)
+  def minus(duration: ReadableDuration): DateTime =
+    withDurationAdded(duration, -1)
 
   def minus(period: ReadablePeriod): DateTime = withPeriodAdded(period, -1)
 
@@ -558,11 +630,13 @@ class DateTime extends BaseDateTime with ReadableDateTime with Serializable {
 
   def property(`type`: DateTimeFieldType): Property = {
     if (`type` == null) {
-      throw new IllegalArgumentException("The DateTimeFieldType must not be null")
+      throw new IllegalArgumentException(
+        "The DateTimeFieldType must not be null")
     }
     val field = `type`.getField(getChronology)
     if (field.isSupported == false) {
-      throw new IllegalArgumentException("Field '" + `type` + "' is not supported")
+      throw new IllegalArgumentException(
+        "Field '" + `type` + "' is not supported")
     }
     new Property(this, field)
   }

@@ -20,12 +20,16 @@ object StrictDateTimeField {
 }
 
 @SerialVersionUID(3154803964207950910L)
-class StrictDateTimeField protected (field: DateTimeField) extends DelegatedDateTimeField(field) {
+class StrictDateTimeField protected (field: DateTimeField)
+    extends DelegatedDateTimeField(field) {
 
   override def isLenient(): Boolean = false
 
   override def set(instant: Long, value: Int): Long = {
-    FieldUtils.verifyValueBounds(this, value, getMinimumValue(instant), getMaximumValue(instant))
+    FieldUtils.verifyValueBounds(this,
+                                 value,
+                                 getMinimumValue(instant),
+                                 getMaximumValue(instant))
     super.set(instant, value)
   }
 }

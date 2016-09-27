@@ -16,24 +16,54 @@ object ConverterManager {
 
 class ConverterManager {
 
-  private var iInstantConverters: ConverterSet = new ConverterSet(Array(ReadableInstantConverter.INSTANCE, StringConverter.INSTANCE, CalendarConverter.INSTANCE, DateConverter.INSTANCE, LongConverter.INSTANCE, NullConverter.INSTANCE))
-  private var iPartialConverters: ConverterSet = new ConverterSet(Array(ReadablePartialConverter.INSTANCE, ReadableInstantConverter.INSTANCE, StringConverter.INSTANCE, CalendarConverter.INSTANCE, DateConverter.INSTANCE, LongConverter.INSTANCE, NullConverter.INSTANCE))
-  private var iDurationConverters: ConverterSet = new ConverterSet(Array(ReadableDurationConverter.INSTANCE, ReadableIntervalConverter.INSTANCE, StringConverter.INSTANCE, LongConverter.INSTANCE, NullConverter.INSTANCE))
-  private var iPeriodConverters: ConverterSet = new ConverterSet(Array(ReadableDurationConverter.INSTANCE, ReadablePeriodConverter.INSTANCE, ReadableIntervalConverter.INSTANCE, StringConverter.INSTANCE, NullConverter.INSTANCE))
-  private var iIntervalConverters: ConverterSet = new ConverterSet(Array(ReadableIntervalConverter.INSTANCE, StringConverter.INSTANCE, NullConverter.INSTANCE))
+  private var iInstantConverters: ConverterSet = new ConverterSet(
+    Array(ReadableInstantConverter.INSTANCE,
+          StringConverter.INSTANCE,
+          CalendarConverter.INSTANCE,
+          DateConverter.INSTANCE,
+          LongConverter.INSTANCE,
+          NullConverter.INSTANCE))
+  private var iPartialConverters: ConverterSet = new ConverterSet(
+    Array(ReadablePartialConverter.INSTANCE,
+          ReadableInstantConverter.INSTANCE,
+          StringConverter.INSTANCE,
+          CalendarConverter.INSTANCE,
+          DateConverter.INSTANCE,
+          LongConverter.INSTANCE,
+          NullConverter.INSTANCE))
+  private var iDurationConverters: ConverterSet = new ConverterSet(
+    Array(ReadableDurationConverter.INSTANCE,
+          ReadableIntervalConverter.INSTANCE,
+          StringConverter.INSTANCE,
+          LongConverter.INSTANCE,
+          NullConverter.INSTANCE))
+  private var iPeriodConverters: ConverterSet = new ConverterSet(
+    Array(ReadableDurationConverter.INSTANCE,
+          ReadablePeriodConverter.INSTANCE,
+          ReadableIntervalConverter.INSTANCE,
+          StringConverter.INSTANCE,
+          NullConverter.INSTANCE))
+  private var iIntervalConverters: ConverterSet = new ConverterSet(
+    Array(ReadableIntervalConverter.INSTANCE,
+          StringConverter.INSTANCE,
+          NullConverter.INSTANCE))
 
   def getInstantConverter(`object`: AnyRef): InstantConverter = {
-    val converter = iInstantConverters.select(if (`object` == null) null else `object`.getClass).asInstanceOf[InstantConverter]
+    val converter = iInstantConverters
+      .select(if (`object` == null) null else `object`.getClass)
+      .asInstanceOf[InstantConverter]
     if (converter != null) {
       return converter
     }
-    throw new IllegalArgumentException("No instant converter found for type: " +
-      (if (`object` == null) "null" else `object`.getClass.getName))
+    throw new IllegalArgumentException(
+      "No instant converter found for type: " +
+        (if (`object` == null) "null" else `object`.getClass.getName))
   }
 
   def getInstantConverters(): Array[InstantConverter] = {
     val set = iInstantConverters
-    val converters: Array[InstantConverter] = Array.ofDim[InstantConverter](set.size)
+    val converters: Array[InstantConverter] =
+      Array.ofDim[InstantConverter](set.size)
     set.copyInto(converters)
     converters
   }
@@ -61,17 +91,21 @@ class ConverterManager {
   private def checkAlterInstantConverters() {
     val sm = System.getSecurityManager
     if (sm != null) {
-      sm.checkPermission(new JodaTimePermission("ConverterManager.alterInstantConverters"))
+      sm.checkPermission(
+        new JodaTimePermission("ConverterManager.alterInstantConverters"))
     }
   }
 
   def getPartialConverter(`object`: AnyRef): PartialConverter = {
-    val converter = iPartialConverters.select(if (`object` == null) null else `object`.getClass).asInstanceOf[PartialConverter]
+    val converter = iPartialConverters
+      .select(if (`object` == null) null else `object`.getClass)
+      .asInstanceOf[PartialConverter]
     if (converter != null) {
       return converter
     }
-    throw new IllegalArgumentException("No partial converter found for type: " +
-      (if (`object` == null) "null" else `object`.getClass.getName))
+    throw new IllegalArgumentException(
+      "No partial converter found for type: " +
+        (if (`object` == null) "null" else `object`.getClass.getName))
   }
 
   def getPartialConverters(): Array[PartialConverter] = {
@@ -104,17 +138,21 @@ class ConverterManager {
   private def checkAlterPartialConverters() {
     val sm = System.getSecurityManager
     if (sm != null) {
-      sm.checkPermission(new JodaTimePermission("ConverterManager.alterPartialConverters"))
+      sm.checkPermission(
+        new JodaTimePermission("ConverterManager.alterPartialConverters"))
     }
   }
 
   def getDurationConverter(`object`: AnyRef): DurationConverter = {
-    val converter = iDurationConverters.select(if (`object` == null) null else `object`.getClass).asInstanceOf[DurationConverter]
+    val converter = iDurationConverters
+      .select(if (`object` == null) null else `object`.getClass)
+      .asInstanceOf[DurationConverter]
     if (converter != null) {
       return converter
     }
-    throw new IllegalArgumentException("No duration converter found for type: " +
-      (if (`object` == null) "null" else `object`.getClass.getName))
+    throw new IllegalArgumentException(
+      "No duration converter found for type: " +
+        (if (`object` == null) "null" else `object`.getClass.getName))
   }
 
   def getDurationConverters(): Array[DurationConverter] = {
@@ -134,7 +172,8 @@ class ConverterManager {
     removed(0)
   }
 
-  def removeDurationConverter(converter: DurationConverter): DurationConverter = {
+  def removeDurationConverter(
+      converter: DurationConverter): DurationConverter = {
     checkAlterDurationConverters()
     if (converter == null) {
       return null
@@ -147,17 +186,21 @@ class ConverterManager {
   private def checkAlterDurationConverters() {
     val sm = System.getSecurityManager
     if (sm != null) {
-      sm.checkPermission(new JodaTimePermission("ConverterManager.alterDurationConverters"))
+      sm.checkPermission(
+        new JodaTimePermission("ConverterManager.alterDurationConverters"))
     }
   }
 
   def getPeriodConverter(`object`: AnyRef): PeriodConverter = {
-    val converter = iPeriodConverters.select(if (`object` == null) null else `object`.getClass).asInstanceOf[PeriodConverter]
+    val converter = iPeriodConverters
+      .select(if (`object` == null) null else `object`.getClass)
+      .asInstanceOf[PeriodConverter]
     if (converter != null) {
       return converter
     }
-    throw new IllegalArgumentException("No period converter found for type: " +
-      (if (`object` == null) "null" else `object`.getClass.getName))
+    throw new IllegalArgumentException(
+      "No period converter found for type: " +
+        (if (`object` == null) "null" else `object`.getClass.getName))
   }
 
   def getPeriodConverters(): Array[PeriodConverter] = {
@@ -190,17 +233,21 @@ class ConverterManager {
   private def checkAlterPeriodConverters() {
     val sm = System.getSecurityManager
     if (sm != null) {
-      sm.checkPermission(new JodaTimePermission("ConverterManager.alterPeriodConverters"))
+      sm.checkPermission(
+        new JodaTimePermission("ConverterManager.alterPeriodConverters"))
     }
   }
 
   def getIntervalConverter(`object`: AnyRef): IntervalConverter = {
-    val converter = iIntervalConverters.select(if (`object` == null) null else `object`.getClass).asInstanceOf[IntervalConverter]
+    val converter = iIntervalConverters
+      .select(if (`object` == null) null else `object`.getClass)
+      .asInstanceOf[IntervalConverter]
     if (converter != null) {
       return converter
     }
-    throw new IllegalArgumentException("No interval converter found for type: " +
-      (if (`object` == null) "null" else `object`.getClass.getName))
+    throw new IllegalArgumentException(
+      "No interval converter found for type: " +
+        (if (`object` == null) "null" else `object`.getClass.getName))
   }
 
   def getIntervalConverters(): Array[IntervalConverter] = {
@@ -220,7 +267,8 @@ class ConverterManager {
     removed(0)
   }
 
-  def removeIntervalConverter(converter: IntervalConverter): IntervalConverter = {
+  def removeIntervalConverter(
+      converter: IntervalConverter): IntervalConverter = {
     checkAlterIntervalConverters()
     if (converter == null) {
       return null
@@ -233,7 +281,8 @@ class ConverterManager {
   private def checkAlterIntervalConverters() {
     val sm = System.getSecurityManager
     if (sm != null) {
-      sm.checkPermission(new JodaTimePermission("ConverterManager.alterIntervalConverters"))
+      sm.checkPermission(
+        new JodaTimePermission("ConverterManager.alterIntervalConverters"))
     }
   }
 

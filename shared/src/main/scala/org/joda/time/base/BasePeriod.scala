@@ -28,12 +28,14 @@ object BasePeriod {
 }
 
 @SerialVersionUID(-2110953284060001145L)
-abstract class BasePeriod extends AbstractPeriod() with ReadablePeriod with Serializable {
+abstract class BasePeriod
+    extends AbstractPeriod()
+    with ReadablePeriod
+    with Serializable {
 
-  
   private var iValues: Array[Int] = null
   private var iType: PeriodType = null
-  
+
   def this(years: Int,
            months: Int,
            weeks: Int,
@@ -44,7 +46,14 @@ abstract class BasePeriod extends AbstractPeriod() with ReadablePeriod with Seri
            millis: Int,
            `type`: PeriodType) {
     this()
-    iValues = setPeriodInternal(years, months, weeks, days, hours, minutes, seconds, millis)
+    iValues = setPeriodInternal(years,
+                                months,
+                                weeks,
+                                days,
+                                hours,
+                                minutes,
+                                seconds,
+                                millis)
     iType = checkPeriodType(`type`)
   }
 
@@ -61,9 +70,11 @@ abstract class BasePeriod extends AbstractPeriod() with ReadablePeriod with Seri
     iValues = _chrono.get(this, startInstant, endInstant)
   }
 
-  protected def this(startInstant: ReadableInstant, endInstant: ReadableInstant, `type`: PeriodType) {
+  protected def this(startInstant: ReadableInstant,
+                     endInstant: ReadableInstant,
+                     `type`: PeriodType) {
     this()
-    var _type:PeriodType = `type`
+    var _type: PeriodType = `type`
     _type = checkPeriodType(_type)
     if (startInstant == null && endInstant == null) {
       iType = _type
@@ -71,20 +82,24 @@ abstract class BasePeriod extends AbstractPeriod() with ReadablePeriod with Seri
     } else {
       val startMillis = DateTimeUtils.getInstantMillis(startInstant)
       val endMillis = DateTimeUtils.getInstantMillis(endInstant)
-      val chrono = DateTimeUtils.getIntervalChronology(startInstant, endInstant)
+      val chrono =
+        DateTimeUtils.getIntervalChronology(startInstant, endInstant)
       iType = _type
       iValues = chrono.get(this, startMillis, endMillis)
     }
   }
 
-  protected def this(start: ReadablePartial, end: ReadablePartial, `type`: PeriodType) {
+  protected def this(start: ReadablePartial,
+                     end: ReadablePartial,
+                     `type`: PeriodType) {
     this()
     var _type: PeriodType = `type`
     if (start == null || end == null) {
-      throw new IllegalArgumentException("ReadablePartial objects must not be null")
+      throw new IllegalArgumentException(
+        "ReadablePartial objects must not be null")
     }
     if (start.isInstanceOf[BaseLocal] && end.isInstanceOf[BaseLocal] &&
-      start.getClass == end.getClass) {
+        start.getClass == end.getClass) {
       _type = checkPeriodType(_type)
       val startMillis = start.asInstanceOf[BaseLocal].getLocalMillis()
       val endMillis = end.asInstanceOf[BaseLocal].getLocalMillis()
@@ -94,13 +109,17 @@ abstract class BasePeriod extends AbstractPeriod() with ReadablePeriod with Seri
       iValues = chrono.get(this, startMillis, endMillis)
     } else {
       if (start.size != end.size) {
-        throw new IllegalArgumentException("ReadablePartial objects must have the same set of fields")
+        throw new IllegalArgumentException(
+          "ReadablePartial objects must have the same set of fields")
       }
-      for (i <- 0 until start.size() if start.getFieldType(i) != end.getFieldType(i)) {
-        throw new IllegalArgumentException("ReadablePartial objects must have the same set of fields")
+      for (i <- 0 until start.size()
+           if start.getFieldType(i) != end.getFieldType(i)) {
+        throw new IllegalArgumentException(
+          "ReadablePartial objects must have the same set of fields")
       }
       if (DateTimeUtils.isContiguous(start) == false) {
-        throw new IllegalArgumentException("ReadablePartial objects must be contiguous")
+        throw new IllegalArgumentException(
+          "ReadablePartial objects must be contiguous")
       }
       iType = checkPeriodType(_type)
       val chrono = DateTimeUtils.getChronology(start.getChronology).withUTC()
@@ -108,7 +127,9 @@ abstract class BasePeriod extends AbstractPeriod() with ReadablePeriod with Seri
     }
   }
 
-  protected def this(startInstant: ReadableInstant, duration: ReadableDuration, `type`: PeriodType) {
+  protected def this(startInstant: ReadableInstant,
+                     duration: ReadableDuration,
+                     `type`: PeriodType) {
     this()
     var _type: PeriodType = `type`
     _type = checkPeriodType(_type)
@@ -120,7 +141,9 @@ abstract class BasePeriod extends AbstractPeriod() with ReadablePeriod with Seri
     iValues = chrono.get(this, startMillis, endMillis)
   }
 
-  protected def this(duration: ReadableDuration, endInstant: ReadableInstant, `type`: PeriodType) {
+  protected def this(duration: ReadableDuration,
+                     endInstant: ReadableInstant,
+                     `type`: PeriodType) {
     this()
     var _type: PeriodType = `type`
     _type = checkPeriodType(_type)
@@ -172,8 +195,10 @@ abstract class BasePeriod extends AbstractPeriod() with ReadablePeriod with Seri
     iType = `type`
     iValues = values
   }
-  
-  protected def auxConstructor(duration: Long, `type`: PeriodType, chrono: Chronology): Unit = {
+
+  protected def auxConstructor(duration: Long,
+                               `type`: PeriodType,
+                               chrono: Chronology): Unit = {
     var _type = `type`
     var _chrono = chrono
     _type = checkPeriodType(_type)
@@ -181,7 +206,7 @@ abstract class BasePeriod extends AbstractPeriod() with ReadablePeriod with Seri
     iType = _type
     iValues = _chrono.get(this, duration)
   }
-  
+
   protected def auxConstructor(years: Int,
                                months: Int,
                                weeks: Int,
@@ -191,17 +216,24 @@ abstract class BasePeriod extends AbstractPeriod() with ReadablePeriod with Seri
                                seconds: Int,
                                millis: Int,
                                `type`: PeriodType): Unit = {
-    iValues = setPeriodInternal(years, months, weeks, days, hours, minutes, seconds, millis)
+    iValues = setPeriodInternal(years,
+                                months,
+                                weeks,
+                                days,
+                                hours,
+                                minutes,
+                                seconds,
+                                millis)
     iType = checkPeriodType(`type`)
   }
-  
+
   protected def auxConstructor(duration: Long): Unit = {
     iType = PeriodType.standard()
     val values = ISOChronology.getInstanceUTC.get(DUMMY_PERIOD, duration)
     iValues = Array.ofDim[Int](8)
     System.arraycopy(values, 0, iValues, 4, 4)
   }
-  
+
   protected def auxConstructor(startInstant: Long,
                                endInstant: Long,
                                `type`: PeriodType,
@@ -213,9 +245,11 @@ abstract class BasePeriod extends AbstractPeriod() with ReadablePeriod with Seri
     iType = _type
     iValues = _chrono.get(this, startInstant, endInstant)
   }
-  
-  protected def auxConstructor(startInstant: ReadableInstant, endInstant: ReadableInstant, `type`: PeriodType): Unit = {
-    var _type:PeriodType = `type`
+
+  protected def auxConstructor(startInstant: ReadableInstant,
+                               endInstant: ReadableInstant,
+                               `type`: PeriodType): Unit = {
+    var _type: PeriodType = `type`
     _type = checkPeriodType(_type)
     if (startInstant == null && endInstant == null) {
       iType = _type
@@ -223,13 +257,16 @@ abstract class BasePeriod extends AbstractPeriod() with ReadablePeriod with Seri
     } else {
       val startMillis = DateTimeUtils.getInstantMillis(startInstant)
       val endMillis = DateTimeUtils.getInstantMillis(endInstant)
-      val chrono = DateTimeUtils.getIntervalChronology(startInstant, endInstant)
+      val chrono =
+        DateTimeUtils.getIntervalChronology(startInstant, endInstant)
       iType = _type
       iValues = chrono.get(this, startMillis, endMillis)
     }
   }
-  
-  protected def auxConstructor(startInstant: ReadableInstant, duration: ReadableDuration, `type`: PeriodType): Unit = {
+
+  protected def auxConstructor(startInstant: ReadableInstant,
+                               duration: ReadableDuration,
+                               `type`: PeriodType): Unit = {
     var _type: PeriodType = `type`
     _type = checkPeriodType(_type)
     val startMillis = DateTimeUtils.getInstantMillis(startInstant)
@@ -239,8 +276,10 @@ abstract class BasePeriod extends AbstractPeriod() with ReadablePeriod with Seri
     iType = _type
     iValues = chrono.get(this, startMillis, endMillis)
   }
-  
-  protected def auxConstructor(duration: ReadableDuration, endInstant: ReadableInstant, `type`: PeriodType): Unit = {
+
+  protected def auxConstructor(duration: ReadableDuration,
+                               endInstant: ReadableInstant,
+                               `type`: PeriodType): Unit = {
     var _type: PeriodType = `type`
     _type = checkPeriodType(_type)
     val durationMillis = DateTimeUtils.getDurationMillis(duration)
@@ -250,8 +289,10 @@ abstract class BasePeriod extends AbstractPeriod() with ReadablePeriod with Seri
     iType = _type
     iValues = chrono.get(this, startMillis, endMillis)
   }
-  
-  protected def auxConstructor(period: AnyRef, `type`: PeriodType, chrono: Chronology): Unit = {
+
+  protected def auxConstructor(period: AnyRef,
+                               `type`: PeriodType,
+                               chrono: Chronology): Unit = {
     var _type = `type`
     var _chrono = chrono
     val converter = ConverterManager.getInstance.getPeriodConverter(period)
@@ -266,14 +307,17 @@ abstract class BasePeriod extends AbstractPeriod() with ReadablePeriod with Seri
       iValues = new MutablePeriod(period, _type, _chrono).getValues
     }
   }
-  
-  protected def auxConstructor(start: ReadablePartial, end: ReadablePartial, `type`: PeriodType): Unit = {
+
+  protected def auxConstructor(start: ReadablePartial,
+                               end: ReadablePartial,
+                               `type`: PeriodType): Unit = {
     var _type: PeriodType = `type`
     if (start == null || end == null) {
-      throw new IllegalArgumentException("ReadablePartial objects must not be null")
+      throw new IllegalArgumentException(
+        "ReadablePartial objects must not be null")
     }
     if (start.isInstanceOf[BaseLocal] && end.isInstanceOf[BaseLocal] &&
-      start.getClass == end.getClass) {
+        start.getClass == end.getClass) {
       _type = checkPeriodType(_type)
       val startMillis = start.asInstanceOf[BaseLocal].getLocalMillis()
       val endMillis = end.asInstanceOf[BaseLocal].getLocalMillis()
@@ -283,26 +327,31 @@ abstract class BasePeriod extends AbstractPeriod() with ReadablePeriod with Seri
       iValues = chrono.get(this, startMillis, endMillis)
     } else {
       if (start.size != end.size) {
-        throw new IllegalArgumentException("ReadablePartial objects must have the same set of fields")
+        throw new IllegalArgumentException(
+          "ReadablePartial objects must have the same set of fields")
       }
-      for (i <- 0 until start.size() if start.getFieldType(i) != end.getFieldType(i)) {
-        throw new IllegalArgumentException("ReadablePartial objects must have the same set of fields")
+      for (i <- 0 until start.size()
+           if start.getFieldType(i) != end.getFieldType(i)) {
+        throw new IllegalArgumentException(
+          "ReadablePartial objects must have the same set of fields")
       }
       if (DateTimeUtils.isContiguous(start) == false) {
-        throw new IllegalArgumentException("ReadablePartial objects must be contiguous")
+        throw new IllegalArgumentException(
+          "ReadablePartial objects must be contiguous")
       }
       iType = checkPeriodType(_type)
       val chrono = DateTimeUtils.getChronology(start.getChronology).withUTC()
       iValues = chrono.get(this, chrono.set(start, 0L), chrono.set(end, 0L))
     }
   }
-  
+
   protected def auxConstructor(values: Array[Int], `type`: PeriodType): Unit = {
     iType = `type`
     iValues = values
   }
 
-  protected def checkPeriodType(`type`: PeriodType): PeriodType = DateTimeUtils.getPeriodType(`type`)
+  protected def checkPeriodType(`type`: PeriodType): PeriodType =
+    DateTimeUtils.getPeriodType(`type`)
 
   def getPeriodType(): PeriodType = iType
 
@@ -322,11 +371,14 @@ abstract class BasePeriod extends AbstractPeriod() with ReadablePeriod with Seri
     new Duration(startMillis, endMillis)
   }
 
-  private def checkAndUpdate(`type`: DurationFieldType, values: Array[Int], newValue: Int) {
+  private def checkAndUpdate(`type`: DurationFieldType,
+                             values: Array[Int],
+                             newValue: Int) {
     val index = indexOf(`type`)
     if (index == -1) {
       if (newValue != 0) {
-        throw new IllegalArgumentException("Period does not support field '" + `type`.getName + "'")
+        throw new IllegalArgumentException(
+          "Period does not support field '" + `type`.getName + "'")
       }
     } else {
       values(index) = newValue
@@ -359,7 +411,14 @@ abstract class BasePeriod extends AbstractPeriod() with ReadablePeriod with Seri
                           minutes: Int,
                           seconds: Int,
                           millis: Int) {
-    val newValues = setPeriodInternal(years, months, weeks, days, hours, minutes, seconds, millis)
+    val newValues = setPeriodInternal(years,
+                                      months,
+                                      weeks,
+                                      days,
+                                      hours,
+                                      minutes,
+                                      seconds,
+                                      millis)
     setValues(newValues)
   }
 
@@ -387,11 +446,14 @@ abstract class BasePeriod extends AbstractPeriod() with ReadablePeriod with Seri
     setFieldInto(iValues, field, value)
   }
 
-  protected def setFieldInto(values: Array[Int], field: DurationFieldType, value: Int) {
+  protected def setFieldInto(values: Array[Int],
+                             field: DurationFieldType,
+                             value: Int) {
     val index = indexOf(field)
     if (index == -1) {
       if (value != 0 || field == null) {
-        throw new IllegalArgumentException("Period does not support field '" + field + "'")
+        throw new IllegalArgumentException(
+          "Period does not support field '" + field + "'")
       }
     } else {
       values(index) = value
@@ -402,11 +464,14 @@ abstract class BasePeriod extends AbstractPeriod() with ReadablePeriod with Seri
     addFieldInto(iValues, field, value)
   }
 
-  protected def addFieldInto(values: Array[Int], field: DurationFieldType, value: Int) {
+  protected def addFieldInto(values: Array[Int],
+                             field: DurationFieldType,
+                             value: Int) {
     val index = indexOf(field)
     if (index == -1) {
       if (value != 0 || field == null) {
-        throw new IllegalArgumentException("Period does not support field '" + field + "'")
+        throw new IllegalArgumentException(
+          "Period does not support field '" + field + "'")
       }
     } else {
       values(index) = FieldUtils.safeAdd(values(index), value)
@@ -419,7 +484,8 @@ abstract class BasePeriod extends AbstractPeriod() with ReadablePeriod with Seri
     }
   }
 
-  protected def mergePeriodInto(values: Array[Int], period: ReadablePeriod): Array[Int] = {
+  protected def mergePeriodInto(values: Array[Int],
+                                period: ReadablePeriod): Array[Int] = {
     for (i <- 0 until period.size()) {
       val `type` = period.getFieldType(i)
       val value = period.getValue(i)
@@ -434,14 +500,16 @@ abstract class BasePeriod extends AbstractPeriod() with ReadablePeriod with Seri
     }
   }
 
-  protected def addPeriodInto(values: Array[Int], period: ReadablePeriod): Array[Int] = {
+  protected def addPeriodInto(values: Array[Int],
+                              period: ReadablePeriod): Array[Int] = {
     for (i <- 0 until period.size()) {
       val `type` = period.getFieldType(i)
       val value = period.getValue(i)
       if (value != 0) {
         val index = indexOf(`type`)
         if (index == -1) {
-          throw new IllegalArgumentException("Period does not support field '" + `type`.getName + "'")
+          throw new IllegalArgumentException(
+            "Period does not support field '" + `type`.getName + "'")
         } else {
           values(index) = FieldUtils.safeAdd(getValue(index), value)
         }

@@ -13,11 +13,12 @@ object BasicWeekyearDateTimeField {
 }
 
 @SerialVersionUID(6215066916806820644L)
-class BasicWeekyearDateTimeField(private val chronology: BasicChronology) extends ImpreciseDateTimeField(DateTimeFieldType.weekyear(),
-  chronology.getAverageMillisPerYear) {
+class BasicWeekyearDateTimeField(private val chronology: BasicChronology)
+    extends ImpreciseDateTimeField(DateTimeFieldType.weekyear(),
+                                   chronology.getAverageMillisPerYear) {
 
   private val iChronology: BasicChronology = chronology
-  
+
   def isLenient(): Boolean = false
 
   def get(instant: Long): Int = iChronology.getWeekyear(instant)
@@ -33,9 +34,11 @@ class BasicWeekyearDateTimeField(private val chronology: BasicChronology) extend
     add(instant, FieldUtils.safeToInt(value))
   }
 
-  override def addWrapField(instant: Long, years: Int): Long = add(instant, years)
+  override def addWrapField(instant: Long, years: Int): Long =
+    add(instant, years)
 
-  override def getDifferenceAsLong(minuendInstant: Long, subtrahendInstant: Long): Long = {
+  override def getDifferenceAsLong(minuendInstant: Long,
+                                   subtrahendInstant: Long): Long = {
     if (minuendInstant < subtrahendInstant) {
       return -getDifference(subtrahendInstant, minuendInstant)
     }
@@ -54,7 +57,10 @@ class BasicWeekyearDateTimeField(private val chronology: BasicChronology) extend
   }
 
   def set(instant: Long, year: Int): Long = {
-    FieldUtils.verifyValueBounds(this, Math.abs(year), iChronology.getMinYear, iChronology.getMaxYear)
+    FieldUtils.verifyValueBounds(this,
+                                 Math.abs(year),
+                                 iChronology.getMinYear,
+                                 iChronology.getMaxYear)
     val thisWeekyear = get(instant)
     if (thisWeekyear == year) {
       return instant
@@ -62,7 +68,8 @@ class BasicWeekyearDateTimeField(private val chronology: BasicChronology) extend
     val thisDow = iChronology.getDayOfWeek(instant)
     val weeksInFromYear = iChronology.getWeeksInYear(thisWeekyear)
     val weeksInToYear = iChronology.getWeeksInYear(year)
-    val maxOutWeeks = if ((weeksInToYear < weeksInFromYear)) weeksInToYear else weeksInFromYear
+    val maxOutWeeks =
+      if ((weeksInToYear < weeksInFromYear)) weeksInToYear else weeksInFromYear
     var setToWeek = iChronology.getWeekOfWeekyear(instant)
     if (setToWeek > maxOutWeeks) {
       setToWeek = maxOutWeeks
@@ -77,7 +84,7 @@ class BasicWeekyearDateTimeField(private val chronology: BasicChronology) extend
     }
     val currentWoyWeek = iChronology.getWeekOfWeekyear(workInstant)
     workInstant = workInstant +
-      (setToWeek - currentWoyWeek) * DateTimeConstants.MILLIS_PER_WEEK.toLong
+        (setToWeek - currentWoyWeek) * DateTimeConstants.MILLIS_PER_WEEK.toLong
     workInstant = iChronology.dayOfWeek().set(workInstant, thisDow)
     workInstant
   }

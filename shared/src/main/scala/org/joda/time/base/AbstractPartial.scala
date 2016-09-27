@@ -11,11 +11,14 @@ import org.joda.time.ReadablePartial
 import org.joda.time.field.FieldUtils
 import org.joda.time.format.DateTimeFormatter
 
-abstract class AbstractPartial protected () extends ReadablePartial() with Comparable[ReadablePartial] {
+abstract class AbstractPartial protected ()
+    extends ReadablePartial()
+    with Comparable[ReadablePartial] {
 
   protected def getField(index: Int, chrono: Chronology): DateTimeField
 
-  def getFieldType(index: Int): DateTimeFieldType = getField(index, getChronology).getType
+  def getFieldType(index: Int): DateTimeFieldType =
+    getField(index, getChronology).getType
 
   def getFieldTypes(): Array[DateTimeFieldType] = {
     val result = Array.ofDim[DateTimeFieldType](size)
@@ -54,20 +57,23 @@ abstract class AbstractPartial protected () extends ReadablePartial() with Compa
   protected def indexOfSupported(`type`: DateTimeFieldType): Int = {
     val index = indexOf(`type`)
     if (index == -1) {
-      throw new IllegalArgumentException("Field '" + `type` + "' is not supported")
+      throw new IllegalArgumentException(
+        "Field '" + `type` + "' is not supported")
     }
     index
   }
 
   protected def indexOf(`type`: DurationFieldType): Int = {
-    (0 until this.size()).find(getFieldType(_).getDurationType == `type`)
+    (0 until this.size())
+      .find(getFieldType(_).getDurationType == `type`)
       .getOrElse(-1)
   }
 
   protected def indexOfSupported(`type`: DurationFieldType): Int = {
     val index = indexOf(`type`)
     if (index == -1) {
-      throw new IllegalArgumentException("Field '" + `type` + "' is not supported")
+      throw new IllegalArgumentException(
+        "Field '" + `type` + "' is not supported")
     }
     index
   }
@@ -90,7 +96,9 @@ abstract class AbstractPartial protected () extends ReadablePartial() with Compa
     if (size != other.size) {
       return false
     }
-    for (i <- 0 until this.size() if getValue(i) != other.getValue(i) || getFieldType(i) != other.getFieldType(i)) {
+    for (i <- 0 until this.size()
+         if getValue(i) != other.getValue(i) || getFieldType(i) != other
+           .getFieldType(i)) {
       return false
     }
     FieldUtils.equals(getChronology, other.getChronology)
@@ -111,10 +119,13 @@ abstract class AbstractPartial protected () extends ReadablePartial() with Compa
       return 0
     }
     if (size != other.size) {
-      throw new ClassCastException("ReadablePartial objects must have matching field types")
+      throw new ClassCastException(
+        "ReadablePartial objects must have matching field types")
     }
-    for (i <- 0 until this.size() if getFieldType(i) != other.getFieldType(i)) {
-      throw new ClassCastException("ReadablePartial objects must have matching field types")
+    for (i <- 0 until this.size()
+         if getFieldType(i) != other.getFieldType(i)) {
+      throw new ClassCastException(
+        "ReadablePartial objects must have matching field types")
     }
     for (i <- 0 until this.size()) {
       if (getValue(i) > other.getValue(i)) {

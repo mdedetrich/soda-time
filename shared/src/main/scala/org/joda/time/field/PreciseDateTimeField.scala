@@ -4,8 +4,10 @@ import org.joda.time.DateTimeFieldType
 import org.joda.time.DurationField
 
 @SerialVersionUID(-5586801265774496376L)
-class PreciseDateTimeField(`type`: DateTimeFieldType, unit: DurationField, private val range: DurationField)
-  extends PreciseDurationDateTimeField(`type`, unit) {
+class PreciseDateTimeField(`type`: DateTimeFieldType,
+                           unit: DurationField,
+                           private val range: DurationField)
+    extends PreciseDurationDateTimeField(`type`, unit) {
 
   private var iRangeField: DurationField = null
   private var iRange: Int = _
@@ -15,11 +17,12 @@ class PreciseDateTimeField(`type`: DateTimeFieldType, unit: DurationField, priva
   }
 
   val rangeMillis = range.getUnitMillis
-  
+
   iRange = (rangeMillis / getUnitMillis).toInt
-  
+
   if (iRange < 2) {
-    throw new IllegalArgumentException("The effective range must be at least 2")
+    throw new IllegalArgumentException(
+      "The effective range must be at least 2")
   }
 
   iRangeField = range
@@ -34,7 +37,8 @@ class PreciseDateTimeField(`type`: DateTimeFieldType, unit: DurationField, priva
 
   override def addWrapField(instant: Long, amount: Int): Long = {
     val thisValue = get(instant)
-    val wrappedValue = FieldUtils.getWrappedValue(thisValue, amount, getMinimumValue, getMaximumValue)
+    val wrappedValue = FieldUtils
+      .getWrappedValue(thisValue, amount, getMinimumValue, getMaximumValue)
     instant + (wrappedValue - thisValue) * getUnitMillis
   }
 

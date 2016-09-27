@@ -12,23 +12,29 @@ import org.joda.time.convert.ConverterManager
 import org.joda.time.field.FieldUtils
 
 @SerialVersionUID(2581698638990L)
-abstract class BaseDuration protected (private val millis: Long) extends AbstractDuration() with ReadableDuration with Serializable {
+abstract class BaseDuration protected (private val millis: Long)
+    extends AbstractDuration()
+    with ReadableDuration
+    with Serializable {
 
   @volatile private var iMillis: Long = millis
-  
+
   protected def auxConstructor(duration: Long): Unit = {
     iMillis = millis
   }
-  
+
   protected def auxConstructor(duration: AnyRef): Unit = {
-    iMillis = ConverterManager.getInstance.getDurationConverter(duration).getDurationMillis(duration)  
+    iMillis = ConverterManager.getInstance
+      .getDurationConverter(duration)
+      .getDurationMillis(duration)
   }
-  
-  protected def auxConstructor(startInstant: Long, endInstant: Long):Unit = {
+
+  protected def auxConstructor(startInstant: Long, endInstant: Long): Unit = {
     iMillis = FieldUtils.safeSubtract(endInstant, startInstant)
   }
-  
-  protected def auxConstructor(start: ReadableInstant, end: ReadableInstant):Unit = {
+
+  protected def auxConstructor(start: ReadableInstant,
+                               end: ReadableInstant): Unit = {
     iMillis = if (start == end) {
       0L
     } else {
@@ -37,9 +43,12 @@ abstract class BaseDuration protected (private val millis: Long) extends Abstrac
       FieldUtils.safeSubtract(endMillis, startMillis)
     }
   }
-  
+
   protected def this(duration: AnyRef) {
-    this(ConverterManager.getInstance.getDurationConverter(duration).getDurationMillis(duration))
+    this(
+      ConverterManager.getInstance
+        .getDurationConverter(duration)
+        .getDurationMillis(duration))
   }
 
   protected def this(startInstant: Long, endInstant: Long) {
@@ -68,17 +77,24 @@ abstract class BaseDuration protected (private val millis: Long) extends Abstrac
 
   def toPeriod(chrono: Chronology): Period = new Period(getMillis, chrono)
 
-  def toPeriod(`type`: PeriodType, chrono: Chronology): Period = new Period(getMillis, `type`, chrono)
+  def toPeriod(`type`: PeriodType, chrono: Chronology): Period =
+    new Period(getMillis, `type`, chrono)
 
-  def toPeriodFrom(startInstant: ReadableInstant): Period = new Period(startInstant, this)
+  def toPeriodFrom(startInstant: ReadableInstant): Period =
+    new Period(startInstant, this)
 
-  def toPeriodFrom(startInstant: ReadableInstant, `type`: PeriodType): Period = new Period(startInstant, this, `type`)
+  def toPeriodFrom(startInstant: ReadableInstant, `type`: PeriodType): Period =
+    new Period(startInstant, this, `type`)
 
-  def toPeriodTo(endInstant: ReadableInstant): Period = new Period(this, endInstant)
+  def toPeriodTo(endInstant: ReadableInstant): Period =
+    new Period(this, endInstant)
 
-  def toPeriodTo(endInstant: ReadableInstant, `type`: PeriodType): Period = new Period(this, endInstant, `type`)
+  def toPeriodTo(endInstant: ReadableInstant, `type`: PeriodType): Period =
+    new Period(this, endInstant, `type`)
 
-  def toIntervalFrom(startInstant: ReadableInstant): Interval = new Interval(startInstant, this)
+  def toIntervalFrom(startInstant: ReadableInstant): Interval =
+    new Interval(startInstant, this)
 
-  def toIntervalTo(endInstant: ReadableInstant): Interval = new Interval(this, endInstant)
+  def toIntervalTo(endInstant: ReadableInstant): Interval =
+    new Interval(this, endInstant)
 }

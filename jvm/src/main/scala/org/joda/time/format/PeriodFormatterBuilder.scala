@@ -40,15 +40,19 @@ object PeriodFormatterBuilder {
   private val MAX_FIELD = SECONDS_OPTIONAL_MILLIS
   private val PATTERNS = new ConcurrentHashMap[String, Pattern]()
 
-  private def toFormatter(elementPairs: List[Any], notPrinter: Boolean, notParser: Boolean): PeriodFormatter = {
+  private def toFormatter(elementPairs: List[Any],
+                          notPrinter: Boolean,
+                          notParser: Boolean): PeriodFormatter = {
     if (notPrinter && notParser) {
-      throw new IllegalStateException("Builder has created neither a printer nor a parser")
+      throw new IllegalStateException(
+        "Builder has created neither a printer nor a parser")
     }
     val size = elementPairs.size
     if (size >= 2 && elementPairs.get(0).isInstanceOf[Separator]) {
       var sep = elementPairs.get(0).asInstanceOf[Separator]
       if (sep.iAfterParser == null && sep.iAfterPrinter == null) {
-        val f = toFormatter(elementPairs.subList(2, size), notPrinter, notParser)
+        val f =
+          toFormatter(elementPairs.subList(2, size), notPrinter, notParser)
         sep = sep.finish(f.getPrinter, f.getParser)
         return new PeriodFormatter(sep, sep)
       }
@@ -59,18 +63,20 @@ object PeriodFormatterBuilder {
     } else if (notParser) {
       new PeriodFormatter(comp(0).asInstanceOf[PeriodPrinter], null)
     } else {
-      new PeriodFormatter(comp(0).asInstanceOf[PeriodPrinter], comp(1).asInstanceOf[PeriodParser])
+      new PeriodFormatter(comp(0).asInstanceOf[PeriodPrinter],
+                          comp(1).asInstanceOf[PeriodParser])
     }
   }
 
-  private def createComposite(elementPairs: List[Any]): Array[Any] = elementPairs.size match {
-    case 0 => Array(Literal.EMPTY, Literal.EMPTY)
-    case 1 => Array(elementPairs.get(0), elementPairs.get(1))
-    case _ =>
-      val comp = new Composite(elementPairs)
-      Array(comp, comp)
+  private def createComposite(elementPairs: List[Any]): Array[Any] =
+    elementPairs.size match {
+      case 0 => Array(Literal.EMPTY, Literal.EMPTY)
+      case 1 => Array(elementPairs.get(0), elementPairs.get(1))
+      case _ =>
+        val comp = new Composite(elementPairs)
+        Array(comp, comp)
 
-  }
+    }
 
   trait PeriodFieldAffix {
 
@@ -106,26 +112,38 @@ object PeriodFormatterBuilder {
         while (iterator.hasNext) {
           val periodFieldAffixToIgnore = iterator.next()
           if (periodFieldAffixToIgnore != null) {
-            periodFieldAffixToIgnore.getAffixes().foreach{affixToIgnore =>
-              if (affixToIgnore.length > shortestAffixLength || (affixToIgnore.equalsIgnoreCase(shortestAffix) && !(affixToIgnore == shortestAffix))) {
+            periodFieldAffixToIgnore.getAffixes().foreach { affixToIgnore =>
+              if (affixToIgnore.length > shortestAffixLength || (affixToIgnore.equalsIgnoreCase(
+                    shortestAffix) && !(affixToIgnore == shortestAffix))) {
                 affixesToIgnore.add(affixToIgnore)
               }
             }
           }
         }
-        
-        iOtherAffixes = affixesToIgnore.toArray(Array.ofDim[String](affixesToIgnore.size))
+
+        iOtherAffixes =
+          affixesToIgnore.toArray(Array.ofDim[String](affixesToIgnore.size))
       }
     }
 
-    protected def matchesOtherAffix(textLength: Int, periodStr: String, position: Int): Boolean = {
+    protected def matchesOtherAffix(textLength: Int,
+                                    periodStr: String,
+                                    position: Int): Boolean = {
       if (iOtherAffixes != null) {
         for (affixToIgnore <- iOtherAffixes) {
           val textToIgnoreLength = affixToIgnore.length
           if ((textLength < textToIgnoreLength &&
-            periodStr.regionMatches(true, position, affixToIgnore, 0, textToIgnoreLength)) ||
-            (textLength == textToIgnoreLength &&
-              periodStr.regionMatches(false, position, affixToIgnore, 0, textToIgnoreLength))) {
+              periodStr.regionMatches(true,
+                                      position,
+                                      affixToIgnore,
+                                      0,
+                                      textToIgnoreLength)) ||
+              (textLength == textToIgnoreLength &&
+              periodStr.regionMatches(false,
+                                      position,
+                                      affixToIgnore,
+                                      0,
+                                      textToIgnoreLength))) {
             return true
           }
         }
@@ -164,7 +182,7 @@ object PeriodFormatterBuilder {
 
       var flag = true
 
-      while(flag) {
+      while (flag) {
         for (pos <- position until sourceLength) {
           if (periodStr.regionMatches(true, pos, text, 0, textLength)) {
             if (!matchesOtherAffix(textLength, periodStr, pos)) {
@@ -172,7 +190,8 @@ object PeriodFormatterBuilder {
             }
           }
           periodStr.charAt(pos) match {
-            case '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '.' | ',' | '+' | '-' =>
+            case '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' |
+                '.' | ',' | '+' | '-' =>
               flag = false
               break()
             case _ => break()
@@ -185,8 +204,9 @@ object PeriodFormatterBuilder {
     def getAffixes(): Array[String] = Array(iText)
   }
 
-  class PluralAffix(private val iSingularText: String, private val iPluralText: String)
-    extends IgnorableAffix {
+  class PluralAffix(private val iSingularText: String,
+                    private val iPluralText: String)
+      extends IgnorableAffix {
 
     def calculatePrintedLength(value: Int): Int = {
       (if (value == 1) iSingularText else iPluralText).length
@@ -258,7 +278,8 @@ object PeriodFormatterBuilder {
     }
   }
 
-  class RegExAffix(regExes: Array[String], texts: Array[String]) extends IgnorableAffix {
+  class RegExAffix(regExes: Array[String], texts: Array[String])
+      extends IgnorableAffix {
 
     private val iSuffixes = texts.clone()
 
@@ -279,7 +300,8 @@ object PeriodFormatterBuilder {
 
     private def selectSuffixIndex(value: Int): Int = {
       val valueString = String.valueOf(value)
-      for (i <- iPatterns.indices if iPatterns(i).matcher(valueString).matches()) {
+      for (i <- iPatterns.indices
+           if iPatterns(i).matcher(valueString).matches()) {
         return i
       }
       iPatterns.length - 1
@@ -298,7 +320,8 @@ object PeriodFormatterBuilder {
     }
 
     def parse(periodStr: String, position: Int): Int = {
-      for (text <- iSuffixesSortedDescByLength if periodStr.regionMatches(true, position, text, 0, text.length)
+      for (text <- iSuffixesSortedDescByLength
+           if periodStr.regionMatches(true, position, text, 0, text.length)
            if !matchesOtherAffix(text.length, periodStr, position)) {
         return position + text.length
       }
@@ -307,8 +330,10 @@ object PeriodFormatterBuilder {
 
     def scan(periodStr: String, position: Int): Int = {
       val sourceLength = periodStr.length
-      for (pos <- position until sourceLength; text <- iSuffixesSortedDescByLength if periodStr.regionMatches(true,
-        pos, text, 0, text.length) if !matchesOtherAffix(text.length, periodStr, pos)) {
+      for (pos <- position until sourceLength;
+           text <- iSuffixesSortedDescByLength
+           if periodStr.regionMatches(true, pos, text, 0, text.length)
+           if !matchesOtherAffix(text.length, periodStr, pos)) {
         return pos
       }
       ~position
@@ -317,19 +342,21 @@ object PeriodFormatterBuilder {
     def getAffixes(): Array[String] = iSuffixes.clone()
   }
 
-  class CompositeAffix(private val iLeft: PeriodFieldAffix, private val iRight: PeriodFieldAffix)
-    extends IgnorableAffix {
+  class CompositeAffix(private val iLeft: PeriodFieldAffix,
+                       private val iRight: PeriodFieldAffix)
+      extends IgnorableAffix {
 
     val result = new HashSet[String]()
-    private val iLeftRightCombinations = result.toArray(new Array[String](result.size))
-
+    private val iLeftRightCombinations =
+      result.toArray(new Array[String](result.size))
 
     for (leftText <- iLeft.getAffixes; rightText <- iRight.getAffixes) {
       result.add(leftText + rightText)
     }
 
     def calculatePrintedLength(value: Int): Int = {
-      iLeft.calculatePrintedLength(value) + iRight.calculatePrintedLength(value)
+      iLeft.calculatePrintedLength(value) + iRight.calculatePrintedLength(
+        value)
     }
 
     def printTo(buf: StringBuffer, value: Int) {
@@ -347,7 +374,9 @@ object PeriodFormatterBuilder {
       if (pos >= 0) {
         pos = iRight.parse(periodStr, pos)
         if (pos >= 0 &&
-          matchesOtherAffix(parse(periodStr, pos) - pos, periodStr, position)) {
+            matchesOtherAffix(parse(periodStr, pos) - pos,
+                              periodStr,
+                              position)) {
           return ~position
         }
       }
@@ -357,9 +386,13 @@ object PeriodFormatterBuilder {
     def scan(periodStr: String, position: Int): Int = {
       val leftPosition = iLeft.scan(periodStr, position)
       if (leftPosition >= 0) {
-        val rightPosition = iRight.scan(periodStr, iLeft.parse(periodStr, leftPosition))
+        val rightPosition =
+          iRight.scan(periodStr, iLeft.parse(periodStr, leftPosition))
         if (!(rightPosition >= 0 &&
-          matchesOtherAffix(iRight.parse(periodStr, rightPosition) - leftPosition, periodStr, position))) {
+              matchesOtherAffix(
+                iRight.parse(periodStr, rightPosition) - leftPosition,
+                periodStr,
+                position))) {
           if (leftPosition > 0) {
             return leftPosition
           } else {
@@ -390,7 +423,8 @@ object PeriodFormatterBuilder {
              rejectSignedValues: Boolean,
              fieldType: Int,
              fieldFormatters: Array[FieldFormatter],
-             prefix: PeriodFieldAffix,suffix: PeriodFieldAffix) = {
+             prefix: PeriodFieldAffix,
+             suffix: PeriodFieldAffix) = {
       this()
       iMinPrintedDigits = minPrintedDigits
       iPrintZeroSetting = printZeroSetting
@@ -401,7 +435,6 @@ object PeriodFormatterBuilder {
       iPrefix = prefix
       iSuffix = suffix
     }
-
 
     def this(field: FieldFormatter, suffix: PeriodFieldAffix) {
       this()
@@ -422,7 +455,8 @@ object PeriodFormatterBuilder {
     def finish(fieldFormatters: Array[FieldFormatter]) {
       val prefixesToIgnore = new HashSet[PeriodFieldAffix]()
       val suffixesToIgnore = new HashSet[PeriodFieldAffix]()
-      for (fieldFormatter <- fieldFormatters if fieldFormatter != null && this != fieldFormatter) {
+      for (fieldFormatter <- fieldFormatters
+           if fieldFormatter != null && this != fieldFormatter) {
         prefixesToIgnore.add(fieldFormatter.iPrefix)
         suffixesToIgnore.add(fieldFormatter.iSuffix)
       }
@@ -434,7 +468,9 @@ object PeriodFormatterBuilder {
       }
     }
 
-    def countFieldsToPrint(period: ReadablePeriod, stopAt: Int, locale: Locale): Int = {
+    def countFieldsToPrint(period: ReadablePeriod,
+                           stopAt: Int,
+                           locale: Locale): Int = {
       if (stopAt <= 0) {
         return 0
       }
@@ -449,13 +485,14 @@ object PeriodFormatterBuilder {
       if (valueLong == Long.MaxValue) {
         return 0
       }
-      var sum = Math.max(FormatUtils.calculateDigitCount(valueLong), iMinPrintedDigits)
+      var sum =
+        Math.max(FormatUtils.calculateDigitCount(valueLong), iMinPrintedDigits)
       if (iFieldType >= SECONDS_MILLIS) {
         sum = if (valueLong < 0) Math.max(sum, 5) else Math.max(sum, 4)
         sum += 1
         if (iFieldType == SECONDS_OPTIONAL_MILLIS &&
-          (Math.abs(valueLong) % DateTimeConstants.MILLIS_PER_SECOND) ==
-            0) {
+            (Math.abs(valueLong) % DateTimeConstants.MILLIS_PER_SECOND) ==
+              0) {
           sum -= 4
         }
         valueLong = valueLong / DateTimeConstants.MILLIS_PER_SECOND
@@ -490,7 +527,8 @@ object PeriodFormatterBuilder {
         FormatUtils.appendPaddedInteger(buf, value, minDigits)
       }
       if (iFieldType >= SECONDS_MILLIS) {
-        val dp = (Math.abs(valueLong) % DateTimeConstants.MILLIS_PER_SECOND).toInt
+        val dp =
+          (Math.abs(valueLong) % DateTimeConstants.MILLIS_PER_SECOND).toInt
         if (iFieldType == SECONDS_MILLIS || dp > 0) {
           if (valueLong < 0 && valueLong > -DateTimeConstants.MILLIS_PER_SECOND) {
             buf.insert(bufLen, '-')
@@ -523,7 +561,8 @@ object PeriodFormatterBuilder {
         FormatUtils.writePaddedInteger(out, value, minDigits)
       }
       if (iFieldType >= SECONDS_MILLIS) {
-        val dp = (Math.abs(valueLong) % DateTimeConstants.MILLIS_PER_SECOND).toInt
+        val dp =
+          (Math.abs(valueLong) % DateTimeConstants.MILLIS_PER_SECOND).toInt
         if (iFieldType == SECONDS_MILLIS || dp > 0) {
           out.write('.')
           FormatUtils.writePaddedInteger(out, dp, 3)
@@ -570,8 +609,9 @@ object PeriodFormatterBuilder {
         return _position
       }
       var limit: Int = 0
-      limit = if (suffixPos > 0) Math.min(iMaxParsedDigits, suffixPos - _position) else Math.min(iMaxParsedDigits,
-        text.length - _position)
+      limit =
+        if (suffixPos > 0) Math.min(iMaxParsedDigits, suffixPos - _position)
+        else Math.min(iMaxParsedDigits, text.length - _position)
       var length = 0
       var fractPos = -1
       var hasDigits = false
@@ -583,7 +623,7 @@ object PeriodFormatterBuilder {
         if (length == 0 && (c == '-' || c == '+') && !iRejectSignedValues) {
           val negative = c == '-'
           if (length + 1 >= limit || text.charAt(_position + length + 1) < '0' ||
-            c > '9') {
+              c > '9') {
             break()
           }
           if (negative) {
@@ -599,7 +639,7 @@ object PeriodFormatterBuilder {
             hasDigits = true
           } else {
             if ((c == '.' || c == ',') &&
-              (iFieldType == SECONDS_MILLIS || iFieldType == SECONDS_OPTIONAL_MILLIS)) {
+                (iFieldType == SECONDS_MILLIS || iFieldType == SECONDS_OPTIONAL_MILLIS)) {
               if (fractPos >= 0) {
                 break()
               }
@@ -664,7 +704,7 @@ object PeriodFormatterBuilder {
         return 0
       }
       _position += 1
-      var value:Int = text.charAt(_position)
+      var value: Int = text.charAt(_position)
       _length -= 1
       var negative: Boolean = false
       if (value == '-') {
@@ -678,17 +718,20 @@ object PeriodFormatterBuilder {
         negative = false
       }
       value -= '0'
-      _length = _length -1
+      _length = _length - 1
       while (_length > 0) {
         _position += 1
-        value = (((value << 3) + (value << 1)) + text.charAt(_position) - '0').toChar
+        value =
+          (((value << 3) + (value << 1)) + text.charAt(_position) - '0').toChar
       }
       if (negative) -value else value
     }
 
     def getFieldValue(period: ReadablePeriod): Long = {
       var `type`: PeriodType = null
-      `type` = if (iPrintZeroSetting == PRINT_ZERO_ALWAYS) null else period.getPeriodType
+      `type` =
+        if (iPrintZeroSetting == PRINT_ZERO_ALWAYS) null
+        else period.getPeriodType
       if (`type` != null && !isSupported(`type`, iFieldType)) {
         return Long.MaxValue
       }
@@ -706,42 +749,44 @@ object PeriodFormatterBuilder {
           val seconds = period.get(DurationFieldType.seconds())
           val millis = period.get(DurationFieldType.millis())
           value = (seconds * DateTimeConstants.MILLIS_PER_SECOND.toLong) +
-            millis
+              millis
         case _ => return Long.MaxValue
 
       }
       if (value == 0) iPrintZeroSetting match {
         case PRINT_ZERO_NEVER => return Long.MaxValue
-        case PRINT_ZERO_RARELY_LAST => if (isZero(period) && iFieldFormatters(iFieldType) == this) {
-          var i = iFieldType + 1
-          while (i <= MAX_FIELD) {
-            if (isSupported(`type`, i) && iFieldFormatters(i) != null) {
-              return Long.MaxValue
+        case PRINT_ZERO_RARELY_LAST =>
+          if (isZero(period) && iFieldFormatters(iFieldType) == this) {
+            var i = iFieldType + 1
+            while (i <= MAX_FIELD) {
+              if (isSupported(`type`, i) && iFieldFormatters(i) != null) {
+                return Long.MaxValue
+              }
+              i += 1
             }
-            i += 1
+          } else {
+            return Long.MaxValue
           }
-        } else {
-          return Long.MaxValue
-        }
-        case PRINT_ZERO_RARELY_FIRST => if (isZero(period) && iFieldFormatters(iFieldType) == this) {
-          var i = Math.min(iFieldType, 8)
-          i -= 1
-          while (i >= 0 && i <= MAX_FIELD) {
-            if (isSupported(`type`, i) && iFieldFormatters(i) != null) {
-              return Long.MaxValue
-            }
+        case PRINT_ZERO_RARELY_FIRST =>
+          if (isZero(period) && iFieldFormatters(iFieldType) == this) {
+            var i = Math.min(iFieldType, 8)
             i -= 1
+            while (i >= 0 && i <= MAX_FIELD) {
+              if (isSupported(`type`, i) && iFieldFormatters(i) != null) {
+                return Long.MaxValue
+              }
+              i -= 1
+            }
+          } else {
+            return Long.MaxValue
           }
-        } else {
-          return Long.MaxValue
-        }
       }
       value
     }
 
     def isZero(period: ReadablePeriod): Boolean = {
-      (0 until period.size()).find(period.getValue(_) != 0).map(_ => false)
-        .getOrElse(true)
+      (0 until period
+        .size()).find(period.getValue(_) != 0).map(_ => false).getOrElse(true)
     }
 
     def isSupported(`type`: PeriodType, field: Int): Boolean = field match {
@@ -753,11 +798,15 @@ object PeriodFormatterBuilder {
       case MINUTES => `type`.isSupported(DurationFieldType.minutes())
       case SECONDS => `type`.isSupported(DurationFieldType.seconds())
       case MILLIS => `type`.isSupported(DurationFieldType.millis())
-      case SECONDS_MILLIS | SECONDS_OPTIONAL_MILLIS => `type`.isSupported(DurationFieldType.seconds()) || `type`.isSupported(DurationFieldType.millis())
+      case SECONDS_MILLIS | SECONDS_OPTIONAL_MILLIS =>
+        `type`.isSupported(DurationFieldType.seconds()) || `type`.isSupported(
+          DurationFieldType.millis())
       case _ => false
     }
 
-    def setFieldValue(period: ReadWritablePeriod, field: Int, value: Int):Unit = field match {
+    def setFieldValue(period: ReadWritablePeriod,
+                      field: Int,
+                      value: Int): Unit = field match {
       case YEARS => period.setYears(value)
       case MONTHS => period.setMonths(value)
       case WEEKS => period.setWeeks(value)
@@ -777,11 +826,16 @@ object PeriodFormatterBuilder {
     val EMPTY = new Literal("")
   }
 
-  class Literal(private val iText: String) extends PeriodPrinter with PeriodParser {
+  class Literal(private val iText: String)
+      extends PeriodPrinter
+      with PeriodParser {
 
-    def countFieldsToPrint(period: ReadablePeriod, stopAt: Int, locale: Locale): Int = 0
+    def countFieldsToPrint(period: ReadablePeriod,
+                           stopAt: Int,
+                           locale: Locale): Int = 0
 
-    def calculatePrintedLength(period: ReadablePeriod, locale: Locale): Int = iText.length
+    def calculatePrintedLength(period: ReadablePeriod, locale: Locale): Int =
+      iText.length
 
     def printTo(buf: StringBuffer, period: ReadablePeriod, locale: Locale) {
       buf.append(iText)
@@ -808,7 +862,9 @@ object PeriodFormatterBuilder {
                   private val beforePrinter: PeriodPrinter,
                   private val beforeParser: PeriodParser,
                   private val useBefore: Boolean,
-                  private val useAfter: Boolean) extends PeriodPrinter with PeriodParser {
+                  private val useAfter: Boolean)
+      extends PeriodPrinter
+      with PeriodParser {
 
     private var iParsedForms: Array[String] = null
     @volatile var iAfterPrinter: PeriodPrinter = null
@@ -845,7 +901,9 @@ object PeriodFormatterBuilder {
     iUseBefore = useBefore
     iUseAfter = useAfter
 
-    def countFieldsToPrint(period: ReadablePeriod, stopAt: Int, locale: Locale): Int = {
+    def countFieldsToPrint(period: ReadablePeriod,
+                           stopAt: Int,
+                           locale: Locale): Int = {
       var sum = iBeforePrinter.countFieldsToPrint(period, stopAt, locale)
       if (sum < stopAt) {
         sum += iAfterPrinter.countFieldsToPrint(period, stopAt, locale)
@@ -856,8 +914,8 @@ object PeriodFormatterBuilder {
     def calculatePrintedLength(period: ReadablePeriod, locale: Locale): Int = {
       val before = iBeforePrinter
       val after = iAfterPrinter
-      var sum = before.calculatePrintedLength(period, locale) + after.calculatePrintedLength(period,
-        locale)
+      var sum = before.calculatePrintedLength(period, locale) + after
+          .calculatePrintedLength(period, locale)
       if (iUseBefore) {
         if (before.countFieldsToPrint(period, 1, locale) > 0) {
           if (iUseAfter) {
@@ -935,7 +993,11 @@ object PeriodFormatterBuilder {
         for (i <- 0 until length) {
           val parsedForm = parsedForms(i)
           if ((parsedForm == null || parsedForm.length == 0) ||
-            periodStr.regionMatches(true, _position, parsedForm, 0, parsedForm.length)) {
+              periodStr.regionMatches(true,
+                                      _position,
+                                      parsedForm,
+                                      0,
+                                      parsedForm.length)) {
             parsedFormLength = if (parsedForm == null) 0 else parsedForm.length
             _position += parsedFormLength
             found = true
@@ -957,31 +1019,41 @@ object PeriodFormatterBuilder {
       _position
     }
 
-    def finish(afterPrinter: PeriodPrinter, afterParser: PeriodParser): Separator = {
+    def finish(afterPrinter: PeriodPrinter,
+               afterParser: PeriodParser): Separator = {
       iAfterPrinter = afterPrinter
       iAfterParser = afterParser
       this
     }
   }
 
-  class Composite(elementPairs: List[Any]) extends PeriodPrinter with PeriodParser {
+  class Composite(elementPairs: List[Any])
+      extends PeriodPrinter
+      with PeriodParser {
 
     val printerList = new ArrayList[Any]()
 
     val parserList = new ArrayList[Any]()
 
-    private val iPrinters = if (printerList.size <= 0) null else printerList.toArray(new Array[PeriodPrinter](printerList.size))
+    private val iPrinters =
+      if (printerList.size <= 0) null
+      else printerList.toArray(new Array[PeriodPrinter](printerList.size))
 
-    private val iParsers = if (parserList.size <= 0) null else parserList.toArray(new Array[PeriodParser](parserList.size))
+    private val iParsers =
+      if (parserList.size <= 0) null
+      else parserList.toArray(new Array[PeriodParser](parserList.size))
 
     decompose(elementPairs, printerList, parserList)
 
-    def countFieldsToPrint(period: ReadablePeriod, stopAt: Int, locale: Locale): Int = {
+    def countFieldsToPrint(period: ReadablePeriod,
+                           stopAt: Int,
+                           locale: Locale): Int = {
       var sum = 0
       val printers = iPrinters
       val i = printers.length
       while (sum < stopAt && i >= 0) {
-        sum += printers(i).countFieldsToPrint(period, Integer.MAX_VALUE, locale)
+        sum += printers(i)
+          .countFieldsToPrint(period, Integer.MAX_VALUE, locale)
       }
       sum
     }
@@ -1030,14 +1102,20 @@ object PeriodFormatterBuilder {
       _position
     }
 
-    private def decompose(elementPairs: List[Any], printerList: List[Any], parserList: List[Any]) {
+    private def decompose(elementPairs: List[Any],
+                          printerList: List[Any],
+                          parserList: List[Any]) {
       val size = elementPairs.size
       var i = 0
       while (i < size) {
         var element = elementPairs.get(i)
         if (element.isInstanceOf[PeriodPrinter]) {
           if (element.isInstanceOf[Composite]) {
-            addArrayToList(printerList, element.asInstanceOf[Composite].iPrinters.map(_.asInstanceOf[Any]))
+            addArrayToList(printerList,
+                           element
+                             .asInstanceOf[Composite]
+                             .iPrinters
+                             .map(_.asInstanceOf[Any]))
           } else {
             printerList.add(element)
           }
@@ -1045,7 +1123,11 @@ object PeriodFormatterBuilder {
         element = elementPairs.get(i + 1)
         if (element.isInstanceOf[PeriodParser]) {
           if (element.isInstanceOf[Composite]) {
-            addArrayToList(parserList, element.asInstanceOf[Composite].iPrinters.map(_.asInstanceOf[Any]))
+            addArrayToList(parserList,
+                           element
+                             .asInstanceOf[Composite]
+                             .iPrinters
+                             .map(_.asInstanceOf[Any]))
           } else {
             parserList.add(element)
           }
@@ -1079,7 +1161,8 @@ class PeriodFormatterBuilder {
   clear()
 
   def toFormatter(): PeriodFormatter = {
-    val formatter = PeriodFormatterBuilder.toFormatter(iElementPairs, iNotPrinter, iNotParser)
+    val formatter = PeriodFormatterBuilder
+      .toFormatter(iElementPairs, iNotPrinter, iNotParser)
     for (fieldFormatter <- iFieldFormatters if fieldFormatter != null) {
       fieldFormatter.finish(iFieldFormatters)
     }
@@ -1126,7 +1209,8 @@ class PeriodFormatterBuilder {
     this
   }
 
-  def append(printer: PeriodPrinter, parser: PeriodParser): PeriodFormatterBuilder = {
+  def append(printer: PeriodPrinter,
+             parser: PeriodParser): PeriodFormatterBuilder = {
     if (printer == null && parser == null) {
       throw new IllegalArgumentException("No printer or parser supplied")
     }
@@ -1192,16 +1276,18 @@ class PeriodFormatterBuilder {
     appendPrefix(new SimpleAffix(text))
   }
 
-  def appendPrefix(singularText: String, pluralText: String): PeriodFormatterBuilder = {
+  def appendPrefix(singularText: String,
+                   pluralText: String): PeriodFormatterBuilder = {
     if (singularText == null || pluralText == null) {
       throw new IllegalArgumentException()
     }
     appendPrefix(new PluralAffix(singularText, pluralText))
   }
 
-  def appendPrefix(regularExpressions: Array[String], prefixes: Array[String]): PeriodFormatterBuilder = {
+  def appendPrefix(regularExpressions: Array[String],
+                   prefixes: Array[String]): PeriodFormatterBuilder = {
     if (regularExpressions == null || prefixes == null || regularExpressions.length < 1 ||
-      regularExpressions.length != prefixes.length) {
+        regularExpressions.length != prefixes.length) {
       throw new IllegalArgumentException()
     }
     appendPrefix(new RegExAffix(regularExpressions, prefixes))
@@ -1279,8 +1365,14 @@ class PeriodFormatterBuilder {
   }
 
   private def appendField(`type`: Int, minPrinted: Int) {
-    val field = new FieldFormatter(minPrinted, iPrintZeroSetting, iMaxParsedDigits, iRejectSignedValues,
-      `type`, iFieldFormatters, iPrefix, null)
+    val field = new FieldFormatter(minPrinted,
+                                   iPrintZeroSetting,
+                                   iMaxParsedDigits,
+                                   iRejectSignedValues,
+                                   `type`,
+                                   iFieldFormatters,
+                                   iPrefix,
+                                   null)
     append0(field, field)
     iFieldFormatters(`type`) = field
     iPrefix = null
@@ -1293,16 +1385,18 @@ class PeriodFormatterBuilder {
     appendSuffix(new SimpleAffix(text))
   }
 
-  def appendSuffix(singularText: String, pluralText: String): PeriodFormatterBuilder = {
+  def appendSuffix(singularText: String,
+                   pluralText: String): PeriodFormatterBuilder = {
     if (singularText == null || pluralText == null) {
       throw new IllegalArgumentException()
     }
     appendSuffix(new PluralAffix(singularText, pluralText))
   }
 
-  def appendSuffix(regularExpressions: Array[String], suffixes: Array[String]): PeriodFormatterBuilder = {
+  def appendSuffix(regularExpressions: Array[String],
+                   suffixes: Array[String]): PeriodFormatterBuilder = {
     if (regularExpressions == null || suffixes == null || regularExpressions.length < 1 ||
-      regularExpressions.length != suffixes.length) {
+        regularExpressions.length != suffixes.length) {
       throw new IllegalArgumentException()
     }
     appendSuffix(new RegExAffix(regularExpressions, suffixes))
@@ -1319,11 +1413,12 @@ class PeriodFormatterBuilder {
       originalParser = null
     }
     if (originalPrinter == null || originalParser == null || originalPrinter != originalParser ||
-      !originalPrinter.isInstanceOf[FieldFormatter]) {
+        !originalPrinter.isInstanceOf[FieldFormatter]) {
       throw new IllegalStateException("No field to apply suffix to")
     }
     clearPrefix()
-    val newField = new FieldFormatter(originalPrinter.asInstanceOf[FieldFormatter], suffix)
+    val newField =
+      new FieldFormatter(originalPrinter.asInstanceOf[FieldFormatter], suffix)
     iElementPairs.set(iElementPairs.size - 2, newField)
     iElementPairs.set(iElementPairs.size - 1, newField)
     iFieldFormatters(newField.getFieldType) = newField
@@ -1342,11 +1437,14 @@ class PeriodFormatterBuilder {
     appendSeparator(text, text, null, true, false)
   }
 
-  def appendSeparator(text: String, finalText: String): PeriodFormatterBuilder = {
+  def appendSeparator(text: String,
+                      finalText: String): PeriodFormatterBuilder = {
     appendSeparator(text, finalText, null, true, true)
   }
 
-  def appendSeparator(text: String, finalText: String, variants: Array[String]): PeriodFormatterBuilder = {
+  def appendSeparator(text: String,
+                      finalText: String,
+                      variants: Array[String]): PeriodFormatterBuilder = {
     appendSeparator(text, finalText, variants, true, true)
   }
 
@@ -1362,8 +1460,13 @@ class PeriodFormatterBuilder {
     var pairs = iElementPairs
     if (pairs.size == 0) {
       if (useAfter && useBefore == false) {
-        val separator = new Separator(text, finalText, variants, Literal.EMPTY, Literal.EMPTY, useBefore,
-          useAfter)
+        val separator = new Separator(text,
+                                      finalText,
+                                      variants,
+                                      Literal.EMPTY,
+                                      Literal.EMPTY,
+                                      useBefore,
+                                      useAfter)
         append0(separator, separator)
       }
       return this
@@ -1384,8 +1487,13 @@ class PeriodFormatterBuilder {
     } else {
       val comp = createComposite(pairs)
       pairs.clear()
-      val separator = new Separator(text, finalText, variants, comp(0).asInstanceOf[PeriodPrinter], comp(1).asInstanceOf[PeriodParser],
-        useBefore, useAfter)
+      val separator = new Separator(text,
+                                    finalText,
+                                    variants,
+                                    comp(0).asInstanceOf[PeriodPrinter],
+                                    comp(1).asInstanceOf[PeriodParser],
+                                    useBefore,
+                                    useAfter)
       pairs.add(separator)
       pairs.add(separator)
     }
@@ -1399,7 +1507,8 @@ class PeriodFormatterBuilder {
     iPrefix = null
   }
 
-  private def append0(printer: PeriodPrinter, parser: PeriodParser): PeriodFormatterBuilder = {
+  private def append0(printer: PeriodPrinter,
+                      parser: PeriodParser): PeriodFormatterBuilder = {
     iElementPairs.add(printer)
     iElementPairs.add(parser)
     iNotPrinter |= (printer == null)

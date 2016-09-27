@@ -6,7 +6,8 @@ import org.joda.time.DateTimeZone
 class FixedDateTimeZone(id: String,
                         private val iNameKey: String,
                         private val iWallOffset: Int,
-                        private val iStandardOffset: Int) extends DateTimeZone(id) {
+                        private val iStandardOffset: Int)
+    extends DateTimeZone(id) {
 
   def getNameKey(instant: Long): String = iNameKey
 

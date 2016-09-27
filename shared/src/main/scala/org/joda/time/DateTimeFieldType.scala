@@ -4,96 +4,164 @@ import java.io.Serializable
 
 object DateTimeFieldType {
 
-  val ERA:Byte = 1
-  val YEAR_OF_ERA:Byte = 2
-  val CENTURY_OF_ERA:Byte = 3
-  val YEAR_OF_CENTURY:Byte = 4
-  val YEAR:Byte = 5
-  val DAY_OF_YEAR:Byte = 6
-  val MONTH_OF_YEAR:Byte = 7
-  val DAY_OF_MONTH:Byte = 8
-  val WEEKYEAR_OF_CENTURY:Byte = 9
-  val WEEKYEAR:Byte = 10
-  val WEEK_OF_WEEKYEAR:Byte = 11
-  val DAY_OF_WEEK:Byte = 12
-  val HALFDAY_OF_DAY:Byte = 13
-  val HOUR_OF_HALFDAY:Byte = 14
-  val CLOCKHOUR_OF_HALFDAY:Byte = 15
-  val CLOCKHOUR_OF_DAY:Byte = 16
-  val HOUR_OF_DAY:Byte = 17
-  val MINUTE_OF_DAY:Byte = 18
-  val MINUTE_OF_HOUR:Byte = 19
-  val SECOND_OF_DAY:Byte = 20
-  val SECOND_OF_MINUTE:Byte = 21
-  val MILLIS_OF_DAY:Byte = 22
-  val MILLIS_OF_SECOND:Byte = 23
+  val ERA: Byte = 1
+  val YEAR_OF_ERA: Byte = 2
+  val CENTURY_OF_ERA: Byte = 3
+  val YEAR_OF_CENTURY: Byte = 4
+  val YEAR: Byte = 5
+  val DAY_OF_YEAR: Byte = 6
+  val MONTH_OF_YEAR: Byte = 7
+  val DAY_OF_MONTH: Byte = 8
+  val WEEKYEAR_OF_CENTURY: Byte = 9
+  val WEEKYEAR: Byte = 10
+  val WEEK_OF_WEEKYEAR: Byte = 11
+  val DAY_OF_WEEK: Byte = 12
+  val HALFDAY_OF_DAY: Byte = 13
+  val HOUR_OF_HALFDAY: Byte = 14
+  val CLOCKHOUR_OF_HALFDAY: Byte = 15
+  val CLOCKHOUR_OF_DAY: Byte = 16
+  val HOUR_OF_DAY: Byte = 17
+  val MINUTE_OF_DAY: Byte = 18
+  val MINUTE_OF_HOUR: Byte = 19
+  val SECOND_OF_DAY: Byte = 20
+  val SECOND_OF_MINUTE: Byte = 21
+  val MILLIS_OF_DAY: Byte = 22
+  val MILLIS_OF_SECOND: Byte = 23
 
-  private val ERA_TYPE = new StandardDateTimeFieldType("era", ERA, DurationFieldType.eras(), null)
+  private val ERA_TYPE =
+    new StandardDateTimeFieldType("era", ERA, DurationFieldType.eras(), null)
 
-  private val YEAR_OF_ERA_TYPE = new StandardDateTimeFieldType("yearOfEra", YEAR_OF_ERA, DurationFieldType.years(),
+  private val YEAR_OF_ERA_TYPE = new StandardDateTimeFieldType(
+    "yearOfEra",
+    YEAR_OF_ERA,
+    DurationFieldType.years(),
     DurationFieldType.eras())
 
-  private val CENTURY_OF_ERA_TYPE = new StandardDateTimeFieldType("centuryOfEra", CENTURY_OF_ERA, DurationFieldType.centuries(),
+  private val CENTURY_OF_ERA_TYPE = new StandardDateTimeFieldType(
+    "centuryOfEra",
+    CENTURY_OF_ERA,
+    DurationFieldType.centuries(),
     DurationFieldType.eras())
 
-  private val YEAR_OF_CENTURY_TYPE = new StandardDateTimeFieldType("yearOfCentury", YEAR_OF_CENTURY,
-    DurationFieldType.years(), DurationFieldType.centuries())
+  private val YEAR_OF_CENTURY_TYPE = new StandardDateTimeFieldType(
+    "yearOfCentury",
+    YEAR_OF_CENTURY,
+    DurationFieldType.years(),
+    DurationFieldType.centuries())
 
-  private val YEAR_TYPE = new StandardDateTimeFieldType("year", YEAR, DurationFieldType.years(), null)
-
-  private val DAY_OF_YEAR_TYPE = new StandardDateTimeFieldType("dayOfYear", DAY_OF_YEAR, DurationFieldType.days(),
-    DurationFieldType.years())
-
-  private val MONTH_OF_YEAR_TYPE = new StandardDateTimeFieldType("monthOfYear", MONTH_OF_YEAR, DurationFieldType.months(),
-    DurationFieldType.years())
-
-  private val DAY_OF_MONTH_TYPE = new StandardDateTimeFieldType("dayOfMonth", DAY_OF_MONTH, DurationFieldType.days(),
-    DurationFieldType.months())
-
-  private val WEEKYEAR_OF_CENTURY_TYPE = new StandardDateTimeFieldType("weekyearOfCentury", WEEKYEAR_OF_CENTURY,
-    DurationFieldType.weekyears(), DurationFieldType.centuries())
-
-  private val WEEKYEAR_TYPE = new StandardDateTimeFieldType("weekyear", WEEKYEAR, DurationFieldType.weekyears(),
+  private val YEAR_TYPE = new StandardDateTimeFieldType(
+    "year",
+    YEAR,
+    DurationFieldType.years(),
     null)
 
-  private val WEEK_OF_WEEKYEAR_TYPE = new StandardDateTimeFieldType("weekOfWeekyear", WEEK_OF_WEEKYEAR,
-    DurationFieldType.weeks(), DurationFieldType.weekyears())
+  private val DAY_OF_YEAR_TYPE = new StandardDateTimeFieldType(
+    "dayOfYear",
+    DAY_OF_YEAR,
+    DurationFieldType.days(),
+    DurationFieldType.years())
 
-  private val DAY_OF_WEEK_TYPE = new StandardDateTimeFieldType("dayOfWeek", DAY_OF_WEEK, DurationFieldType.days(),
+  private val MONTH_OF_YEAR_TYPE = new StandardDateTimeFieldType(
+    "monthOfYear",
+    MONTH_OF_YEAR,
+    DurationFieldType.months(),
+    DurationFieldType.years())
+
+  private val DAY_OF_MONTH_TYPE = new StandardDateTimeFieldType(
+    "dayOfMonth",
+    DAY_OF_MONTH,
+    DurationFieldType.days(),
+    DurationFieldType.months())
+
+  private val WEEKYEAR_OF_CENTURY_TYPE = new StandardDateTimeFieldType(
+    "weekyearOfCentury",
+    WEEKYEAR_OF_CENTURY,
+    DurationFieldType.weekyears(),
+    DurationFieldType.centuries())
+
+  private val WEEKYEAR_TYPE = new StandardDateTimeFieldType(
+    "weekyear",
+    WEEKYEAR,
+    DurationFieldType.weekyears(),
+    null)
+
+  private val WEEK_OF_WEEKYEAR_TYPE = new StandardDateTimeFieldType(
+    "weekOfWeekyear",
+    WEEK_OF_WEEKYEAR,
+    DurationFieldType.weeks(),
+    DurationFieldType.weekyears())
+
+  private val DAY_OF_WEEK_TYPE = new StandardDateTimeFieldType(
+    "dayOfWeek",
+    DAY_OF_WEEK,
+    DurationFieldType.days(),
     DurationFieldType.weeks())
 
-  private val HALFDAY_OF_DAY_TYPE = new StandardDateTimeFieldType("halfdayOfDay", HALFDAY_OF_DAY, DurationFieldType.halfdays(),
+  private val HALFDAY_OF_DAY_TYPE = new StandardDateTimeFieldType(
+    "halfdayOfDay",
+    HALFDAY_OF_DAY,
+    DurationFieldType.halfdays(),
     DurationFieldType.days())
 
-  private val HOUR_OF_HALFDAY_TYPE = new StandardDateTimeFieldType("hourOfHalfday", HOUR_OF_HALFDAY,
-    DurationFieldType.hours(), DurationFieldType.halfdays())
+  private val HOUR_OF_HALFDAY_TYPE = new StandardDateTimeFieldType(
+    "hourOfHalfday",
+    HOUR_OF_HALFDAY,
+    DurationFieldType.hours(),
+    DurationFieldType.halfdays())
 
-  private val CLOCKHOUR_OF_HALFDAY_TYPE = new StandardDateTimeFieldType("clockhourOfHalfday", CLOCKHOUR_OF_HALFDAY,
-    DurationFieldType.hours(), DurationFieldType.halfdays())
+  private val CLOCKHOUR_OF_HALFDAY_TYPE = new StandardDateTimeFieldType(
+    "clockhourOfHalfday",
+    CLOCKHOUR_OF_HALFDAY,
+    DurationFieldType.hours(),
+    DurationFieldType.halfdays())
 
-  private val CLOCKHOUR_OF_DAY_TYPE = new StandardDateTimeFieldType("clockhourOfDay", CLOCKHOUR_OF_DAY,
-    DurationFieldType.hours(), DurationFieldType.days())
-
-  private val HOUR_OF_DAY_TYPE = new StandardDateTimeFieldType("hourOfDay", HOUR_OF_DAY, DurationFieldType.hours(),
+  private val CLOCKHOUR_OF_DAY_TYPE = new StandardDateTimeFieldType(
+    "clockhourOfDay",
+    CLOCKHOUR_OF_DAY,
+    DurationFieldType.hours(),
     DurationFieldType.days())
 
-  private val MINUTE_OF_DAY_TYPE = new StandardDateTimeFieldType("minuteOfDay", MINUTE_OF_DAY, DurationFieldType.minutes(),
+  private val HOUR_OF_DAY_TYPE = new StandardDateTimeFieldType(
+    "hourOfDay",
+    HOUR_OF_DAY,
+    DurationFieldType.hours(),
     DurationFieldType.days())
 
-  private val MINUTE_OF_HOUR_TYPE = new StandardDateTimeFieldType("minuteOfHour", MINUTE_OF_HOUR, DurationFieldType.minutes(),
+  private val MINUTE_OF_DAY_TYPE = new StandardDateTimeFieldType(
+    "minuteOfDay",
+    MINUTE_OF_DAY,
+    DurationFieldType.minutes(),
+    DurationFieldType.days())
+
+  private val MINUTE_OF_HOUR_TYPE = new StandardDateTimeFieldType(
+    "minuteOfHour",
+    MINUTE_OF_HOUR,
+    DurationFieldType.minutes(),
     DurationFieldType.hours())
 
-  private val SECOND_OF_DAY_TYPE = new StandardDateTimeFieldType("secondOfDay", SECOND_OF_DAY, DurationFieldType.seconds(),
+  private val SECOND_OF_DAY_TYPE = new StandardDateTimeFieldType(
+    "secondOfDay",
+    SECOND_OF_DAY,
+    DurationFieldType.seconds(),
     DurationFieldType.days())
 
-  private val SECOND_OF_MINUTE_TYPE = new StandardDateTimeFieldType("secondOfMinute", SECOND_OF_MINUTE,
-    DurationFieldType.seconds(), DurationFieldType.minutes())
+  private val SECOND_OF_MINUTE_TYPE = new StandardDateTimeFieldType(
+    "secondOfMinute",
+    SECOND_OF_MINUTE,
+    DurationFieldType.seconds(),
+    DurationFieldType.minutes())
 
-  private val MILLIS_OF_DAY_TYPE = new StandardDateTimeFieldType("millisOfDay", MILLIS_OF_DAY, DurationFieldType.millis(),
+  private val MILLIS_OF_DAY_TYPE = new StandardDateTimeFieldType(
+    "millisOfDay",
+    MILLIS_OF_DAY,
+    DurationFieldType.millis(),
     DurationFieldType.days())
 
-  private val MILLIS_OF_SECOND_TYPE = new StandardDateTimeFieldType("millisOfSecond", MILLIS_OF_SECOND,
-    DurationFieldType.millis(), DurationFieldType.seconds())
+  private val MILLIS_OF_SECOND_TYPE = new StandardDateTimeFieldType(
+    "millisOfSecond",
+    MILLIS_OF_SECOND,
+    DurationFieldType.millis(),
+    DurationFieldType.seconds())
 
   def millisOfSecond(): DateTimeFieldType = MILLIS_OF_SECOND_TYPE
 
@@ -142,10 +210,12 @@ object DateTimeFieldType {
   def era(): DateTimeFieldType = ERA_TYPE
 
   @SerialVersionUID(-9937958251642L)
-  private class StandardDateTimeFieldType(name: String,
-                                          private val iOrdinal: Byte,
-                                          @transient private val iUnitType: DurationFieldType,
-                                          @transient private val iRangeType: DurationFieldType) extends DateTimeFieldType(name) {
+  private class StandardDateTimeFieldType(
+      name: String,
+      private val iOrdinal: Byte,
+      @transient private val iUnitType: DurationFieldType,
+      @transient private val iRangeType: DurationFieldType)
+      extends DateTimeFieldType(name) {
 
     def getDurationType(): DurationFieldType = iUnitType
 
@@ -225,10 +295,11 @@ object DateTimeFieldType {
 }
 
 @SerialVersionUID(-42615285973990L)
-abstract class DateTimeFieldType protected (name: String) extends Serializable() {
+abstract class DateTimeFieldType protected (name: String)
+    extends Serializable() {
 
   private val iName: String = name
-  
+
   def getName(): String = iName
 
   def getDurationType(): DurationFieldType
@@ -237,7 +308,8 @@ abstract class DateTimeFieldType protected (name: String) extends Serializable()
 
   def getField(chronology: Chronology): DateTimeField
 
-  def isSupported(chronology: Chronology): Boolean = getField(chronology).isSupported
+  def isSupported(chronology: Chronology): Boolean =
+    getField(chronology).isSupported
 
   override def toString(): String = getName
 }

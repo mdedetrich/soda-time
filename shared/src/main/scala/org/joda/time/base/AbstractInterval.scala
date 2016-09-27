@@ -16,7 +16,8 @@ abstract class AbstractInterval extends ReadableInterval() {
 
   protected def checkInterval(start: Long, end: Long) {
     if (end < start) {
-      throw new IllegalArgumentException("The end instant must be greater or equal to the start")
+      throw new IllegalArgumentException(
+        "The end instant must be greater or equal to the start")
     }
   }
 
@@ -108,7 +109,9 @@ abstract class AbstractInterval extends ReadableInterval() {
 
   def isAfter(interval: ReadableInterval): Boolean = {
     var endMillis: Long = 0l
-    endMillis = if (interval == null) DateTimeUtils.currentTimeMillis() else interval.getEndMillis
+    endMillis =
+      if (interval == null) DateTimeUtils.currentTimeMillis()
+      else interval.getEndMillis
     getStartMillis >= endMillis
   }
 
@@ -150,7 +153,7 @@ abstract class AbstractInterval extends ReadableInterval() {
     }
     val other = readableInterval.asInstanceOf[ReadableInterval]
     getStartMillis == other.getStartMillis && getEndMillis == other.getEndMillis &&
-      FieldUtils.==(getChronology, other.getChronology)
+    FieldUtils.==(getChronology, other.getChronology)
   }
 
   override def hashCode(): Int = {

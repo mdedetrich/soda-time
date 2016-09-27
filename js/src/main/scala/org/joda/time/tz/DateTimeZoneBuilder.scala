@@ -32,18 +32,23 @@ object DateTimeZoneBuilder {
     }
   }
 
-  def readFrom(in: DataInput, id: String): DateTimeZone = in.readUnsignedByte() match {
-    case 'F' =>
-      var fixed: DateTimeZone = new FixedDateTimeZone(id, in.readUTF(), readMillis(in).toInt, readMillis(in).toInt)
-      if (fixed == DateTimeZone.UTC) {
-        fixed = DateTimeZone.UTC
-      }
-      fixed
+  def readFrom(in: DataInput, id: String): DateTimeZone =
+    in.readUnsignedByte() match {
+      case 'F' =>
+        var fixed: DateTimeZone = new FixedDateTimeZone(id,
+                                                        in.readUTF(),
+                                                        readMillis(in).toInt,
+                                                        readMillis(in).toInt)
+        if (fixed == DateTimeZone.UTC) {
+          fixed = DateTimeZone.UTC
+        }
+        fixed
 
-    case 'C' => CachedDateTimeZone.forZone(PrecalculatedZone.readFrom(in, id))
-    case 'P' => PrecalculatedZone.readFrom(in, id)
-    case _ => throw new IOException("Invalid encoding")
-  }
+      case 'C' =>
+        CachedDateTimeZone.forZone(PrecalculatedZone.readFrom(in, id))
+      case 'P' => PrecalculatedZone.readFrom(in, id)
+      case _ => throw new IOException("Invalid encoding")
+    }
 
   def writeMillis(out: DataOutput, millis: Long) {
     if (millis % (30 * 60000L) == 0) {
@@ -112,8 +117,12 @@ object DateTimeZoneBuilder {
   object OfYear {
 
     def readFrom(in: DataInput): OfYear = {
-      new OfYear(in.readUnsignedByte().toChar, in.readUnsignedByte().toInt, in.readByte().toInt, in.readUnsignedByte().toInt,
-        in.readBoolean(), readMillis(in).toInt)
+      new OfYear(in.readUnsignedByte().toChar,
+                 in.readUnsignedByte().toInt,
+                 in.readByte().toInt,
+                 in.readUnsignedByte().toInt,
+                 in.readBoolean(),
+                 readMillis(in).toInt)
     }
   }
 
@@ -123,7 +132,6 @@ object DateTimeZoneBuilder {
                val dayOfWeek: Int,
                val advanceDayOfWeek: Boolean,
                val millisOfDay: Int) {
-
 
     private var iMode: Char = _
     private var iMonthOfYear: Int = _
@@ -145,7 +153,10 @@ object DateTimeZoneBuilder {
 
     def setInstant(year: Int, standardOffset: Int, saveMillis: Int): Long = {
       var offset: Int = 0
-      offset = if (iMode == 'w') standardOffset + saveMillis else if (iMode == 's') standardOffset else 0
+      offset =
+        if (iMode == 'w') standardOffset + saveMillis
+        else if (iMode == 's') standardOffset
+        else 0
       val chrono = ISOChronology.getInstanceUTC
       var millis = chrono.year().set(0, year)
       millis = chrono.monthOfYear().set(millis, iMonthOfYear)
@@ -160,7 +171,10 @@ object DateTimeZoneBuilder {
     def next(instant: Long, standardOffset: Int, saveMillis: Int): Long = {
       var _instant: Long = instant
       var offset: Int = 0
-      offset = if (iMode == 'w') standardOffset + saveMillis else if (iMode == 's') standardOffset else 0
+      offset =
+        if (iMode == 'w') standardOffset + saveMillis
+        else if (iMode == 's') standardOffset
+        else 0
       _instant += offset
       val chrono = ISOChronology.getInstanceUTC
       var next = chrono.monthOfYear().set(_instant, iMonthOfYear)
@@ -187,7 +201,10 @@ object DateTimeZoneBuilder {
     def previous(instant: Long, standardOffset: Int, saveMillis: Int): Long = {
       var _instant: Long = instant
       var offset: Int = 0
-      offset = if (iMode == 'w') standardOffset + saveMillis else if (iMode == 's') standardOffset else 0
+      offset =
+        if (iMode == 'w') standardOffset + saveMillis
+        else if (iMode == 's') standardOffset
+        else 0
       _instant += offset
       val chrono = ISOChronology.getInstanceUTC
       var prev = chrono.monthOfYear().set(_instant, iMonthOfYear)
@@ -240,14 +257,15 @@ object DateTimeZoneBuilder {
       try {
         _next = setDayOfMonth(chrono, _next)
       } catch {
-        case e: IllegalArgumentException => if (iMonthOfYear == 2 && iDayOfMonth == 29) {
-          while (chrono.year().isLeap(_next) == false) {
-            _next = chrono.year().add(_next, 1)
+        case e: IllegalArgumentException =>
+          if (iMonthOfYear == 2 && iDayOfMonth == 29) {
+            while (chrono.year().isLeap(_next) == false) {
+              _next = chrono.year().add(_next, 1)
+            }
+            _next = setDayOfMonth(chrono, _next)
+          } else {
+            throw e
           }
-          _next = setDayOfMonth(chrono, _next)
-        } else {
-          throw e
-        }
       }
       _next
     }
@@ -257,14 +275,15 @@ object DateTimeZoneBuilder {
       try {
         _prev = setDayOfMonth(chrono, _prev)
       } catch {
-        case e: IllegalArgumentException => if (iMonthOfYear == 2 && iDayOfMonth == 29) {
-          while (chrono.year().isLeap(_prev) == false) {
-            _prev = chrono.year().add(_prev, -1)
+        case e: IllegalArgumentException =>
+          if (iMonthOfYear == 2 && iDayOfMonth == 29) {
+            while (chrono.year().isLeap(_prev) == false) {
+              _prev = chrono.year().add(_prev, -1)
+            }
+            _prev = setDayOfMonth(chrono, _prev)
+          } else {
+            throw e
           }
-          _prev = setDayOfMonth(chrono, _prev)
-        } else {
-          throw e
-        }
       }
       _prev
     }
@@ -308,8 +327,9 @@ object DateTimeZoneBuilder {
     }
   }
 
-  class Recurrence(val iOfYear: OfYear, val iNameKey: String, val iSaveMillis: Int)
-  {
+  class Recurrence(val iOfYear: OfYear,
+                   val iNameKey: String,
+                   val iSaveMillis: Int) {
 
     def getOfYear(): OfYear = iOfYear
 
@@ -352,8 +372,9 @@ object DateTimeZoneBuilder {
     }
   }
 
-  private class Rule(val iRecurrence: Recurrence, val iFromYear: Int, val iToYear: Int)
-  {
+  private class Rule(val iRecurrence: Recurrence,
+                     val iFromYear: Int,
+                     val iToYear: Int) {
 
     def getFromYear(): Int = iFromYear
 
@@ -370,7 +391,9 @@ object DateTimeZoneBuilder {
       val wallOffset = standardOffset + saveMillis
       var testInstant = instant
       var year: Int = 0
-      year = if (instant == Long.MinValue) Integer.MIN_VALUE else chrono.year().get(instant + wallOffset)
+      year =
+        if (instant == Long.MinValue) Integer.MIN_VALUE
+        else chrono.year().get(instant + wallOffset)
       if (year < iFromYear) {
         testInstant = chrono.year().set(0, iFromYear) - wallOffset
         testInstant -= 1
@@ -435,7 +458,7 @@ object DateTimeZoneBuilder {
         return true
       }
       iMillis > other.iMillis &&
-        (iWallOffset != other.iWallOffset || !(iNameKey == other.iNameKey))
+      (iWallOffset != other.iWallOffset || !(iNameKey == other.iNameKey))
     }
   }
 
@@ -447,7 +470,8 @@ object DateTimeZoneBuilder {
   private class RuleSet() {
 
     private var iStandardOffset: Int = _
-    private var iRules: collection.mutable.ListBuffer[Rule] = new collection.mutable.ListBuffer[Rule]()
+    private var iRules: collection.mutable.ListBuffer[Rule] =
+      new collection.mutable.ListBuffer[Rule]()
     private var iInitialNameKey: String = _
     private var iInitialSaveMillis: Int = _
     private var iUpperYear: Int = Integer.MAX_VALUE
@@ -487,14 +511,17 @@ object DateTimeZoneBuilder {
 
     def firstTransition(firstMillis: Long): Transition = {
       if (iInitialNameKey != null) {
-        return new Transition(firstMillis, iInitialNameKey, iStandardOffset + iInitialSaveMillis, iStandardOffset)
+        return new Transition(firstMillis,
+                              iInitialNameKey,
+                              iStandardOffset + iInitialSaveMillis,
+                              iStandardOffset)
       }
       val copy = iRules.to[collection.mutable.ListBuffer]
       var millis = Long.MinValue
       var saveMillis = 0
       var first: Transition = null
       var next: Transition = null
-      while ( {
+      while ({
         next = nextTransition(millis, saveMillis); next
       } != null) {
         millis = next.getMillis
@@ -507,14 +534,19 @@ object DateTimeZoneBuilder {
             import scala.collection.JavaConversions._
             for (rule <- copy) {
               if (rule.getSaveMillis == 0) {
-                first = new DateTimeZoneBuilder.Transition(firstMillis, rule, iStandardOffset)
+                first = new DateTimeZoneBuilder.Transition(firstMillis,
+                                                           rule,
+                                                           iStandardOffset)
                 break()
               }
             }
 
           }
           if (first == null) {
-            first = new Transition(firstMillis, next.getNameKey, iStandardOffset, iStandardOffset)
+            first = new Transition(firstMillis,
+                                   next.getNameKey,
+                                   iStandardOffset,
+                                   iStandardOffset)
           }
           break()
         }
@@ -553,7 +585,8 @@ object DateTimeZoneBuilder {
         return null
       }
       if (iUpperYear < Integer.MAX_VALUE) {
-        val upperMillis = iUpperOfYear.setInstant(iUpperYear, iStandardOffset, saveMillis)
+        val upperMillis =
+          iUpperOfYear.setInstant(iUpperYear, iStandardOffset, saveMillis)
         if (nextMillis >= upperMillis) {
           return null
         }
@@ -573,7 +606,10 @@ object DateTimeZoneBuilder {
         val startRule = iRules(0)
         val endRule = iRules(1)
         if (startRule.getToYear == Integer.MAX_VALUE && endRule.getToYear == Integer.MAX_VALUE) {
-          return new DSTZone(id, iStandardOffset, startRule.iRecurrence, endRule.iRecurrence)
+          return new DSTZone(id,
+                             iStandardOffset,
+                             startRule.iRecurrence,
+                             endRule.iRecurrence)
         }
       }
       null
@@ -583,7 +619,10 @@ object DateTimeZoneBuilder {
   object DSTZone {
 
     def readFrom(in: DataInput, id: String): DSTZone = {
-      new DSTZone(id, readMillis(in).toInt, Recurrence.readFrom(in), Recurrence.readFrom(in))
+      new DSTZone(id,
+                  readMillis(in).toInt,
+                  Recurrence.readFrom(in),
+                  Recurrence.readFrom(in))
     }
   }
 
@@ -591,7 +630,8 @@ object DateTimeZoneBuilder {
   class DSTZone(id: String,
                 val iStandardOffset: Int,
                 val iStartRecurrence: Recurrence,
-                val iEndRecurrence: Recurrence) extends DateTimeZone(id) {
+                val iEndRecurrence: Recurrence)
+      extends DateTimeZone(id) {
 
     def getNameKey(instant: Long): String = {
       findMatchingRecurrence(instant).getNameKey
@@ -612,7 +652,8 @@ object DateTimeZoneBuilder {
       var start: Long = 0l
       var end: Long = 0l
       try {
-        start = startRecurrence.next(instant, standardOffset, endRecurrence.getSaveMillis)
+        start = startRecurrence
+          .next(instant, standardOffset, endRecurrence.getSaveMillis)
         if (instant > 0 && start < 0) {
           start = instant
         }
@@ -621,7 +662,8 @@ object DateTimeZoneBuilder {
         case e: ArithmeticException => start = instant
       }
       try {
-        end = endRecurrence.next(instant, standardOffset, startRecurrence.getSaveMillis)
+        end = endRecurrence
+          .next(instant, standardOffset, startRecurrence.getSaveMillis)
         if (instant > 0 && end < 0) {
           end = instant
         }
@@ -641,7 +683,8 @@ object DateTimeZoneBuilder {
       var start: Long = 0l
       var end: Long = 0l
       try {
-        start = startRecurrence.previous(_instant, standardOffset, endRecurrence.getSaveMillis)
+        start = startRecurrence
+          .previous(_instant, standardOffset, endRecurrence.getSaveMillis)
         if (_instant < 0 && start > 0) {
           start = _instant
         }
@@ -650,7 +693,8 @@ object DateTimeZoneBuilder {
         case e: ArithmeticException => start = _instant
       }
       try {
-        end = endRecurrence.previous(_instant, standardOffset, startRecurrence.getSaveMillis)
+        end = endRecurrence
+          .previous(_instant, standardOffset, startRecurrence.getSaveMillis)
         if (_instant < 0 && end > 0) {
           end = _instant
         }
@@ -687,13 +731,15 @@ object DateTimeZoneBuilder {
       var start: Long = 0l
       var end: Long = 0l
       try {
-        start = startRecurrence.next(instant, standardOffset, endRecurrence.getSaveMillis)
+        start = startRecurrence
+          .next(instant, standardOffset, endRecurrence.getSaveMillis)
       } catch {
         case e: IllegalArgumentException => start = instant
         case e: ArithmeticException => start = instant
       }
       try {
-        end = endRecurrence.next(instant, standardOffset, startRecurrence.getSaveMillis)
+        end = endRecurrence
+          .next(instant, standardOffset, startRecurrence.getSaveMillis)
       } catch {
         case e: IllegalArgumentException => end = instant
         case e: ArithmeticException => end = instant
@@ -720,14 +766,20 @@ object DateTimeZoneBuilder {
         wallOffsets(i) = readMillis(in).toInt
         standardOffsets(i) = readMillis(in).toInt
         var index: Int = 0
-        index = if (poolSize < 256) in.readUnsignedByte() else in.readUnsignedShort()
+        index =
+          if (poolSize < 256) in.readUnsignedByte() else in.readUnsignedShort()
         nameKeys(i) = pool(index)
       }
       var tailZone: DSTZone = null
       if (in.readBoolean()) {
         tailZone = DSTZone.readFrom(in, id)
       }
-      new PrecalculatedZone(id, transitions, wallOffsets, standardOffsets, nameKeys, tailZone)
+      new PrecalculatedZone(id,
+                            transitions,
+                            wallOffsets,
+                            standardOffsets,
+                            nameKeys,
+                            tailZone)
     }
 
     def create(id: String,
@@ -766,24 +818,28 @@ object DateTimeZoneBuilder {
       val chrono = ISOChronology.getInstanceUTC
 
       var i = 0
-      while ( i < nameKeys.length - 1) {
+      while (i < nameKeys.length - 1) {
         val curNameKey = nameKeys(i)
         val nextNameKey = nameKeys(i + 1)
         val curOffset = wallOffsets(i)
         val nextOffset = wallOffsets(i + 1)
         val curStdOffset = standardOffsets(i)
         val nextStdOffset = standardOffsets(i + 1)
-        val p = new Period(trans(i), trans(i + 1), PeriodType.yearMonthDay(), chrono)
+        val p =
+          new Period(trans(i), trans(i + 1), PeriodType.yearMonthDay(), chrono)
         if (curOffset != nextOffset && curStdOffset == nextStdOffset &&
-          curNameKey == nextNameKey &&
-          p.getYears == 0 &&
-          p.getMonths > 4 &&
-          p.getMonths < 8 &&
-          curNameKey == zoneNameData(2) &&
-          curNameKey == zoneNameData(4)) {
+            curNameKey == nextNameKey &&
+            p.getYears == 0 &&
+            p.getMonths > 4 &&
+            p.getMonths < 8 &&
+            curNameKey == zoneNameData(2) &&
+            curNameKey == zoneNameData(4)) {
           if (ZoneInfoCompiler.verbose()) {
             println("Fixing duplicate name key - " + nextNameKey)
-            println("     - " + new DateTime(trans(i), chrono) + " - " + new DateTime(trans(i + 1), chrono))
+            println(
+              "     - " + new DateTime(trans(i), chrono) + " - " + new DateTime(
+                trans(i + 1),
+                chrono))
           }
           if (curOffset > nextOffset) {
             nameKeys(i) = (curNameKey + "-Summer").intern()
@@ -798,15 +854,28 @@ object DateTimeZoneBuilder {
       if (_tailZone != null) {
         if (_tailZone.iStartRecurrence.getNameKey == _tailZone.iEndRecurrence.getNameKey) {
           if (ZoneInfoCompiler.verbose()) {
-            println("Fixing duplicate recurrent name key - " + _tailZone.iStartRecurrence.getNameKey)
+            println(
+              "Fixing duplicate recurrent name key - " + _tailZone.iStartRecurrence.getNameKey)
           }
-          _tailZone = if (_tailZone.iStartRecurrence.getSaveMillis > 0) new DSTZone(_tailZone.getID, _tailZone.iStandardOffset,
-            _tailZone.iStartRecurrence.renameAppend("-Summer"), _tailZone.iEndRecurrence) else new DSTZone(_tailZone.getID,
-            _tailZone.iStandardOffset, _tailZone.iStartRecurrence, _tailZone.iEndRecurrence.renameAppend("-Summer"))
+          _tailZone =
+            if (_tailZone.iStartRecurrence.getSaveMillis > 0)
+              new DSTZone(_tailZone.getID,
+                          _tailZone.iStandardOffset,
+                          _tailZone.iStartRecurrence.renameAppend("-Summer"),
+                          _tailZone.iEndRecurrence)
+            else
+              new DSTZone(_tailZone.getID,
+                          _tailZone.iStandardOffset,
+                          _tailZone.iStartRecurrence,
+                          _tailZone.iEndRecurrence.renameAppend("-Summer"))
         }
       }
-      new PrecalculatedZone(if (outputID) id else "", trans, wallOffsets, standardOffsets, nameKeys,
-        _tailZone)
+      new PrecalculatedZone(if (outputID) id else "",
+                            trans,
+                            wallOffsets,
+                            standardOffsets,
+                            nameKeys,
+                            _tailZone)
     }
   }
 
@@ -816,7 +885,8 @@ object DateTimeZoneBuilder {
                                    private val iWallOffsets: js.Array[Int],
                                    private val iStandardOffsets: js.Array[Int],
                                    private val iNameKeys: js.Array[String],
-                                   private val iTailZone: DSTZone) extends DateTimeZone(id) {
+                                   private val iTailZone: DSTZone)
+      extends DateTimeZone(id) {
 
     def getNameKey(instant: Long): String = {
       val transitions = iTransitions
@@ -933,11 +1003,13 @@ object DateTimeZoneBuilder {
       }
       if (obj.isInstanceOf[PrecalculatedZone]) {
         val other = obj.asInstanceOf[PrecalculatedZone]
-        return getID == other.getID && iTransitions.sameElements(other.iTransitions) &&
+        return getID == other.getID && iTransitions.sameElements(
+          other.iTransitions) &&
           iNameKeys.sameElements(other.iNameKeys) &&
           iWallOffsets.sameElements(other.iWallOffsets) &&
           iStandardOffsets.sameElements(other.iStandardOffsets) &&
-          (if (iTailZone == null) null == other.iTailZone else iTailZone == other.iTailZone)
+          (if (iTailZone == null) null == other.iTailZone
+           else iTailZone == other.iTailZone)
       }
       false
     }
@@ -992,10 +1064,10 @@ object DateTimeZoneBuilder {
       if (transitions.length <= 1) {
         return false
       }
-      var distances:Double = 0
+      var distances: Double = 0
       var count = 0
       for (i <- 1 until transitions.length) {
-        val diff:Double = transitions(i) - transitions(i - 1)
+        val diff: Double = transitions(i) - transitions(i - 1)
         if (diff < ((366L + 365) * 24 * 60 * 60 * 1000)) {
           distances += diff.toDouble
           count += 1
@@ -1025,7 +1097,12 @@ class DateTimeZoneBuilder {
                  advanceDayOfWeek: Boolean,
                  millisOfDay: Int): DateTimeZoneBuilder = {
     if (iRuleSets.nonEmpty) {
-      val ofYear = new OfYear(mode, monthOfYear, dayOfMonth, dayOfWeek, advanceDayOfWeek, millisOfDay)
+      val ofYear = new OfYear(mode,
+                              monthOfYear,
+                              dayOfMonth,
+                              dayOfWeek,
+                              advanceDayOfWeek,
+                              millisOfDay)
       val lastRuleSet = iRuleSets.last
       lastRuleSet.setUpperLimit(year, ofYear)
     }
@@ -1054,7 +1131,12 @@ class DateTimeZoneBuilder {
                           advanceDayOfWeek: Boolean,
                           millisOfDay: Int): DateTimeZoneBuilder = {
     if (fromYear <= toYear) {
-      val ofYear = new OfYear(mode, monthOfYear, dayOfMonth, dayOfWeek, advanceDayOfWeek, millisOfDay)
+      val ofYear = new OfYear(mode,
+                              monthOfYear,
+                              dayOfMonth,
+                              dayOfWeek,
+                              advanceDayOfWeek,
+                              millisOfDay)
       val recurrence = new Recurrence(ofYear, nameKey, saveMillis)
       val rule = new Rule(recurrence, fromYear, toYear)
       getLastRuleSet.addRule(rule)
@@ -1090,8 +1172,8 @@ class DateTimeZoneBuilder {
         millis = next.getMillis
         saveMillis = next.getSaveMillis
         rs = new RuleSet(rs)
-        while ( {
-          next = rs.nextTransition(millis, saveMillis);next
+        while ({
+          next = rs.nextTransition(millis, saveMillis); next
         } != null) {
           if (addTransition(transitions, next)) {
             if (tailZone != null) {
@@ -1115,7 +1197,10 @@ class DateTimeZoneBuilder {
     }
     if (transitions.size == 1 && tailZone == null) {
       val tr = transitions.head
-      return buildFixedZone(id, tr.getNameKey, tr.getWallOffset, tr.getStandardOffset)
+      return buildFixedZone(id,
+                            tr.getNameKey,
+                            tr.getWallOffset,
+                            tr.getStandardOffset)
     }
     val zone = PrecalculatedZone.create(id, outputID, transitions, tailZone)
     if (zone.isCachable) {
@@ -1124,7 +1209,9 @@ class DateTimeZoneBuilder {
     zone
   }
 
-  private def addTransition(transitions: collection.mutable.ListBuffer[Transition], tr: Transition): Boolean = {
+  private def addTransition(
+      transitions: collection.mutable.ListBuffer[Transition],
+      tr: Transition): Boolean = {
     val size = transitions.size
     if (size == 0) {
       transitions += tr

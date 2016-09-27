@@ -6,8 +6,9 @@ import org.joda.time.ReadablePartial
 import org.joda.time.field.PreciseDurationDateTimeField
 
 @SerialVersionUID(-4677223814028011723L)
-class BasicDayOfMonthDateTimeField(private val iChronology: BasicChronology, days: DurationField)
-  extends PreciseDurationDateTimeField(DateTimeFieldType.dayOfMonth(), days) {
+class BasicDayOfMonthDateTimeField(private val iChronology: BasicChronology,
+                                   days: DurationField)
+    extends PreciseDurationDateTimeField(DateTimeFieldType.dayOfMonth(), days) {
 
   def get(instant: Long): Int = iChronology.getDayOfMonth(instant)
 
@@ -17,7 +18,8 @@ class BasicDayOfMonthDateTimeField(private val iChronology: BasicChronology, day
 
   def getMaximumValue(): Int = iChronology.getDaysInMonthMax
 
-  override def getMaximumValue(instant: Long): Int = iChronology.getDaysInMonthMax(instant)
+  override def getMaximumValue(instant: Long): Int =
+    iChronology.getDaysInMonthMax(instant)
 
   override def getMaximumValue(partial: ReadablePartial): Int = {
     if (partial.isSupported(DateTimeFieldType.monthOfYear())) {
@@ -31,11 +33,14 @@ class BasicDayOfMonthDateTimeField(private val iChronology: BasicChronology, day
     getMaximumValue
   }
 
-  override def getMaximumValue(partial: ReadablePartial, values: Array[Int]): Int = {
+  override def getMaximumValue(partial: ReadablePartial,
+                               values: Array[Int]): Int = {
     val size = partial.size
-    for (i <- 0 until size if partial.getFieldType(i) == DateTimeFieldType.monthOfYear()) {
+    for (i <- 0 until size
+         if partial.getFieldType(i) == DateTimeFieldType.monthOfYear()) {
       val month = values(i)
-      for (j <- 0 until size if partial.getFieldType(j) == DateTimeFieldType.year()) {
+      for (j <- 0 until size
+           if partial.getFieldType(j) == DateTimeFieldType.year()) {
         val year = values(j)
         return iChronology.getDaysInYearMonth(year, month)
       }
@@ -44,7 +49,8 @@ class BasicDayOfMonthDateTimeField(private val iChronology: BasicChronology, day
     getMaximumValue
   }
 
-  override protected def getMaximumValueForSet(instant: Long, value: Int): Int = {
+  override protected def getMaximumValueForSet(instant: Long,
+                                               value: Int): Int = {
     iChronology.getDaysInMonthMaxForSet(instant, value)
   }
 

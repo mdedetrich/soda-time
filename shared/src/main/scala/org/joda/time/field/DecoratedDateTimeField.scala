@@ -5,9 +5,11 @@ import org.joda.time.DateTimeFieldType
 import org.joda.time.DurationField
 
 @SerialVersionUID(203115783733757597L)
-abstract class DecoratedDateTimeField protected (private val field: DateTimeField, `type`: DateTimeFieldType)
-  extends BaseDateTimeField(`type`) {
-  
+abstract class DecoratedDateTimeField protected (
+    private val field: DateTimeField,
+    `type`: DateTimeFieldType)
+    extends BaseDateTimeField(`type`) {
+
   private var iField: DateTimeField = null
 
   if (field == null) {

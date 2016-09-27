@@ -4,11 +4,12 @@ import org.joda.time.DateTimeFieldType
 import org.joda.time.DurationField
 
 @SerialVersionUID(5004523158306266035L)
-abstract class PreciseDurationDateTimeField(`type`: DateTimeFieldType, private val unit: DurationField)
-  extends BaseDateTimeField(`type`) {
+abstract class PreciseDurationDateTimeField(`type`: DateTimeFieldType,
+                                            private val unit: DurationField)
+    extends BaseDateTimeField(`type`) {
 
   val iUnitMillis = unit.getUnitMillis
-  
+
   var iUnitField: DurationField = null
 
   if (!unit.isPrecise) {
@@ -16,20 +17,24 @@ abstract class PreciseDurationDateTimeField(`type`: DateTimeFieldType, private v
   }
 
   if (iUnitMillis < 1) {
-    throw new IllegalArgumentException("The unit milliseconds must be at least 1")
+    throw new IllegalArgumentException(
+      "The unit milliseconds must be at least 1")
   }
-  
+
   iUnitField = unit
 
   def isLenient(): Boolean = false
 
   def set(instant: Long, value: Int): Long = {
-    FieldUtils.verifyValueBounds(this, value, getMinimumValue, getMaximumValueForSet(instant, value))
+    FieldUtils.verifyValueBounds(this,
+                                 value,
+                                 getMinimumValue,
+                                 getMaximumValueForSet(instant, value))
     instant + (value - get(instant)) * iUnitMillis
   }
 
   def roundFloor(instant: Long): Long = {
-    var _instant:Long = instant
+    var _instant: Long = instant
     if (_instant >= 0) {
       _instant - _instant % iUnitMillis
     } else {
@@ -39,7 +44,7 @@ abstract class PreciseDurationDateTimeField(`type`: DateTimeFieldType, private v
   }
 
   override def roundCeiling(instant: Long): Long = {
-    var _instant:Long = instant
+    var _instant: Long = instant
     if (_instant > 0) {
       _instant -= 1
       _instant - _instant % iUnitMillis + iUnitMillis
@@ -62,5 +67,6 @@ abstract class PreciseDurationDateTimeField(`type`: DateTimeFieldType, private v
 
   def getUnitMillis(): Long = iUnitMillis
 
-  protected def getMaximumValueForSet(instant: Long, value: Int): Int = getMaximumValue(instant)
+  protected def getMaximumValueForSet(instant: Long, value: Int): Int =
+    getMaximumValue(instant)
 }

@@ -11,12 +11,14 @@ import org.joda.time.format.DateTimeFormatter
 
 @SerialVersionUID(2353678632973660L)
 abstract class BasePartial protected (instant: Long, chronology: Chronology)
-  extends AbstractPartial with ReadablePartial with Serializable {
+    extends AbstractPartial
+    with ReadablePartial
+    with Serializable {
 
-  private var iChronology:Chronology = _
-  private var iValues:Array[Int] = _
-  
-  var _chronology:Chronology = chronology
+  private var iChronology: Chronology = _
+  private var iValues: Array[Int] = _
+
+  var _chronology: Chronology = chronology
 
   _chronology = DateTimeUtils.getChronology(_chronology)
   iChronology = chronology.withUTC()
@@ -44,7 +46,9 @@ abstract class BasePartial protected (instant: Long, chronology: Chronology)
     iValues = converter.getPartialValues(this, instant, _chronology)
   }
 
-  protected def this(instant: AnyRef, chronology: Chronology, parser: DateTimeFormatter) {
+  protected def this(instant: AnyRef,
+                     chronology: Chronology,
+                     parser: DateTimeFormatter) {
     this()
     var _chronology = chronology
     val converter = ConverterManager.getInstance.getPartialConverter(instant)
@@ -74,36 +78,38 @@ abstract class BasePartial protected (instant: Long, chronology: Chronology)
     iChronology = chrono.withUTC()
     iValues = base.iValues
   }
-  
+
   protected def this(dummyImplicit: DummyImplicit) {
     this()
   }
-  
+
   protected def auxConstructor(chronology: Chronology): Unit = {
-    var _chronology:Chronology = chronology
+    var _chronology: Chronology = chronology
 
     _chronology = DateTimeUtils.getChronology(_chronology)
     iChronology = chronology.withUTC()
     iValues = _chronology.get(this, instant)
   }
-  
-  protected def auxConstructor(instant:Long): Unit = {
-    var _chronology:Chronology = null
+
+  protected def auxConstructor(instant: Long): Unit = {
+    var _chronology: Chronology = null
 
     _chronology = DateTimeUtils.getChronology(_chronology)
     iChronology = chronology.withUTC()
     iValues = _chronology.get(this, instant)
   }
-  
-  protected def auxConstructor(instant:Long,chronology: Chronology): Unit = {
-    var _chronology:Chronology = chronology
+
+  protected def auxConstructor(instant: Long, chronology: Chronology): Unit = {
+    var _chronology: Chronology = chronology
 
     _chronology = DateTimeUtils.getChronology(_chronology)
     iChronology = chronology.withUTC()
     iValues = _chronology.get(this, instant)
   }
-  
-  protected def auxConstructor(instant: AnyRef, chronology: Chronology, parser: DateTimeFormatter): Unit = {
+
+  protected def auxConstructor(instant: AnyRef,
+                               chronology: Chronology,
+                               parser: DateTimeFormatter): Unit = {
     var _chronology = chronology
     val converter = ConverterManager.getInstance.getPartialConverter(instant)
     _chronology = converter.getChronology(instant, _chronology)
@@ -111,20 +117,21 @@ abstract class BasePartial protected (instant: Long, chronology: Chronology)
     iChronology = _chronology.withUTC()
     iValues = converter.getPartialValues(this, instant, _chronology, parser)
   }
-  
-  protected def auxConstructor(values: Array[Int], chronology: Chronology): Unit = {
+
+  protected def auxConstructor(values: Array[Int],
+                               chronology: Chronology): Unit = {
     var _chronology = chronology
     _chronology = DateTimeUtils.getChronology(_chronology)
     iChronology = _chronology.withUTC()
     _chronology.validate(this, values)
     iValues = values
   }
-  
+
   protected def auxConstructor(base: BasePartial, values: Array[Int]): Unit = {
     iChronology = base.iChronology
     iValues = values
   }
-  
+
   protected def auxConstructor(base: BasePartial, chrono: Chronology): Unit = {
     iChronology = chrono.withUTC()
     iValues = base.iValues
@@ -160,7 +167,6 @@ abstract class BasePartial protected (instant: Long, chronology: Chronology)
     if (pattern == null) {
       return toString
     }
-    DateTimeFormat.forPattern(pattern).withLocale(locale)
-      .print(this)
+    DateTimeFormat.forPattern(pattern).withLocale(locale).print(this)
   }
 }

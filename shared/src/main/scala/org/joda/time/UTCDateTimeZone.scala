@@ -1,7 +1,7 @@
 package org.joda.time
 
 object UTCDateTimeZone {
-  val INSTANCE:DateTimeZone = new UTCDateTimeZone()
+  val INSTANCE: DateTimeZone = new UTCDateTimeZone()
 }
 
 @SerialVersionUID(-3513011772763289092L)
@@ -21,7 +21,8 @@ class UTCDateTimeZone extends DateTimeZone("UTC") {
 
   override def previousTransition(instant: Long): Long = instant
 
-  override def toTimeZone(): java.util.TimeZone = new java.util.SimpleTimeZone(0, getID)
+  override def toTimeZone(): java.util.TimeZone =
+    new java.util.SimpleTimeZone(0, getID)
 
   override def equals(obj: Any): Boolean = obj.isInstanceOf[UTCDateTimeZone]
 

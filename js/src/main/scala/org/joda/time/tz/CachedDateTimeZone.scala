@@ -17,7 +17,6 @@ object CachedDateTimeZone {
     case e: SecurityException => i = null
   }
 
-
   if (i == null) {
     cacheSize = 512
   } else {
@@ -79,7 +78,8 @@ object CachedDateTimeZone {
 }
 
 @SerialVersionUID(5472298452022250685L)
-class CachedDateTimeZone private (private val zone: DateTimeZone) extends DateTimeZone(zone.getID) {
+class CachedDateTimeZone private (private val zone: DateTimeZone)
+    extends DateTimeZone(zone.getID) {
   import scala.scalajs.js
 
   var iZone: DateTimeZone = null
@@ -102,7 +102,8 @@ class CachedDateTimeZone private (private val zone: DateTimeZone) extends DateTi
 
   def nextTransition(instant: Long): Long = iZone.nextTransition(instant)
 
-  def previousTransition(instant: Long): Long = iZone.previousTransition(instant)
+  def previousTransition(instant: Long): Long =
+    iZone.previousTransition(instant)
 
   override def hashCode(): Int = iZone.hashCode
 

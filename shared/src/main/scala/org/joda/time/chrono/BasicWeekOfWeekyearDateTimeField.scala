@@ -7,11 +7,13 @@ import org.joda.time.ReadablePartial
 import org.joda.time.field.PreciseDurationDateTimeField
 
 @SerialVersionUID(-1587436826395135328L)
-class BasicWeekOfWeekyearDateTimeField(private val chronology: BasicChronology, weeks: DurationField)
-  extends PreciseDurationDateTimeField(DateTimeFieldType.weekOfWeekyear(), weeks) {
-  
+class BasicWeekOfWeekyearDateTimeField(private val chronology: BasicChronology,
+                                       weeks: DurationField)
+    extends PreciseDurationDateTimeField(DateTimeFieldType.weekOfWeekyear(),
+                                         weeks) {
+
   private var iChronology: BasicChronology = null
-  
+
   iChronology = chronology
 
   def get(instant: Long): Int = iChronology.getWeekOfWeekyear(instant)
@@ -49,16 +51,19 @@ class BasicWeekOfWeekyearDateTimeField(private val chronology: BasicChronology, 
     53
   }
 
-  override def getMaximumValue(partial: ReadablePartial, values: Array[Int]): Int = {
+  override def getMaximumValue(partial: ReadablePartial,
+                               values: Array[Int]): Int = {
     val size = partial.size
-    for (i <- 0 until size if partial.getFieldType(i) == DateTimeFieldType.weekyear()) {
+    for (i <- 0 until size
+         if partial.getFieldType(i) == DateTimeFieldType.weekyear()) {
       val weekyear = values(i)
       return iChronology.getWeeksInYear(weekyear)
     }
     53
   }
 
-  override protected def getMaximumValueForSet(instant: Long, value: Int): Int = {
+  override protected def getMaximumValueForSet(instant: Long,
+                                               value: Int): Int = {
     if (value > 52) getMaximumValue(instant) else 52
   }
 

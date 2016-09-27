@@ -10,7 +10,9 @@ object ISOPeriodFormat {
 
   def standard(): PeriodFormatter = {
     if (cStandard == null) {
-      cStandard = new PeriodFormatterBuilder().appendLiteral("P").appendYears()
+      cStandard = new PeriodFormatterBuilder()
+        .appendLiteral("P")
+        .appendYears()
         .appendSuffix("Y")
         .appendMonths()
         .appendSuffix("M")
@@ -32,7 +34,9 @@ object ISOPeriodFormat {
 
   def alternate(): PeriodFormatter = {
     if (cAlternate == null) {
-      cAlternate = new PeriodFormatterBuilder().appendLiteral("P").printZeroAlways()
+      cAlternate = new PeriodFormatterBuilder()
+        .appendLiteral("P")
+        .printZeroAlways()
         .minimumPrintedDigits(4)
         .appendYears()
         .minimumPrintedDigits(2)
@@ -49,7 +53,9 @@ object ISOPeriodFormat {
 
   def alternateExtended(): PeriodFormatter = {
     if (cAlternateExtended == null) {
-      cAlternateExtended = new PeriodFormatterBuilder().appendLiteral("P").printZeroAlways()
+      cAlternateExtended = new PeriodFormatterBuilder()
+        .appendLiteral("P")
+        .printZeroAlways()
         .minimumPrintedDigits(4)
         .appendYears()
         .appendSeparator("-")
@@ -70,7 +76,9 @@ object ISOPeriodFormat {
 
   def alternateWithWeeks(): PeriodFormatter = {
     if (cAlternateWithWeeks == null) {
-      cAlternateWithWeeks = new PeriodFormatterBuilder().appendLiteral("P").printZeroAlways()
+      cAlternateWithWeeks = new PeriodFormatterBuilder()
+        .appendLiteral("P")
+        .printZeroAlways()
         .minimumPrintedDigits(4)
         .appendYears()
         .minimumPrintedDigits(2)
@@ -88,7 +96,9 @@ object ISOPeriodFormat {
 
   def alternateExtendedWithWeeks(): PeriodFormatter = {
     if (cAlternateExtendedWihWeeks == null) {
-      cAlternateExtendedWihWeeks = new PeriodFormatterBuilder().appendLiteral("P").printZeroAlways()
+      cAlternateExtendedWihWeeks = new PeriodFormatterBuilder()
+        .appendLiteral("P")
+        .printZeroAlways()
         .minimumPrintedDigits(4)
         .appendYears()
         .appendSeparator("-")

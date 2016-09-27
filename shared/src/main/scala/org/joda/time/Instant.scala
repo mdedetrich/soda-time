@@ -22,7 +22,10 @@ object Instant {
 }
 
 @SerialVersionUID(3299096530934209741L)
-class Instant extends AbstractInstant() with ReadableInstant with Serializable {
+class Instant
+    extends AbstractInstant()
+    with ReadableInstant
+    with Serializable {
 
   private var iMillis = DateTimeUtils.currentTimeMillis()
 
@@ -51,7 +54,8 @@ class Instant extends AbstractInstant() with ReadableInstant with Serializable {
     withMillis(instant)
   }
 
-  def withDurationAdded(durationToAdd: ReadableDuration, scalar: Int): Instant = {
+  def withDurationAdded(durationToAdd: ReadableDuration,
+                        scalar: Int): Instant = {
     if (durationToAdd == null || scalar == 0) {
       return this
     }
@@ -60,11 +64,13 @@ class Instant extends AbstractInstant() with ReadableInstant with Serializable {
 
   def plus(duration: Long): Instant = withDurationAdded(duration, 1)
 
-  def plus(duration: ReadableDuration): Instant = withDurationAdded(duration, 1)
+  def plus(duration: ReadableDuration): Instant =
+    withDurationAdded(duration, 1)
 
   def minus(duration: Long): Instant = withDurationAdded(duration, -1)
 
-  def minus(duration: ReadableDuration): Instant = withDurationAdded(duration, -1)
+  def minus(duration: ReadableDuration): Instant =
+    withDurationAdded(duration, -1)
 
   def getMillis(): Long = iMillis
 

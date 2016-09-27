@@ -21,37 +21,71 @@ import BasicChronology._
 object BasicChronology {
 
   private val cMillisField = MillisDurationField.INSTANCE
-  private val cSecondsField = new PreciseDurationField(DurationFieldType.seconds(), DateTimeConstants.MILLIS_PER_SECOND)
-  private val cMinutesField = new PreciseDurationField(DurationFieldType.minutes(), DateTimeConstants.MILLIS_PER_MINUTE)
-  private val cHoursField = new PreciseDurationField(DurationFieldType.hours(), DateTimeConstants.MILLIS_PER_HOUR)
-  private val cHalfdaysField = new PreciseDurationField(DurationFieldType.halfdays(), DateTimeConstants.MILLIS_PER_DAY / 2)
-  private val cDaysField = new PreciseDurationField(DurationFieldType.days(), DateTimeConstants.MILLIS_PER_DAY)
-  private val cWeeksField = new PreciseDurationField(DurationFieldType.weeks(), DateTimeConstants.MILLIS_PER_WEEK)
-  private val cMillisOfSecondField = new PreciseDateTimeField(DateTimeFieldType.millisOfSecond(), cMillisField,
+  private val cSecondsField = new PreciseDurationField(
+    DurationFieldType.seconds(),
+    DateTimeConstants.MILLIS_PER_SECOND)
+  private val cMinutesField = new PreciseDurationField(
+    DurationFieldType.minutes(),
+    DateTimeConstants.MILLIS_PER_MINUTE)
+  private val cHoursField = new PreciseDurationField(
+    DurationFieldType.hours(),
+    DateTimeConstants.MILLIS_PER_HOUR)
+  private val cHalfdaysField = new PreciseDurationField(
+    DurationFieldType.halfdays(),
+    DateTimeConstants.MILLIS_PER_DAY / 2)
+  private val cDaysField = new PreciseDurationField(
+    DurationFieldType.days(),
+    DateTimeConstants.MILLIS_PER_DAY)
+  private val cWeeksField = new PreciseDurationField(
+    DurationFieldType.weeks(),
+    DateTimeConstants.MILLIS_PER_WEEK)
+  private val cMillisOfSecondField = new PreciseDateTimeField(
+    DateTimeFieldType.millisOfSecond(),
+    cMillisField,
     cSecondsField)
-  private val cMillisOfDayField = new PreciseDateTimeField(DateTimeFieldType.millisOfDay(), cMillisField,
+  private val cMillisOfDayField = new PreciseDateTimeField(
+    DateTimeFieldType.millisOfDay(),
+    cMillisField,
     cDaysField)
-  private val cSecondOfMinuteField = new PreciseDateTimeField(DateTimeFieldType.secondOfMinute(), cSecondsField,
+  private val cSecondOfMinuteField = new PreciseDateTimeField(
+    DateTimeFieldType.secondOfMinute(),
+    cSecondsField,
     cMinutesField)
-  private val cSecondOfDayField = new PreciseDateTimeField(DateTimeFieldType.secondOfDay(), cSecondsField,
+  private val cSecondOfDayField = new PreciseDateTimeField(
+    DateTimeFieldType.secondOfDay(),
+    cSecondsField,
     cDaysField)
-  private val cMinuteOfHourField = new PreciseDateTimeField(DateTimeFieldType.minuteOfHour(), cMinutesField,
+  private val cMinuteOfHourField = new PreciseDateTimeField(
+    DateTimeFieldType.minuteOfHour(),
+    cMinutesField,
     cHoursField)
-  private val cMinuteOfDayField = new PreciseDateTimeField(DateTimeFieldType.minuteOfDay(), cMinutesField,
+  private val cMinuteOfDayField = new PreciseDateTimeField(
+    DateTimeFieldType.minuteOfDay(),
+    cMinutesField,
     cDaysField)
-  private val cHourOfDayField = new PreciseDateTimeField(DateTimeFieldType.hourOfDay(), cHoursField,
+  private val cHourOfDayField = new PreciseDateTimeField(
+    DateTimeFieldType.hourOfDay(),
+    cHoursField,
     cDaysField)
-  private val cHourOfHalfdayField = new PreciseDateTimeField(DateTimeFieldType.hourOfHalfday(), cHoursField,
+  private val cHourOfHalfdayField = new PreciseDateTimeField(
+    DateTimeFieldType.hourOfHalfday(),
+    cHoursField,
     cHalfdaysField)
-  private val cClockhourOfDayField = new ZeroIsMaxDateTimeField(cHourOfDayField, DateTimeFieldType.clockhourOfDay())
-  private val cClockhourOfHalfdayField = new ZeroIsMaxDateTimeField(cHourOfHalfdayField, DateTimeFieldType.clockhourOfHalfday())
+  private val cClockhourOfDayField = new ZeroIsMaxDateTimeField(
+    cHourOfDayField,
+    DateTimeFieldType.clockhourOfDay())
+  private val cClockhourOfHalfdayField = new ZeroIsMaxDateTimeField(
+    cHourOfHalfdayField,
+    DateTimeFieldType.clockhourOfHalfday())
   private val cHalfdayOfDayField = new HalfdayField()
   private val CACHE_SIZE = 1 << 10
   private val CACHE_MASK = CACHE_SIZE - 1
 
   @SerialVersionUID(581601443656929254L)
-  private class HalfdayField() extends PreciseDateTimeField(DateTimeFieldType.halfdayOfDay(), cHalfdaysField,
-    cDaysField) {
+  private class HalfdayField()
+      extends PreciseDateTimeField(DateTimeFieldType.halfdayOfDay(),
+                                   cHalfdaysField,
+                                   cDaysField) {
 
     override def getAsText(fieldValue: Int, locale: Locale): String = {
       GJLocaleSymbols.forLocale(locale).halfdayValueToText(fieldValue)
@@ -70,21 +104,24 @@ object BasicChronology {
 }
 
 @SerialVersionUID(8283225332206808863L)
-abstract class BasicChronology(base: Chronology, param: AnyRef, private val minDaysInFirstWeek: Int)
-  extends AssembledChronology(base, param) {
+abstract class BasicChronology(base: Chronology,
+                               param: AnyRef,
+                               private val minDaysInFirstWeek: Int)
+    extends AssembledChronology(base, param) {
 
   @transient private val iYearInfoCache = new Array[YearInfo](CACHE_SIZE)
   private var iMinDaysInFirstWeek: Int = _
 
   if (minDaysInFirstWeek < 1 || minDaysInFirstWeek > 7) {
-    throw new IllegalArgumentException("Invalid min days in first week: " + minDaysInFirstWeek)
+    throw new IllegalArgumentException(
+      "Invalid min days in first week: " + minDaysInFirstWeek)
   }
 
   iMinDaysInFirstWeek = minDaysInFirstWeek
 
   override def getZone(): DateTimeZone = {
     var base: Chronology = null
-    if ( {
+    if ({
       base = getBase; base
     } != null) {
       return base.getZone
@@ -93,38 +130,54 @@ abstract class BasicChronology(base: Chronology, param: AnyRef, private val minD
   }
 
   override def getDateTimeMillis(year: Int,
-                        monthOfYear: Int,
-                        dayOfMonth: Int,
-                        millisOfDay: Int): Long = {
+                                 monthOfYear: Int,
+                                 dayOfMonth: Int,
+                                 millisOfDay: Int): Long = {
     var base: Chronology = null
-    if ( {
+    if ({
       base = getBase; base
     } != null) {
       return base.getDateTimeMillis(year, monthOfYear, dayOfMonth, millisOfDay)
     }
-    FieldUtils.verifyValueBounds(DateTimeFieldType.millisOfDay(), millisOfDay, 0, DateTimeConstants.MILLIS_PER_DAY - 1)
+    FieldUtils.verifyValueBounds(DateTimeFieldType.millisOfDay(),
+                                 millisOfDay,
+                                 0,
+                                 DateTimeConstants.MILLIS_PER_DAY - 1)
     getDateMidnightMillis(year, monthOfYear, dayOfMonth) +
       millisOfDay
   }
 
   override def getDateTimeMillis(year: Int,
-                        monthOfYear: Int,
-                        dayOfMonth: Int,
-                        hourOfDay: Int,
-                        minuteOfHour: Int,
-                        secondOfMinute: Int,
-                        millisOfSecond: Int): Long = {
+                                 monthOfYear: Int,
+                                 dayOfMonth: Int,
+                                 hourOfDay: Int,
+                                 minuteOfHour: Int,
+                                 secondOfMinute: Int,
+                                 millisOfSecond: Int): Long = {
     var base: Chronology = null
-    if ( {
+    if ({
       base = getBase; base
     } != null) {
-      return base.getDateTimeMillis(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute,
-        millisOfSecond)
+      return base.getDateTimeMillis(year,
+                                    monthOfYear,
+                                    dayOfMonth,
+                                    hourOfDay,
+                                    minuteOfHour,
+                                    secondOfMinute,
+                                    millisOfSecond)
     }
-    FieldUtils.verifyValueBounds(DateTimeFieldType.hourOfDay(), hourOfDay, 0, 23)
-    FieldUtils.verifyValueBounds(DateTimeFieldType.minuteOfHour(), minuteOfHour, 0, 59)
-    FieldUtils.verifyValueBounds(DateTimeFieldType.secondOfMinute(), secondOfMinute, 0, 59)
-    FieldUtils.verifyValueBounds(DateTimeFieldType.millisOfSecond(), millisOfSecond, 0, 999)
+    FieldUtils
+      .verifyValueBounds(DateTimeFieldType.hourOfDay(), hourOfDay, 0, 23)
+    FieldUtils
+      .verifyValueBounds(DateTimeFieldType.minuteOfHour(), minuteOfHour, 0, 59)
+    FieldUtils.verifyValueBounds(DateTimeFieldType.secondOfMinute(),
+                                 secondOfMinute,
+                                 0,
+                                 59)
+    FieldUtils.verifyValueBounds(DateTimeFieldType.millisOfSecond(),
+                                 millisOfSecond,
+                                 0,
+                                 999)
     getDateMidnightMillis(year, monthOfYear, dayOfMonth) +
       hourOfDay * DateTimeConstants.MILLIS_PER_HOUR +
       minuteOfHour * DateTimeConstants.MILLIS_PER_MINUTE +
@@ -192,22 +245,28 @@ abstract class BasicChronology(base: Chronology, param: AnyRef, private val minD
     fields.halfdayOfDay = cHalfdayOfDayField
     fields.year = new BasicYearDateTimeField(this)
     fields.yearOfEra = new GJYearOfEraDateTimeField(fields.year, this)
-    var field:DateTimeField = new OffsetDateTimeField(fields.yearOfEra, 99)
-    fields.centuryOfEra = new DividedDateTimeField(field, DateTimeFieldType.centuryOfEra(), 100)
+    var field: DateTimeField = new OffsetDateTimeField(fields.yearOfEra, 99)
+    fields.centuryOfEra =
+      new DividedDateTimeField(field, DateTimeFieldType.centuryOfEra(), 100)
     fields.centuries = fields.centuryOfEra.getDurationField
-    field = new RemainderDateTimeField(fields.centuryOfEra.asInstanceOf[DividedDateTimeField])
-    fields.yearOfCentury = new OffsetDateTimeField(field, DateTimeFieldType.yearOfCentury(), 1)
+    field = new RemainderDateTimeField(
+      fields.centuryOfEra.asInstanceOf[DividedDateTimeField])
+    fields.yearOfCentury =
+      new OffsetDateTimeField(field, DateTimeFieldType.yearOfCentury(), 1)
     fields.era = new GJEraDateTimeField(this)
     fields.dayOfWeek = new GJDayOfWeekDateTimeField(this, fields.days)
     fields.dayOfMonth = new BasicDayOfMonthDateTimeField(this, fields.days)
     fields.dayOfYear = new BasicDayOfYearDateTimeField(this, fields.days)
     fields.monthOfYear = new GJMonthOfYearDateTimeField(this)
     fields.weekyear = new BasicWeekyearDateTimeField(this)
-    fields.weekOfWeekyear = new BasicWeekOfWeekyearDateTimeField(this, fields.weeks)
-    field = new RemainderDateTimeField(fields.weekyear, fields.centuries, DateTimeFieldType.weekyearOfCentury(),
-      100)
-    fields.weekyearOfCentury = new OffsetDateTimeField(field, DateTimeFieldType.weekyearOfCentury(),
-      1)
+    fields.weekOfWeekyear =
+      new BasicWeekOfWeekyearDateTimeField(this, fields.weeks)
+    field = new RemainderDateTimeField(fields.weekyear,
+                                       fields.centuries,
+                                       DateTimeFieldType.weekyearOfCentury(),
+                                       100)
+    fields.weekyearOfCentury =
+      new OffsetDateTimeField(field, DateTimeFieldType.weekyearOfCentury(), 1)
     fields.years = fields.year.getDurationField
     fields.months = fields.monthOfYear.getDurationField
     fields.weekyears = fields.weekyear.getDurationField
@@ -263,7 +322,9 @@ abstract class BasicChronology(base: Chronology, param: AnyRef, private val minD
       year -= 1
     } else if (diff >= DateTimeConstants.MILLIS_PER_DAY * 365L) {
       var oneYear: Long = 0l
-      oneYear = if (isLeapYear(year)) DateTimeConstants.MILLIS_PER_DAY * 366L else DateTimeConstants.MILLIS_PER_DAY * 365L
+      oneYear =
+        if (isLeapYear(year)) DateTimeConstants.MILLIS_PER_DAY * 366L
+        else DateTimeConstants.MILLIS_PER_DAY * 365L
       yearStart += oneYear
       if (yearStart <= instant) {
         year += 1
@@ -272,7 +333,8 @@ abstract class BasicChronology(base: Chronology, param: AnyRef, private val minD
     year
   }
 
-  def getMonthOfYear(millis: Long): Int = getMonthOfYear(millis, getYear(millis))
+  def getMonthOfYear(millis: Long): Int =
+    getMonthOfYear(millis, getYear(millis))
 
   def getMonthOfYear(millis: Long, year: Int): Int
 
@@ -294,7 +356,8 @@ abstract class BasicChronology(base: Chronology, param: AnyRef, private val minD
       1
   }
 
-  def getDayOfYear(instant: Long): Int = getDayOfYear(instant, getYear(instant))
+  def getDayOfYear(instant: Long): Int =
+    getDayOfYear(instant, getYear(instant))
 
   def getDayOfYear(instant: Long, year: Int): Int = {
     val yearStart = getYearMillis(year)
@@ -361,13 +424,24 @@ abstract class BasicChronology(base: Chronology, param: AnyRef, private val minD
     getDaysInYearMonth(thisYear, thisMonth)
   }
 
-  def getDaysInMonthMaxForSet(instant: Long, value: Int): Int = getDaysInMonthMax(instant)
+  def getDaysInMonthMaxForSet(instant: Long, value: Int): Int =
+    getDaysInMonthMax(instant)
 
-  def getDateMidnightMillis(year: Int, monthOfYear: Int, dayOfMonth: Int): Long = {
-    FieldUtils.verifyValueBounds(DateTimeFieldType.year(), year, getMinYear, getMaxYear)
-    FieldUtils.verifyValueBounds(DateTimeFieldType.monthOfYear(), monthOfYear, 1, getMaxMonth(year))
-    FieldUtils.verifyValueBounds(DateTimeFieldType.dayOfMonth(), dayOfMonth, 1, getDaysInYearMonth(year,
-      monthOfYear))
+  def getDateMidnightMillis(year: Int,
+                            monthOfYear: Int,
+                            dayOfMonth: Int): Long = {
+    FieldUtils.verifyValueBounds(DateTimeFieldType.year(),
+                                 year,
+                                 getMinYear,
+                                 getMaxYear)
+    FieldUtils.verifyValueBounds(DateTimeFieldType.monthOfYear(),
+                                 monthOfYear,
+                                 1,
+                                 getMaxMonth(year))
+    FieldUtils.verifyValueBounds(DateTimeFieldType.dayOfMonth(),
+                                 dayOfMonth,
+                                 1,
+                                 getDaysInYearMonth(year, monthOfYear))
     getYearMonthDayMillis(year, monthOfYear, dayOfMonth)
   }
 

@@ -13,7 +13,8 @@ object UnsupportedDateTimeField {
 
   private var cCache: HashMap[DateTimeFieldType, UnsupportedDateTimeField] = _
 
-  def getInstance(`type`: DateTimeFieldType, durationField: DurationField): UnsupportedDateTimeField = {
+  def getInstance(`type`: DateTimeFieldType,
+                  durationField: DurationField): UnsupportedDateTimeField = {
     synchronized {
       var field: UnsupportedDateTimeField = null
       if (cCache == null) {
@@ -35,8 +36,11 @@ object UnsupportedDateTimeField {
 }
 
 @SerialVersionUID(-1934618396111902255L)
-class UnsupportedDateTimeField private (private val `type`: DateTimeFieldType, private val durationField: DurationField)
-  extends DateTimeField with Serializable {
+class UnsupportedDateTimeField private (
+    private val `type`: DateTimeFieldType,
+    private val durationField: DurationField)
+    extends DateTimeField
+    with Serializable {
 
   private var iType: DateTimeFieldType = null
   private var iDurationField: DurationField = null
@@ -61,25 +65,35 @@ class UnsupportedDateTimeField private (private val `type`: DateTimeFieldType, p
 
   def getAsText(instant: Long): String = throw unsupported()
 
-  def getAsText(partial: ReadablePartial, fieldValue: Int, locale: Locale): String = throw unsupported()
+  def getAsText(partial: ReadablePartial,
+                fieldValue: Int,
+                locale: Locale): String = throw unsupported()
 
-  def getAsText(partial: ReadablePartial, locale: Locale): String = throw unsupported()
+  def getAsText(partial: ReadablePartial, locale: Locale): String =
+    throw unsupported()
 
   def getAsText(fieldValue: Int, locale: Locale): String = throw unsupported()
 
-  def getAsShortText(instant: Long, locale: Locale): String = throw unsupported()
+  def getAsShortText(instant: Long, locale: Locale): String =
+    throw unsupported()
 
   def getAsShortText(instant: Long): String = throw unsupported()
 
-  def getAsShortText(partial: ReadablePartial, fieldValue: Int, locale: Locale): String = throw unsupported()
+  def getAsShortText(partial: ReadablePartial,
+                     fieldValue: Int,
+                     locale: Locale): String = throw unsupported()
 
-  def getAsShortText(partial: ReadablePartial, locale: Locale): String = throw unsupported()
+  def getAsShortText(partial: ReadablePartial, locale: Locale): String =
+    throw unsupported()
 
-  def getAsShortText(fieldValue: Int, locale: Locale): String = throw unsupported()
+  def getAsShortText(fieldValue: Int, locale: Locale): String =
+    throw unsupported()
 
-  def add(instant: Long, value: Int): Long = getDurationField.add(instant, value)
+  def add(instant: Long, value: Int): Long =
+    getDurationField.add(instant, value)
 
-  def add(instant: Long, value: Long): Long = getDurationField.add(instant, value)
+  def add(instant: Long, value: Long): Long =
+    getDurationField.add(instant, value)
 
   def add(instant: ReadablePartial,
           fieldIndex: Int,
@@ -102,7 +116,8 @@ class UnsupportedDateTimeField private (private val `type`: DateTimeFieldType, p
     getDurationField.getDifference(minuendInstant, subtrahendInstant)
   }
 
-  def getDifferenceAsLong(minuendInstant: Long, subtrahendInstant: Long): Long = {
+  def getDifferenceAsLong(minuendInstant: Long,
+                          subtrahendInstant: Long): Long = {
     getDurationField.getDifferenceAsLong(minuendInstant, subtrahendInstant)
   }
 
@@ -113,7 +128,8 @@ class UnsupportedDateTimeField private (private val `type`: DateTimeFieldType, p
           values: Array[Int],
           newValue: Int): Array[Int] = throw unsupported()
 
-  def set(instant: Long, text: String, locale: Locale): Long = throw unsupported()
+  def set(instant: Long, text: String, locale: Locale): Long =
+    throw unsupported()
 
   def set(instant: Long, text: String): Long = throw unsupported()
 
@@ -139,7 +155,8 @@ class UnsupportedDateTimeField private (private val `type`: DateTimeFieldType, p
 
   def getMinimumValue(instant: ReadablePartial): Int = throw unsupported()
 
-  def getMinimumValue(instant: ReadablePartial, values: Array[Int]): Int = throw unsupported()
+  def getMinimumValue(instant: ReadablePartial, values: Array[Int]): Int =
+    throw unsupported()
 
   def getMaximumValue(): Int = throw unsupported()
 
@@ -147,7 +164,8 @@ class UnsupportedDateTimeField private (private val `type`: DateTimeFieldType, p
 
   def getMaximumValue(instant: ReadablePartial): Int = throw unsupported()
 
-  def getMaximumValue(instant: ReadablePartial, values: Array[Int]): Int = throw unsupported()
+  def getMaximumValue(instant: ReadablePartial, values: Array[Int]): Int =
+    throw unsupported()
 
   def getMaximumTextLength(locale: Locale): Int = throw unsupported()
 

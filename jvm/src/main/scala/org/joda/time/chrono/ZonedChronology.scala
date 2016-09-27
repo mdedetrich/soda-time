@@ -34,12 +34,12 @@ object ZonedChronology {
 
   def useTimeArithmetic(field: DurationField): Boolean = {
     field != null &&
-      field.getUnitMillis < DateTimeConstants.MILLIS_PER_HOUR * 12
+    field.getUnitMillis < DateTimeConstants.MILLIS_PER_HOUR * 12
   }
 
   @SerialVersionUID(-485345310999208286L)
   class ZonedDurationField(val field: DurationField, val zone: DateTimeZone)
-    extends BaseDurationField(field.getType) {
+      extends BaseDurationField(field.getType) {
 
     var iField: DurationField = null
     var iZone: DateTimeZone = null
@@ -54,7 +54,8 @@ object ZonedChronology {
     iZone = zone
 
     def isPrecise(): Boolean = {
-      if (iTimeField) iField.isPrecise else iField.isPrecise && this.iZone.isFixed
+      if (iTimeField) iField.isPrecise
+      else iField.isPrecise && this.iZone.isFixed
     }
 
     def getUnitMillis(): Long = iField.getUnitMillis
@@ -76,7 +77,7 @@ object ZonedChronology {
     }
 
     def add(instant: Long, value: Int): Long = {
-      var _instant:Long = instant
+      var _instant: Long = instant
       val offset = getOffsetToAdd(_instant)
       _instant = iField.add(_instant + offset, value)
       _instant -
@@ -84,30 +85,37 @@ object ZonedChronology {
     }
 
     def add(instant: Long, value: Long): Long = {
-      var _instant:Long = instant
+      var _instant: Long = instant
       val offset = getOffsetToAdd(_instant)
       _instant = iField.add(_instant + offset, value)
       _instant -
         (if (iTimeField) offset else getOffsetFromLocalToSubtract(_instant))
     }
 
-    override def getDifference(minuendInstant: Long, subtrahendInstant: Long): Int = {
+    override def getDifference(minuendInstant: Long,
+                               subtrahendInstant: Long): Int = {
       val offset = getOffsetToAdd(subtrahendInstant)
-      iField.getDifference(minuendInstant +
-        (if (iTimeField) offset else getOffsetToAdd(minuendInstant)), subtrahendInstant + offset)
+      iField.getDifference(
+        minuendInstant +
+          (if (iTimeField) offset else getOffsetToAdd(minuendInstant)),
+        subtrahendInstant + offset)
     }
 
-    def getDifferenceAsLong(minuendInstant: Long, subtrahendInstant: Long): Long = {
+    def getDifferenceAsLong(minuendInstant: Long,
+                            subtrahendInstant: Long): Long = {
       val offset = getOffsetToAdd(subtrahendInstant)
-      iField.getDifferenceAsLong(minuendInstant +
-        (if (iTimeField) offset else getOffsetToAdd(minuendInstant)), subtrahendInstant + offset)
+      iField.getDifferenceAsLong(
+        minuendInstant +
+          (if (iTimeField) offset else getOffsetToAdd(minuendInstant)),
+        subtrahendInstant + offset)
     }
 
     private def getOffsetToAdd(instant: Long): Int = {
       val offset = this.iZone.getOffset(instant)
       val sum = instant + offset
       if ((instant ^ sum) < 0 && (instant ^ offset) >= 0) {
-        throw new ArithmeticException("Adding time zone offset caused overflow")
+        throw new ArithmeticException(
+          "Adding time zone offset caused overflow")
       }
       offset
     }
@@ -116,12 +124,14 @@ object ZonedChronology {
       val offset = this.iZone.getOffsetFromLocal(instant)
       val diff = instant - offset
       if ((instant ^ diff) < 0 && (instant ^ offset) < 0) {
-        throw new ArithmeticException("Subtracting time zone offset caused overflow")
+        throw new ArithmeticException(
+          "Subtracting time zone offset caused overflow")
       }
       offset
     }
 
-    private def addOffset(instant: Long): Long = iZone.convertUTCToLocal(instant)
+    private def addOffset(instant: Long): Long =
+      iZone.convertUTCToLocal(instant)
 
     override def equals(obj: Any): Boolean = {
       if (super.equals(obj)) {
@@ -141,7 +151,8 @@ object ZonedChronology {
                            val zone: DateTimeZone,
                            val durationField: DurationField,
                            val rangeDurationField: DurationField,
-                           val leapDurationField: DurationField) extends BaseDateTimeField(field.getType) {
+                           val leapDurationField: DurationField)
+      extends BaseDateTimeField(field.getType) {
 
     var iTimeField = useTimeArithmetic(durationField)
     var iField: DateTimeField = null
@@ -149,7 +160,6 @@ object ZonedChronology {
     var iDurationField: DurationField = null
     var iRangeDurationField: DurationField = null
     var iLeapDurationField: DurationField = null
-
 
     if (!field.isSupported) {
       throw new IllegalArgumentException()
@@ -179,7 +189,8 @@ object ZonedChronology {
       iField.getAsShortText(localInstant, locale)
     }
 
-    override def getAsText(fieldValue: Int, locale: Locale): String = iField.getAsText(fieldValue, locale)
+    override def getAsText(fieldValue: Int, locale: Locale): String =
+      iField.getAsText(fieldValue, locale)
 
     override def getAsShortText(fieldValue: Int, locale: Locale): String = {
       iField.getAsShortText(fieldValue, locale)
@@ -227,7 +238,8 @@ object ZonedChronology {
       val result = iZone.convertLocalToUTC(localInstant, false, instant)
       if (get(result) != value) {
         val cause = IllegalInstantException.create(localInstant, iZone.getID)
-        val ex = IllegalFieldValueException.create(iField.getType, Integer.valueOf(value), cause.getMessage)
+        val ex = IllegalFieldValueException
+          .create(iField.getType, Integer.valueOf(value), cause.getMessage)
         ex.initCause(cause)
         throw ex
       }
@@ -240,16 +252,22 @@ object ZonedChronology {
       iZone.convertLocalToUTC(localInstant, false, instant)
     }
 
-    override def getDifference(minuendInstant: Long, subtrahendInstant: Long): Int = {
+    override def getDifference(minuendInstant: Long,
+                               subtrahendInstant: Long): Int = {
       val offset = getOffsetToAdd(subtrahendInstant)
-      iField.getDifference(minuendInstant +
-        (if (iTimeField) offset else getOffsetToAdd(minuendInstant)), subtrahendInstant + offset)
+      iField.getDifference(
+        minuendInstant +
+          (if (iTimeField) offset else getOffsetToAdd(minuendInstant)),
+        subtrahendInstant + offset)
     }
 
-    override def getDifferenceAsLong(minuendInstant: Long, subtrahendInstant: Long): Long = {
+    override def getDifferenceAsLong(minuendInstant: Long,
+                                     subtrahendInstant: Long): Long = {
       val offset = getOffsetToAdd(subtrahendInstant)
-      iField.getDifferenceAsLong(minuendInstant +
-        (if (iTimeField) offset else getOffsetToAdd(minuendInstant)), subtrahendInstant + offset)
+      iField.getDifferenceAsLong(
+        minuendInstant +
+          (if (iTimeField) offset else getOffsetToAdd(minuendInstant)),
+        subtrahendInstant + offset)
     }
 
     def getDurationField(): DurationField = iDurationField
@@ -269,7 +287,7 @@ object ZonedChronology {
     override def getLeapDurationField(): DurationField = iLeapDurationField
 
     def roundFloor(instant: Long): Long = {
-      var _instant:Long = instant
+      var _instant: Long = instant
       if (iTimeField) {
         val offset = getOffsetToAdd(_instant)
         _instant = iField.roundFloor(_instant + offset)
@@ -282,7 +300,7 @@ object ZonedChronology {
     }
 
     override def roundCeiling(instant: Long): Long = {
-      var _instant:Long = instant
+      var _instant: Long = instant
       if (iTimeField) {
         val offset = getOffsetToAdd(_instant)
         _instant = iField.roundCeiling(_instant + offset)
@@ -306,9 +324,12 @@ object ZonedChronology {
       iField.getMinimumValue(localInstant)
     }
 
-    override def getMinimumValue(instant: ReadablePartial): Int = iField.getMinimumValue(instant)
+    override def getMinimumValue(instant: ReadablePartial): Int =
+      iField.getMinimumValue(instant)
 
-    override def getMinimumValue(instant: ReadablePartial, values: Array[Int]): Int = iField.getMinimumValue(instant, values)
+    override def getMinimumValue(instant: ReadablePartial,
+                                 values: Array[Int]): Int =
+      iField.getMinimumValue(instant, values)
 
     def getMaximumValue(): Int = iField.getMaximumValue
 
@@ -317,11 +338,15 @@ object ZonedChronology {
       iField.getMaximumValue(localInstant)
     }
 
-    override def getMaximumValue(instant: ReadablePartial): Int = iField.getMaximumValue(instant)
+    override def getMaximumValue(instant: ReadablePartial): Int =
+      iField.getMaximumValue(instant)
 
-    override def getMaximumValue(instant: ReadablePartial, values: Array[Int]): Int = iField.getMaximumValue(instant, values)
+    override def getMaximumValue(instant: ReadablePartial,
+                                 values: Array[Int]): Int =
+      iField.getMaximumValue(instant, values)
 
-    override def getMaximumTextLength(locale: Locale): Int = iField.getMaximumTextLength(locale)
+    override def getMaximumTextLength(locale: Locale): Int =
+      iField.getMaximumTextLength(locale)
 
     override def getMaximumShortTextLength(locale: Locale): Int = {
       iField.getMaximumShortTextLength(locale)
@@ -331,7 +356,8 @@ object ZonedChronology {
       val offset = this.iZone.getOffset(instant)
       val sum = instant + offset
       if ((instant ^ sum) < 0 && (instant ^ offset) >= 0) {
-        throw new ArithmeticException("Adding time zone offset caused overflow")
+        throw new ArithmeticException(
+          "Adding time zone offset caused overflow")
       }
       offset
     }
@@ -352,8 +378,8 @@ object ZonedChronology {
 }
 
 @SerialVersionUID(-1079258847191166848L)
-class ZonedChronology private (base: Chronology, zone: DateTimeZone) extends AssembledChronology(base,
-  zone) {
+class ZonedChronology private (base: Chronology, zone: DateTimeZone)
+    extends AssembledChronology(base, zone) {
 
   override def getZone(): DateTimeZone = getParam.asInstanceOf[DateTimeZone]
 
@@ -377,7 +403,8 @@ class ZonedChronology private (base: Chronology, zone: DateTimeZone) extends Ass
                                  monthOfYear: Int,
                                  dayOfMonth: Int,
                                  millisOfDay: Int): Long = {
-    localToUTC(getBase.getDateTimeMillis(year, monthOfYear, dayOfMonth, millisOfDay))
+    localToUTC(
+      getBase.getDateTimeMillis(year, monthOfYear, dayOfMonth, millisOfDay))
   }
 
   override def getDateTimeMillis(year: Int,
@@ -387,8 +414,14 @@ class ZonedChronology private (base: Chronology, zone: DateTimeZone) extends Ass
                                  minuteOfHour: Int,
                                  secondOfMinute: Int,
                                  millisOfSecond: Int): Long = {
-    localToUTC(getBase.getDateTimeMillis(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute,
-      millisOfSecond))
+    localToUTC(
+      getBase.getDateTimeMillis(year,
+                                monthOfYear,
+                                dayOfMonth,
+                                hourOfDay,
+                                minuteOfHour,
+                                secondOfMinute,
+                                millisOfSecond))
   }
 
   override def getDateTimeMillis(instant: Long,
@@ -396,8 +429,12 @@ class ZonedChronology private (base: Chronology, zone: DateTimeZone) extends Ass
                                  minuteOfHour: Int,
                                  secondOfMinute: Int,
                                  millisOfSecond: Int): Long = {
-    localToUTC(getBase.getDateTimeMillis(instant + getZone.getOffset(instant), hourOfDay, minuteOfHour,
-      secondOfMinute, millisOfSecond))
+    localToUTC(
+      getBase.getDateTimeMillis(instant + getZone.getOffset(instant),
+                                hourOfDay,
+                                minuteOfHour,
+                                secondOfMinute,
+                                millisOfSecond))
   }
 
   private def localToUTC(localInstant: Long): Long = {
@@ -436,7 +473,8 @@ class ZonedChronology private (base: Chronology, zone: DateTimeZone) extends Ass
     fields.monthOfYear = convertField(fields.monthOfYear, converted)
     fields.weekOfWeekyear = convertField(fields.weekOfWeekyear, converted)
     fields.weekyear = convertField(fields.weekyear, converted)
-    fields.weekyearOfCentury = convertField(fields.weekyearOfCentury, converted)
+    fields.weekyearOfCentury =
+      convertField(fields.weekyearOfCentury, converted)
     fields.millisOfSecond = convertField(fields.millisOfSecond, converted)
     fields.millisOfDay = convertField(fields.millisOfDay, converted)
     fields.secondOfMinute = convertField(fields.secondOfMinute, converted)
@@ -446,11 +484,13 @@ class ZonedChronology private (base: Chronology, zone: DateTimeZone) extends Ass
     fields.hourOfDay = convertField(fields.hourOfDay, converted)
     fields.hourOfHalfday = convertField(fields.hourOfHalfday, converted)
     fields.clockhourOfDay = convertField(fields.clockhourOfDay, converted)
-    fields.clockhourOfHalfday = convertField(fields.clockhourOfHalfday, converted)
+    fields.clockhourOfHalfday =
+      convertField(fields.clockhourOfHalfday, converted)
     fields.halfdayOfDay = convertField(fields.halfdayOfDay, converted)
   }
 
-  private def convertField(field: DurationField, converted: HashMap[Any, Any]): DurationField = {
+  private def convertField(field: DurationField,
+                           converted: HashMap[Any, Any]): DurationField = {
     if (field == null || !field.isSupported) {
       return field
     }
@@ -462,16 +502,20 @@ class ZonedChronology private (base: Chronology, zone: DateTimeZone) extends Ass
     zonedField
   }
 
-  private def convertField(field: DateTimeField, converted: HashMap[Any, Any]): DateTimeField = {
+  private def convertField(field: DateTimeField,
+                           converted: HashMap[Any, Any]): DateTimeField = {
     if (field == null || !field.isSupported) {
       return field
     }
     if (converted.containsKey(field)) {
       return converted.get(field).asInstanceOf[DateTimeField]
     }
-    val zonedField = new ZonedDateTimeField(field, getZone, convertField(field.getDurationField, converted),
-      convertField(field.getRangeDurationField, converted), convertField(field.getLeapDurationField,
-        converted))
+    val zonedField = new ZonedDateTimeField(
+      field,
+      getZone,
+      convertField(field.getDurationField, converted),
+      convertField(field.getRangeDurationField, converted),
+      convertField(field.getLeapDurationField, converted))
     converted.put(field, zonedField)
     zonedField
   }

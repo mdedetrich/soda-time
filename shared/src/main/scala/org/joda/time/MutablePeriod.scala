@@ -10,7 +10,8 @@ import org.joda.time.format.PeriodFormatter
 object MutablePeriod {
 
   @FromString
-  def parse(str: String): MutablePeriod = parse(str, ISOPeriodFormat.standard())
+  def parse(str: String): MutablePeriod =
+    parse(str, ISOPeriodFormat.standard())
 
   def parse(str: String, formatter: PeriodFormatter): MutablePeriod = {
     formatter.parsePeriod(str).toMutablePeriod()
@@ -18,19 +19,28 @@ object MutablePeriod {
 }
 
 @SerialVersionUID(3436451121567212165L)
-class MutablePeriod extends BasePeriod(0L, null, null) with ReadWritablePeriod with Cloneable with Serializable {
+class MutablePeriod
+    extends BasePeriod(0L, null, null)
+    with ReadWritablePeriod
+    with Cloneable
+    with Serializable {
 
   def this(`type`: PeriodType) {
     this()
     super.auxConstructor(0L, `type`, null)
   }
 
-  def this(hours: Int,
-           minutes: Int,
-           seconds: Int,
-           millis: Int) {
+  def this(hours: Int, minutes: Int, seconds: Int, millis: Int) {
     this()
-    super.auxConstructor(0, 0, 0, 0, hours, minutes, seconds, millis, PeriodType.standard())
+    super.auxConstructor(0,
+                         0,
+                         0,
+                         0,
+                         hours,
+                         minutes,
+                         seconds,
+                         millis,
+                         PeriodType.standard())
   }
 
   def this(years: Int,
@@ -42,7 +52,15 @@ class MutablePeriod extends BasePeriod(0L, null, null) with ReadWritablePeriod w
            seconds: Int,
            millis: Int) {
     this()
-    super.auxConstructor(years, months, weeks, days, hours, minutes, seconds, millis, PeriodType.standard())
+    super.auxConstructor(years,
+                         months,
+                         weeks,
+                         days,
+                         hours,
+                         minutes,
+                         seconds,
+                         millis,
+                         PeriodType.standard())
   }
 
   def this(years: Int,
@@ -55,7 +73,15 @@ class MutablePeriod extends BasePeriod(0L, null, null) with ReadWritablePeriod w
            millis: Int,
            `type`: PeriodType) {
     this()
-    super.auxConstructor(years, months, weeks, days, hours, minutes, seconds, millis, `type`)
+    super.auxConstructor(years,
+                         months,
+                         weeks,
+                         days,
+                         hours,
+                         minutes,
+                         seconds,
+                         millis,
+                         `type`)
   }
 
   def this(duration: Long) {
@@ -70,17 +96,17 @@ class MutablePeriod extends BasePeriod(0L, null, null) with ReadWritablePeriod w
 
   def this(duration: Long, chronology: Chronology) {
     this()
-    super.auxConstructor(duration,null,chronology)
+    super.auxConstructor(duration, null, chronology)
   }
 
   def this(duration: Long, `type`: PeriodType, chronology: Chronology) {
     this()
-    super.auxConstructor(duration,`type`,chronology)
+    super.auxConstructor(duration, `type`, chronology)
   }
 
   def this(startInstant: Long, endInstant: Long) {
     this()
-    super.auxConstructor(startInstant,endInstant,null,null)
+    super.auxConstructor(startInstant, endInstant, null, null)
   }
 
   def this(startInstant: Long, endInstant: Long, `type`: PeriodType) {
@@ -106,7 +132,9 @@ class MutablePeriod extends BasePeriod(0L, null, null) with ReadWritablePeriod w
     super.auxConstructor(startInstant, endInstant, null)
   }
 
-  def this(startInstant: ReadableInstant, endInstant: ReadableInstant, `type`: PeriodType) {
+  def this(startInstant: ReadableInstant,
+           endInstant: ReadableInstant,
+           `type`: PeriodType) {
     this()
     super.auxConstructor(startInstant, endInstant, `type`)
   }
@@ -116,7 +144,9 @@ class MutablePeriod extends BasePeriod(0L, null, null) with ReadWritablePeriod w
     super.auxConstructor(startInstant, duration, null)
   }
 
-  def this(startInstant: ReadableInstant, duration: ReadableDuration, `type`: PeriodType) {
+  def this(startInstant: ReadableInstant,
+           duration: ReadableDuration,
+           `type`: PeriodType) {
     this()
     super.auxConstructor(startInstant, duration, `type`)
   }
@@ -126,7 +156,9 @@ class MutablePeriod extends BasePeriod(0L, null, null) with ReadWritablePeriod w
     super.auxConstructor(duration, endInstant, null)
   }
 
-  def this(duration: ReadableDuration, endInstant: ReadableInstant, `type`: PeriodType) {
+  def this(duration: ReadableDuration,
+           endInstant: ReadableInstant,
+           `type`: PeriodType) {
     this()
     super.auxConstructor(duration, endInstant, `type`)
   }
@@ -168,14 +200,15 @@ class MutablePeriod extends BasePeriod(0L, null, null) with ReadWritablePeriod w
   }
 
   override def setPeriod(years: Int,
-                months: Int,
-                weeks: Int,
-                days: Int,
-                hours: Int,
-                minutes: Int,
-                seconds: Int,
-                millis: Int) {
-    super.setPeriod(years, months, weeks, days, hours, minutes, seconds, millis)
+                         months: Int,
+                         weeks: Int,
+                         days: Int,
+                         hours: Int,
+                         minutes: Int,
+                         seconds: Int,
+                         millis: Int) {
+    super
+      .setPeriod(years, months, weeks, days, hours, minutes, seconds, millis)
   }
 
   def setPeriod(interval: ReadableInterval) {
@@ -243,9 +276,14 @@ class MutablePeriod extends BasePeriod(0L, null, null) with ReadWritablePeriod w
           minutes: Int,
           seconds: Int,
           millis: Int) {
-    setPeriod(FieldUtils.safeAdd(getYears, years), FieldUtils.safeAdd(getMonths, months), FieldUtils.safeAdd(getWeeks,
-      weeks), FieldUtils.safeAdd(getDays, days), FieldUtils.safeAdd(getHours, hours), FieldUtils.safeAdd(getMinutes,
-      minutes), FieldUtils.safeAdd(getSeconds, seconds), FieldUtils.safeAdd(getMillis, millis))
+    setPeriod(FieldUtils.safeAdd(getYears, years),
+              FieldUtils.safeAdd(getMonths, months),
+              FieldUtils.safeAdd(getWeeks, weeks),
+              FieldUtils.safeAdd(getDays, days),
+              FieldUtils.safeAdd(getHours, hours),
+              FieldUtils.safeAdd(getMinutes, minutes),
+              FieldUtils.safeAdd(getSeconds, seconds),
+              FieldUtils.safeAdd(getMillis, millis))
   }
 
   def add(interval: ReadableInterval) {

@@ -39,8 +39,9 @@ object DateMidnight {
   }
 
   @SerialVersionUID(257629620L)
-  class Property(private var iInstant: DateMidnight, private var iField: DateTimeField)
-    extends AbstractReadableInstantFieldProperty() {
+  class Property(private var iInstant: DateMidnight,
+                 private var iField: DateTimeField)
+      extends AbstractReadableInstantFieldProperty() {
 
     private def writeObject(oos: ObjectOutputStream) {
       oos.writeObject(iInstant)
@@ -111,8 +112,11 @@ object DateMidnight {
 
 @SerialVersionUID(156371964018738L)
 @Deprecated
-class DateMidnight extends BaseDateTime with ReadableDateTime with Serializable {
-  
+class DateMidnight
+    extends BaseDateTime
+    with ReadableDateTime
+    with Serializable {
+
   def this(zone: DateTimeZone) {
     this()
     super.auxConstructor(zone)
@@ -135,7 +139,7 @@ class DateMidnight extends BaseDateTime with ReadableDateTime with Serializable 
 
   def this(instant: Long, chronology: Chronology) {
     this()
-    super.auxConstructor(instant,chronology)
+    super.auxConstructor(instant, chronology)
   }
 
   def this(instant: AnyRef) {
@@ -145,7 +149,7 @@ class DateMidnight extends BaseDateTime with ReadableDateTime with Serializable 
 
   def this(instant: AnyRef, zone: DateTimeZone) {
     this()
-    super.auxConstructor(instant,zone)
+    super.auxConstructor(instant, zone)
   }
 
   def this(instant: AnyRef, chronology: Chronology) {
@@ -158,10 +162,7 @@ class DateMidnight extends BaseDateTime with ReadableDateTime with Serializable 
     super.auxConstructor(year, monthOfYear, dayOfMonth, 0, 0, 0, 0)
   }
 
-  def this(year: Int,
-           monthOfYear: Int,
-           dayOfMonth: Int,
-           zone: DateTimeZone) {
+  def this(year: Int, monthOfYear: Int, dayOfMonth: Int, zone: DateTimeZone) {
     this()
     super.auxConstructor(year, monthOfYear, dayOfMonth, 0, 0, 0, 0, zone)
   }
@@ -174,7 +175,8 @@ class DateMidnight extends BaseDateTime with ReadableDateTime with Serializable 
     super.auxConstructor(year, monthOfYear, dayOfMonth, 0, 0, 0, 0, chronology)
   }
 
-  override protected def checkInstant(instant: Long, chronology: Chronology): Long = {
+  override protected def checkInstant(instant: Long,
+                                      chronology: Chronology): Long = {
     chronology.dayOfMonth().roundFloor(instant)
   }
 
@@ -182,11 +184,13 @@ class DateMidnight extends BaseDateTime with ReadableDateTime with Serializable 
     var _newMillis: Long = newMillis
     val chrono = getChronology
     _newMillis = checkInstant(_newMillis, chrono)
-    (if (_newMillis == getMillis) this else new DateMidnight(_newMillis, chrono))
+    (if (_newMillis == getMillis) this
+     else new DateMidnight(_newMillis, chrono))
   }
 
   def withChronology(newChronology: Chronology): DateMidnight = {
-    (if (newChronology == getChronology) this else new DateMidnight(getMillis, newChronology))
+    (if (newChronology == getChronology) this
+     else new DateMidnight(getMillis, newChronology))
   }
 
   def withZoneRetainFields(newZone: DateTimeZone): DateMidnight = {
@@ -234,7 +238,8 @@ class DateMidnight extends BaseDateTime with ReadableDateTime with Serializable 
     withMillis(instant)
   }
 
-  def withDurationAdded(durationToAdd: ReadableDuration, scalar: Int): DateMidnight = {
+  def withDurationAdded(durationToAdd: ReadableDuration,
+                        scalar: Int): DateMidnight = {
     if (durationToAdd == null || scalar == 0) {
       return this
     }
@@ -251,7 +256,8 @@ class DateMidnight extends BaseDateTime with ReadableDateTime with Serializable 
 
   def plus(duration: Long): DateMidnight = withDurationAdded(duration, 1)
 
-  def plus(duration: ReadableDuration): DateMidnight = withDurationAdded(duration, 1)
+  def plus(duration: ReadableDuration): DateMidnight =
+    withDurationAdded(duration, 1)
 
   def plus(period: ReadablePeriod): DateMidnight = withPeriodAdded(period, 1)
 
@@ -289,7 +295,8 @@ class DateMidnight extends BaseDateTime with ReadableDateTime with Serializable 
 
   def minus(duration: Long): DateMidnight = withDurationAdded(duration, -1)
 
-  def minus(duration: ReadableDuration): DateMidnight = withDurationAdded(duration, -1)
+  def minus(duration: ReadableDuration): DateMidnight =
+    withDurationAdded(duration, -1)
 
   def minus(period: ReadablePeriod): DateMidnight = withPeriodAdded(period, -1)
 
@@ -327,11 +334,13 @@ class DateMidnight extends BaseDateTime with ReadableDateTime with Serializable 
 
   def property(`type`: DateTimeFieldType): Property = {
     if (`type` == null) {
-      throw new IllegalArgumentException("The DateTimeFieldType must not be null")
+      throw new IllegalArgumentException(
+        "The DateTimeFieldType must not be null")
     }
     val field = `type`.getField(getChronology)
     if (field.isSupported == false) {
-      throw new IllegalArgumentException("Field '" + `type` + "' is not supported")
+      throw new IllegalArgumentException(
+        "Field '" + `type` + "' is not supported")
     }
     new Property(this, field)
   }

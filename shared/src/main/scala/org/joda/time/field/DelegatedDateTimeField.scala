@@ -8,9 +8,12 @@ import org.joda.time.DurationField
 import org.joda.time.ReadablePartial
 
 @SerialVersionUID(-4730164440214502503L)
-class DelegatedDateTimeField(private val field: DateTimeField, private val rangeField: DurationField, `type`: DateTimeFieldType)
-  extends DateTimeField() with Serializable {
-  
+class DelegatedDateTimeField(private val field: DateTimeField,
+                             private val rangeField: DurationField,
+                             `type`: DateTimeFieldType)
+    extends DateTimeField()
+    with Serializable {
+
   private var iField: DateTimeField = null
   private var iRangeDurationField: DurationField = null
 
@@ -42,27 +45,36 @@ class DelegatedDateTimeField(private val field: DateTimeField, private val range
 
   def get(instant: Long): Int = iField.get(instant)
 
-  def getAsText(instant: Long, locale: Locale): String = iField.getAsText(instant, locale)
+  def getAsText(instant: Long, locale: Locale): String =
+    iField.getAsText(instant, locale)
 
   def getAsText(instant: Long): String = iField.getAsText(instant)
 
-  def getAsText(partial: ReadablePartial, fieldValue: Int, locale: Locale): String = {
+  def getAsText(partial: ReadablePartial,
+                fieldValue: Int,
+                locale: Locale): String = {
     iField.getAsText(partial, fieldValue, locale)
   }
 
-  def getAsText(partial: ReadablePartial, locale: Locale): String = iField.getAsText(partial, locale)
+  def getAsText(partial: ReadablePartial, locale: Locale): String =
+    iField.getAsText(partial, locale)
 
-  def getAsText(fieldValue: Int, locale: Locale): String = iField.getAsText(fieldValue, locale)
+  def getAsText(fieldValue: Int, locale: Locale): String =
+    iField.getAsText(fieldValue, locale)
 
-  def getAsShortText(instant: Long, locale: Locale): String = iField.getAsShortText(instant, locale)
+  def getAsShortText(instant: Long, locale: Locale): String =
+    iField.getAsShortText(instant, locale)
 
   def getAsShortText(instant: Long): String = iField.getAsShortText(instant)
 
-  def getAsShortText(partial: ReadablePartial, fieldValue: Int, locale: Locale): String = {
+  def getAsShortText(partial: ReadablePartial,
+                     fieldValue: Int,
+                     locale: Locale): String = {
     iField.getAsShortText(partial, fieldValue, locale)
   }
 
-  def getAsShortText(partial: ReadablePartial, locale: Locale): String = iField.getAsShortText(partial, locale)
+  def getAsShortText(partial: ReadablePartial, locale: Locale): String =
+    iField.getAsShortText(partial, locale)
 
   def getAsShortText(fieldValue: Int, locale: Locale): String = {
     iField.getAsShortText(fieldValue, locale)
@@ -86,7 +98,8 @@ class DelegatedDateTimeField(private val field: DateTimeField, private val range
     iField.addWrapPartial(instant, fieldIndex, values, valueToAdd)
   }
 
-  def addWrapField(instant: Long, value: Int): Long = iField.addWrapField(instant, value)
+  def addWrapField(instant: Long, value: Int): Long =
+    iField.addWrapField(instant, value)
 
   def addWrapField(instant: ReadablePartial,
                    fieldIndex: Int,
@@ -99,13 +112,15 @@ class DelegatedDateTimeField(private val field: DateTimeField, private val range
     iField.getDifference(minuendInstant, subtrahendInstant)
   }
 
-  def getDifferenceAsLong(minuendInstant: Long, subtrahendInstant: Long): Long = {
+  def getDifferenceAsLong(minuendInstant: Long,
+                          subtrahendInstant: Long): Long = {
     iField.getDifferenceAsLong(minuendInstant, subtrahendInstant)
   }
 
   def set(instant: Long, value: Int): Long = iField.set(instant, value)
 
-  def set(instant: Long, text: String, locale: Locale): Long = iField.set(instant, text, locale)
+  def set(instant: Long, text: String, locale: Locale): Long =
+    iField.set(instant, text, locale)
 
   def set(instant: Long, text: String): Long = iField.set(instant, text)
 
@@ -143,19 +158,24 @@ class DelegatedDateTimeField(private val field: DateTimeField, private val range
 
   def getMinimumValue(instant: Long): Int = iField.getMinimumValue(instant)
 
-  def getMinimumValue(instant: ReadablePartial): Int = iField.getMinimumValue(instant)
+  def getMinimumValue(instant: ReadablePartial): Int =
+    iField.getMinimumValue(instant)
 
-  def getMinimumValue(instant: ReadablePartial, values: Array[Int]): Int = iField.getMinimumValue(instant, values)
+  def getMinimumValue(instant: ReadablePartial, values: Array[Int]): Int =
+    iField.getMinimumValue(instant, values)
 
   def getMaximumValue(): Int = iField.getMaximumValue
 
   def getMaximumValue(instant: Long): Int = iField.getMaximumValue(instant)
 
-  def getMaximumValue(instant: ReadablePartial): Int = iField.getMaximumValue(instant)
+  def getMaximumValue(instant: ReadablePartial): Int =
+    iField.getMaximumValue(instant)
 
-  def getMaximumValue(instant: ReadablePartial, values: Array[Int]): Int = iField.getMaximumValue(instant, values)
+  def getMaximumValue(instant: ReadablePartial, values: Array[Int]): Int =
+    iField.getMaximumValue(instant, values)
 
-  def getMaximumTextLength(locale: Locale): Int = iField.getMaximumTextLength(locale)
+  def getMaximumTextLength(locale: Locale): Int =
+    iField.getMaximumTextLength(locale)
 
   def getMaximumShortTextLength(locale: Locale): Int = {
     iField.getMaximumShortTextLength(locale)

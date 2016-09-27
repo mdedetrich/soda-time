@@ -19,7 +19,8 @@ object Days {
   val MAX_VALUE = new Days(Integer.MAX_VALUE)
   val MIN_VALUE = new Days(Integer.MIN_VALUE)
 
-  private val PARSER = ISOPeriodFormat.standard().withParseType(PeriodType.days())
+  private val PARSER =
+    ISOPeriodFormat.standard().withParseType(PeriodType.days())
 
   def days(days: Int): Days = days match {
     case 0 => ZERO
@@ -36,14 +37,18 @@ object Days {
   }
 
   def daysBetween(start: ReadableInstant, end: ReadableInstant): Days = {
-    val amount = BaseSingleFieldPeriod.between(start, end, DurationFieldType.days())
+    val amount =
+      BaseSingleFieldPeriod.between(start, end, DurationFieldType.days())
     Days.days(amount)
   }
 
   def daysBetween(start: ReadablePartial, end: ReadablePartial): Days = {
     if (start.isInstanceOf[LocalDate] && end.isInstanceOf[LocalDate]) {
       val chrono = DateTimeUtils.getChronology(start.getChronology)
-      val days = chrono.days().getDifference(end.asInstanceOf[LocalDate].getLocalMillis, start.asInstanceOf[LocalDate].getLocalMillis)
+      val days = chrono
+        .days()
+        .getDifference(end.asInstanceOf[LocalDate].getLocalMillis,
+                       start.asInstanceOf[LocalDate].getLocalMillis)
       return Days.days(days)
     }
     val amount = BaseSingleFieldPeriod.between(start, end, ZERO)
@@ -54,12 +59,14 @@ object Days {
     if (interval == null) {
       return Days.ZERO
     }
-    val amount = BaseSingleFieldPeriod.between(interval.getStart, interval.getEnd, DurationFieldType.days())
+    val amount = BaseSingleFieldPeriod
+      .between(interval.getStart, interval.getEnd, DurationFieldType.days())
     Days.days(amount)
   }
 
   def standardDaysIn(period: ReadablePeriod): Days = {
-    val amount = BaseSingleFieldPeriod.standardPeriodIn(period, DateTimeConstants.MILLIS_PER_DAY)
+    val amount = BaseSingleFieldPeriod
+      .standardPeriodIn(period, DateTimeConstants.MILLIS_PER_DAY)
     Days.days(amount)
   }
 
@@ -87,15 +94,18 @@ class Days private (days: Int) extends BaseSingleFieldPeriod(days) {
   }
 
   def toStandardHours(): Hours = {
-    Hours.hours(FieldUtils.safeMultiply(getValue, DateTimeConstants.HOURS_PER_DAY))
+    Hours.hours(
+      FieldUtils.safeMultiply(getValue, DateTimeConstants.HOURS_PER_DAY))
   }
 
   def toStandardMinutes(): Minutes = {
-    Minutes.minutes(FieldUtils.safeMultiply(getValue, DateTimeConstants.MINUTES_PER_DAY))
+    Minutes.minutes(
+      FieldUtils.safeMultiply(getValue, DateTimeConstants.MINUTES_PER_DAY))
   }
 
   def toStandardSeconds(): Seconds = {
-    Seconds.seconds(FieldUtils.safeMultiply(getValue, DateTimeConstants.SECONDS_PER_DAY))
+    Seconds.seconds(
+      FieldUtils.safeMultiply(getValue, DateTimeConstants.SECONDS_PER_DAY))
   }
 
   def toStandardDuration(): Duration = {

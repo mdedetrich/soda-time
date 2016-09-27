@@ -11,7 +11,8 @@ object InternalPrinterDateTimePrinter {
 
   def of(underlying: InternalPrinter): DateTimePrinter = {
     if (underlying.isInstanceOf[DateTimePrinterInternalPrinter]) {
-      return underlying.asInstanceOf[DateTimePrinterInternalPrinter]
+      return underlying
+        .asInstanceOf[DateTimePrinterInternalPrinter]
         .getUnderlying
     }
     if (underlying.isInstanceOf[DateTimePrinter]) {
@@ -24,8 +25,10 @@ object InternalPrinterDateTimePrinter {
   }
 }
 
-class InternalPrinterDateTimePrinter private (private val underlying: InternalPrinter)
-  extends DateTimePrinter with InternalPrinter {
+class InternalPrinterDateTimePrinter private (
+    private val underlying: InternalPrinter)
+    extends DateTimePrinter
+    with InternalPrinter {
 
   def estimatePrintedLength(): Int = underlying.estimatePrintedLength()
 
@@ -36,7 +39,8 @@ class InternalPrinterDateTimePrinter private (private val underlying: InternalPr
               displayZone: DateTimeZone,
               locale: Locale) {
     try {
-      underlying.printTo(buf, instant, chrono, displayOffset, displayZone, locale)
+      underlying
+        .printTo(buf, instant, chrono, displayOffset, displayZone, locale)
     } catch {
       case ex: IOException =>
     }
@@ -48,7 +52,8 @@ class InternalPrinterDateTimePrinter private (private val underlying: InternalPr
               displayOffset: Int,
               displayZone: DateTimeZone,
               locale: Locale) {
-    underlying.printTo(out, instant, chrono, displayOffset, displayZone, locale)
+    underlying
+      .printTo(out, instant, chrono, displayOffset, displayZone, locale)
   }
 
   def printTo(appendable: Appendable,
@@ -57,7 +62,8 @@ class InternalPrinterDateTimePrinter private (private val underlying: InternalPr
               displayOffset: Int,
               displayZone: DateTimeZone,
               locale: Locale) {
-    underlying.printTo(appendable, instant, chrono, displayOffset, displayZone, locale)
+    underlying
+      .printTo(appendable, instant, chrono, displayOffset, displayZone, locale)
   }
 
   def printTo(buf: StringBuffer, partial: ReadablePartial, locale: Locale) {
@@ -72,7 +78,9 @@ class InternalPrinterDateTimePrinter private (private val underlying: InternalPr
     underlying.printTo(out, partial, locale)
   }
 
-  def printTo(appendable: Appendable, partial: ReadablePartial, locale: Locale) {
+  def printTo(appendable: Appendable,
+              partial: ReadablePartial,
+              locale: Locale) {
     underlying.printTo(appendable, partial, locale)
   }
 

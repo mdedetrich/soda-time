@@ -8,7 +8,8 @@ import GJLocaleSymbols._
 
 object GJLocaleSymbols {
 
-  private val cCache: collection.mutable.Map[Locale, GJLocaleSymbols] = new collection.mutable.HashMap[Locale, GJLocaleSymbols]()
+  private val cCache: collection.mutable.Map[Locale, GJLocaleSymbols] =
+    new collection.mutable.HashMap[Locale, GJLocaleSymbols]()
 
   def forLocale(locale: Locale): GJLocaleSymbols = {
     var _locale: Locale = locale
@@ -47,7 +48,10 @@ object GJLocaleSymbols {
     a
   }
 
-  private def addSymbols(map: collection.immutable.TreeMap[String, Integer], symbols: Array[String], integers: Array[Integer]):collection.immutable.TreeMap[String, Integer] = {
+  private def addSymbols(map: collection.immutable.TreeMap[String, Integer],
+                         symbols: Array[String],
+                         integers: Array[Integer])
+    : collection.immutable.TreeMap[String, Integer] = {
     var i = symbols.length
     var map2 = map
     while (i >= 0) {
@@ -63,7 +67,8 @@ object GJLocaleSymbols {
   private def addNumerals(map: collection.immutable.TreeMap[String, Integer],
                           start: Int,
                           end: Int,
-                          integers: Array[Integer]):collection.immutable.TreeMap[String, Integer] = {
+                          integers: Array[Integer])
+    : collection.immutable.TreeMap[String, Integer] = {
     var i = start
     var map2 = map
     while (i <= end) {
@@ -94,17 +99,20 @@ class GJLocaleSymbols private (locale: Locale) {
 
   val dfs = DateTimeUtils.getDateFormatSymbols(locale)
 
-
   private val iEras = dfs.getEras
   private val iDaysOfWeek = realignDaysOfWeek(dfs.getWeekdays)
   private val iShortDaysOfWeek = realignDaysOfWeek(dfs.getShortWeekdays)
   private val iMonths = realignMonths(dfs.getMonths)
   private val iShortMonths = realignMonths(dfs.getShortMonths)
   private val iHalfday = dfs.getAmPmStrings
-  private var iParseEras = new collection.immutable.TreeMap[String,Integer]()(Ordering.comparatorToOrdering(String.CASE_INSENSITIVE_ORDER))
-  private var iParseDaysOfWeek = collection.immutable.TreeMap[String,Integer]()(Ordering.comparatorToOrdering(String.CASE_INSENSITIVE_ORDER))
-  private var iParseMonths = collection.immutable.TreeMap[String,Integer]()(Ordering.comparatorToOrdering(String.CASE_INSENSITIVE_ORDER))
-  
+  private var iParseEras = new collection.immutable.TreeMap[String, Integer]()(
+    Ordering.comparatorToOrdering(String.CASE_INSENSITIVE_ORDER))
+  private var iParseDaysOfWeek =
+    collection.immutable.TreeMap[String, Integer]()(
+      Ordering.comparatorToOrdering(String.CASE_INSENSITIVE_ORDER))
+  private var iParseMonths = collection.immutable.TreeMap[String, Integer]()(
+    Ordering.comparatorToOrdering(String.CASE_INSENSITIVE_ORDER))
+
   private val iMaxEraLength = maxLength(iEras)
   private val iMaxDayOfWeekLength = maxLength(iDaysOfWeek)
   private val iMaxShortDayOfWeekLength = maxLength(iShortDaysOfWeek)
@@ -158,7 +166,8 @@ class GJLocaleSymbols private (locale: Locale) {
     if (month != null) {
       return month.intValue()
     }
-    throw IllegalFieldValueException.create(DateTimeFieldType.monthOfYear(), text)
+    throw IllegalFieldValueException
+      .create(DateTimeFieldType.monthOfYear(), text)
   }
 
   def getMonthMaxTextLength(): Int = iMaxMonthLength
@@ -174,7 +183,8 @@ class GJLocaleSymbols private (locale: Locale) {
     if (day != null) {
       return day.intValue()
     }
-    throw IllegalFieldValueException.create(DateTimeFieldType.dayOfWeek(), text)
+    throw IllegalFieldValueException
+      .create(DateTimeFieldType.dayOfWeek(), text)
   }
 
   def getDayOfWeekMaxTextLength(): Int = iMaxDayOfWeekLength
@@ -191,7 +201,8 @@ class GJLocaleSymbols private (locale: Locale) {
         return i
       }
     }
-    throw IllegalFieldValueException.create(DateTimeFieldType.halfdayOfDay(), text)
+    throw IllegalFieldValueException
+      .create(DateTimeFieldType.halfdayOfDay(), text)
   }
 
   def getHalfdayMaxTextLength(): Int = iMaxHalfdayLength

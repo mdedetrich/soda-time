@@ -2,62 +2,76 @@ package org.joda.time
 
 object IllegalFieldValueException {
 
-  def create(fieldType: DateTimeFieldType,value: Number,lowerBound: Number,upperBound: Number):IllegalFieldValueException = {
-    val error = new IllegalFieldValueException(createMessage(fieldType.getName,
-      value, lowerBound, upperBound, null))
-    error.auxConstructor(fieldType,value,lowerBound,upperBound)
+  def create(fieldType: DateTimeFieldType,
+             value: Number,
+             lowerBound: Number,
+             upperBound: Number): IllegalFieldValueException = {
+    val error = new IllegalFieldValueException(
+      createMessage(fieldType.getName, value, lowerBound, upperBound, null))
+    error.auxConstructor(fieldType, value, lowerBound, upperBound)
     error
   }
 
-  def create(fieldType: DateTimeFieldType, value: Number, explain: String):IllegalFieldValueException = {
-    val error = new IllegalFieldValueException(createMessage(fieldType.getName(), value, null, null, explain))
-    error.auxConstructor(fieldType,value,explain)
+  def create(fieldType: DateTimeFieldType,
+             value: Number,
+             explain: String): IllegalFieldValueException = {
+    val error = new IllegalFieldValueException(
+      createMessage(fieldType.getName(), value, null, null, explain))
+    error.auxConstructor(fieldType, value, explain)
     error
   }
-  
-  
+
   def create(fieldType: DurationFieldType,
              value: Number,
              lowerBound: Number,
-             upperBound: Number):IllegalFieldValueException = {
-    val error = new IllegalFieldValueException(createMessage(fieldType.getName(), value, lowerBound, upperBound, null))
-    error.auxConstructor(fieldType,value,lowerBound,upperBound)
-    error 
+             upperBound: Number): IllegalFieldValueException = {
+    val error = new IllegalFieldValueException(
+      createMessage(fieldType.getName(), value, lowerBound, upperBound, null))
+    error.auxConstructor(fieldType, value, lowerBound, upperBound)
+    error
   }
-  
+
   def create(fieldName: String,
              value: Number,
              lowerBound: Number,
-             upperBound: Number):IllegalFieldValueException = {
-    val error = new IllegalFieldValueException(createMessage(fieldName, value, lowerBound, upperBound, null))
-    error.auxConstructor(fieldName,value,lowerBound,upperBound)
+             upperBound: Number): IllegalFieldValueException = {
+    val error = new IllegalFieldValueException(
+      createMessage(fieldName, value, lowerBound, upperBound, null))
+    error.auxConstructor(fieldName, value, lowerBound, upperBound)
     error
   }
-  
-  def create(fieldType: DateTimeFieldType, value: String):IllegalFieldValueException = {
-    val error = new IllegalFieldValueException(createMessage(fieldType.getName(), value))
-    error.auxConstructor(fieldType,value)
+
+  def create(fieldType: DateTimeFieldType,
+             value: String): IllegalFieldValueException = {
+    val error = new IllegalFieldValueException(
+      createMessage(fieldType.getName(), value))
+    error.auxConstructor(fieldType, value)
     error
   }
-  
-  def create(fieldType: DurationFieldType, value: String):IllegalFieldValueException = {
-    val error = new IllegalFieldValueException(createMessage(fieldType.getName(), value))
-    error.auxConstructor(fieldType,value)
+
+  def create(fieldType: DurationFieldType,
+             value: String): IllegalFieldValueException = {
+    val error = new IllegalFieldValueException(
+      createMessage(fieldType.getName(), value))
+    error.auxConstructor(fieldType, value)
     error
   }
-  
-  def create(fieldName: String, value: String):IllegalFieldValueException = {
+
+  def create(fieldName: String, value: String): IllegalFieldValueException = {
     val error = new IllegalFieldValueException(createMessage(fieldName, value))
-    error.auxConstructor(fieldName,value)
-    error 
+    error.auxConstructor(fieldName, value)
+    error
   }
-  
+
   private def createMessage(fieldName: String,
                             value: Number,
                             lowerBound: Number,
                             upperBound: Number,
                             explain: String): String = {
-    val buf = new StringBuilder().append("Value ").append(value).append(" for ")
+    val buf = new StringBuilder()
+      .append("Value ")
+      .append(value)
+      .append(" for ")
       .append(fieldName)
       .append(' ')
     if (lowerBound == null) {
@@ -69,7 +83,9 @@ object IllegalFieldValueException {
     } else if (upperBound == null) {
       buf.append("must not be smaller than ").append(lowerBound)
     } else {
-      buf.append("must be in the range [").append(lowerBound)
+      buf
+        .append("must be in the range [")
+        .append(lowerBound)
         .append(',')
         .append(upperBound)
         .append(']')
@@ -89,24 +105,32 @@ object IllegalFieldValueException {
       buf.append(value)
       buf.append('"')
     }
-    buf.append(" for ").append(fieldName).append(' ').append("is not supported")
+    buf
+      .append(" for ")
+      .append(fieldName)
+      .append(' ')
+      .append("is not supported")
     buf.toString
   }
 }
 
 @SerialVersionUID(6305711765985447737L)
-class IllegalFieldValueException(message:String) extends IllegalArgumentException(message) {
+class IllegalFieldValueException(message: String)
+    extends IllegalArgumentException(message) {
 
   private var iNumberValue: Number = null
   private var iLowerBound: Number = null
   private var iUpperBound: Number = null
   private var iDateTimeFieldType: DateTimeFieldType = null
   private var iDurationFieldType: DurationFieldType = null
-  private var iFieldName:String = null
+  private var iFieldName: String = null
   private var iStringValue: String = null
   private var iMessage: String = message
-  
-  def auxConstructor(fieldType: DateTimeFieldType,value: Number,lowerBound: Number,upperBound: Number): Unit = {
+
+  def auxConstructor(fieldType: DateTimeFieldType,
+                     value: Number,
+                     lowerBound: Number,
+                     upperBound: Number): Unit = {
     iDateTimeFieldType = fieldType
     iDurationFieldType = null
     iFieldName = fieldType.getName()
@@ -117,7 +141,9 @@ class IllegalFieldValueException(message:String) extends IllegalArgumentExceptio
     iMessage = super.getMessage()
   }
 
-  def auxConstructor(fieldType: DateTimeFieldType, value: Number, explain: String): Unit = {
+  def auxConstructor(fieldType: DateTimeFieldType,
+                     value: Number,
+                     explain: String): Unit = {
     iDateTimeFieldType = fieldType
     iDurationFieldType = null
     iFieldName = fieldType.getName
@@ -128,9 +154,9 @@ class IllegalFieldValueException(message:String) extends IllegalArgumentExceptio
   }
 
   def auxConstructor(fieldType: DurationFieldType,
-           value: Number,
-           lowerBound: Number,
-           upperBound: Number): Unit = {
+                     value: Number,
+                     lowerBound: Number,
+                     upperBound: Number): Unit = {
     iDateTimeFieldType = null
     iDurationFieldType = fieldType
     iFieldName = fieldType.getName
@@ -141,9 +167,9 @@ class IllegalFieldValueException(message:String) extends IllegalArgumentExceptio
   }
 
   def auxConstructor(fieldName: String,
-           value: Number,
-           lowerBound: Number,
-           upperBound: Number):Unit = {
+                     value: Number,
+                     lowerBound: Number,
+                     upperBound: Number): Unit = {
     iDateTimeFieldType = null
     iDurationFieldType = null
     iFieldName = fieldName
@@ -173,7 +199,7 @@ class IllegalFieldValueException(message:String) extends IllegalArgumentExceptio
     iUpperBound = null
   }
 
-  def auxConstructor(fieldName: String, value: String): Unit =  {
+  def auxConstructor(fieldName: String, value: String): Unit = {
     iDateTimeFieldType = null
     iDurationFieldType = null
     iFieldName = fieldName
@@ -194,7 +220,7 @@ class IllegalFieldValueException(message:String) extends IllegalArgumentExceptio
   def getIllegalStringValue(): String = iStringValue
 
   def getIllegalValueAsString(): String = {
-    var value:String = iStringValue
+    var value: String = iStringValue
     if (value == null) {
       value = String.valueOf(iNumberValue)
     }

@@ -16,8 +16,8 @@ object FormatUtils {
   }
 
   def appendPaddedInteger(appenadble: Appendable, value: Int, size: Int) {
-    var _value:Int = value
-    var _size:Int = size
+    var _value: Int = value
+    var _size: Int = size
     if (_value < 0) {
       appenadble.append('-')
       if (_value != Integer.MIN_VALUE) {
@@ -47,7 +47,10 @@ object FormatUtils {
       appenadble.append((_value - (d << 3) - (d << 1) + '0').toChar)
     } else {
       var digits: Int = 0
-      digits = if (_value < 1000) 3 else if (_value < 10000) 4 else (Math.log(_value) / LOG_10).toInt + 1
+      digits =
+        if (_value < 1000) 3
+        else if (_value < 10000) 4
+        else (Math.log(_value) / LOG_10).toInt + 1
       while (_size > digits) {
         appenadble.append('0')
         _size -= 1
@@ -65,8 +68,8 @@ object FormatUtils {
   }
 
   def appendPaddedInteger(appendable: Appendable, value: Long, size: Int) {
-    var _value:Long = value
-    var _size:Int = size
+    var _value: Long = value
+    var _size: Int = size
     val intValue = _value.toInt
     if (intValue == _value) {
       appendPaddedInteger(appendable, intValue, _size)
@@ -96,8 +99,8 @@ object FormatUtils {
   }
 
   def writePaddedInteger(out: Writer, value: Int, size: Int) {
-    var _value:Int = value
-    var _size:Int = size
+    var _value: Int = value
+    var _size: Int = size
     if (_value < 0) {
       out.write('-')
       if (_value != Integer.MIN_VALUE) {
@@ -127,7 +130,10 @@ object FormatUtils {
       out.write(_value - (d << 3) - (d << 1) + '0')
     } else {
       var digits: Int = 0
-      digits = if (_value < 1000) 3 else if (_value < 10000) 4 else (Math.log(_value) / LOG_10).toInt + 1
+      digits =
+        if (_value < 1000) 3
+        else if (_value < 10000) 4
+        else (Math.log(_value) / LOG_10).toInt + 1
       while (_size > digits) {
         out.write('0')
         _size -= 1
@@ -137,8 +143,8 @@ object FormatUtils {
   }
 
   def writePaddedInteger(out: Writer, value: Long, size: Int) {
-    var _value:Long = value
-    var _size:Int = size
+    var _value: Long = value
+    var _size: Int = size
     val intValue = _value.toInt
     if (intValue == _value) {
       writePaddedInteger(out, intValue, _size)
@@ -176,7 +182,7 @@ object FormatUtils {
   }
 
   def appendUnpaddedInteger(appendable: Appendable, value: Int) {
-    var _value:Int = value
+    var _value: Int = value
     if (_value < 0) {
       appendable.append('-')
       if (_value != Integer.MIN_VALUE) {
@@ -215,7 +221,7 @@ object FormatUtils {
   }
 
   def writeUnpaddedInteger(out: Writer, value: Int) {
-    var _value:Int = value
+    var _value: Int = value
     if (_value < 0) {
       out.write('-')
       if (_value != Integer.MIN_VALUE) {
@@ -253,10 +259,10 @@ object FormatUtils {
         return 20
       }
     }
-    if (value < 10) 1 
-    else if (value < 100) 2 
-    else if (value < 1000) 3 
-    else if (value < 10000) 4 
+    if (value < 10) 1
+    else if (value < 100) 2
+    else if (value < 1000) 3
+    else if (value < 10000) 4
     else (Math.log(value) / LOG_10).toInt + 1
   }
 
@@ -269,7 +275,9 @@ object FormatUtils {
   def createErrorMessage(text: String, errorPos: Int): String = {
     val sampleLen = errorPos + 32
     var sampleText: String = null
-    sampleText = if (text.length <= sampleLen + 3) text else text.substring(0, sampleLen).concat("...")
+    sampleText =
+      if (text.length <= sampleLen + 3) text
+      else text.substring(0, sampleLen).concat("...")
     if (errorPos <= 0) {
       return "Invalid format: \"" + sampleText + '"'
     }

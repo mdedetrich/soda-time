@@ -4,7 +4,9 @@ object InternalParserDateTimeParser {
 
   def of(underlying: InternalParser): DateTimeParser = {
     if (underlying.isInstanceOf[DateTimeParserInternalParser]) {
-      return underlying.asInstanceOf[DateTimeParserInternalParser].getUnderlying
+      return underlying
+        .asInstanceOf[DateTimeParserInternalParser]
+        .getUnderlying
     }
     if (underlying.isInstanceOf[DateTimeParser]) {
       return underlying.asInstanceOf[DateTimeParser]
@@ -16,16 +18,22 @@ object InternalParserDateTimeParser {
   }
 }
 
-class InternalParserDateTimeParser private (private val underlying: InternalParser)
-  extends DateTimeParser with InternalParser {
+class InternalParserDateTimeParser private (
+    private val underlying: InternalParser)
+    extends DateTimeParser
+    with InternalParser {
 
   def estimateParsedLength(): Int = underlying.estimateParsedLength()
 
-  def parseInto(bucket: DateTimeParserBucket, text: CharSequence, position: Int): Int = {
+  def parseInto(bucket: DateTimeParserBucket,
+                text: CharSequence,
+                position: Int): Int = {
     underlying.parseInto(bucket, text, position)
   }
 
-  def parseInto(bucket: DateTimeParserBucket, text: String, position: Int): Int = {
+  def parseInto(bucket: DateTimeParserBucket,
+                text: String,
+                position: Int): Int = {
     underlying.parseInto(bucket, text, position)
   }
 

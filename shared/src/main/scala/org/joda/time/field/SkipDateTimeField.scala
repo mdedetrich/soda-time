@@ -6,9 +6,11 @@ import org.joda.time.DateTimeFieldType
 import org.joda.time.IllegalFieldValueException
 
 @SerialVersionUID(-8869148464118507846L)
-class SkipDateTimeField(private val chronology: Chronology, field: DateTimeField, private val skip: Int)
-  extends DelegatedDateTimeField(field) {
-  
+class SkipDateTimeField(private val chronology: Chronology,
+                        field: DateTimeField,
+                        private val skip: Int)
+    extends DelegatedDateTimeField(field) {
+
   private var iChronology: Chronology = null
   private var iSkip: Int = _
 
@@ -16,7 +18,8 @@ class SkipDateTimeField(private val chronology: Chronology, field: DateTimeField
 
   val min = super.getMinimumValue
 
-  @transient private val iMinValue: Int = if (min < skip) min - 1 else if (min == skip) skip + 1 else min
+  @transient private val iMinValue: Int =
+    if (min < skip) min - 1 else if (min == skip) skip + 1 else min
 
   iSkip = skip
 
@@ -37,8 +40,10 @@ class SkipDateTimeField(private val chronology: Chronology, field: DateTimeField
     FieldUtils.verifyValueBounds(this, _value, iMinValue, getMaximumValue)
     if (_value <= iSkip) {
       if (_value == iSkip) {
-        throw IllegalFieldValueException.create(DateTimeFieldType.year(), Integer.valueOf(_value),
-          null, null)
+        throw IllegalFieldValueException.create(DateTimeFieldType.year(),
+                                                Integer.valueOf(_value),
+                                                null,
+                                                null)
       }
       _value += 1
     }

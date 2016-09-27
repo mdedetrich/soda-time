@@ -4,15 +4,17 @@ import org.joda.time.DurationField
 import org.joda.time.DurationFieldType
 
 @SerialVersionUID(-3205227092378684157L)
-class ScaledDurationField(field: DurationField, `type`: DurationFieldType, private val scalar: Int)
-  extends DecoratedDurationField(field, `type`) {
+class ScaledDurationField(field: DurationField,
+                          `type`: DurationFieldType,
+                          private val scalar: Int)
+    extends DecoratedDurationField(field, `type`) {
 
   private var iScalar: Int = _
-  
+
   if (scalar == 0 || scalar == 1) {
     throw new IllegalArgumentException("The scalar must not be 0 or 1")
   }
-  
+
   iScalar = scalar
 
   override def getValue(duration: Long): Int = {
@@ -61,12 +63,14 @@ class ScaledDurationField(field: DurationField, `type`: DurationFieldType, priva
     getWrappedField.add(instant, scaled)
   }
 
-  override def getDifference(minuendInstant: Long, subtrahendInstant: Long): Int = {
+  override def getDifference(minuendInstant: Long,
+                             subtrahendInstant: Long): Int = {
     getWrappedField.getDifference(minuendInstant, subtrahendInstant) /
       iScalar
   }
 
-  override def getDifferenceAsLong(minuendInstant: Long, subtrahendInstant: Long): Long = {
+  override def getDifferenceAsLong(minuendInstant: Long,
+                                   subtrahendInstant: Long): Long = {
     getWrappedField.getDifferenceAsLong(minuendInstant, subtrahendInstant) /
       iScalar
   }

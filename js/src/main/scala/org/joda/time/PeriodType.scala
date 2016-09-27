@@ -39,8 +39,16 @@ object PeriodType {
   def standard(): PeriodType = {
     var `type` = cStandard
     if (`type` == null) {
-      `type` = new PeriodType("Standard", js.Array(DurationFieldType.years(), DurationFieldType.months(), DurationFieldType.weeks(), DurationFieldType.days(), DurationFieldType.hours(), DurationFieldType.minutes(), DurationFieldType.seconds(), DurationFieldType.millis()),
-        js.Array(0, 1, 2, 3, 4, 5, 6, 7))
+      `type` = new PeriodType("Standard",
+                              js.Array(DurationFieldType.years(),
+                                       DurationFieldType.months(),
+                                       DurationFieldType.weeks(),
+                                       DurationFieldType.days(),
+                                       DurationFieldType.hours(),
+                                       DurationFieldType.minutes(),
+                                       DurationFieldType.seconds(),
+                                       DurationFieldType.millis()),
+                              js.Array(0, 1, 2, 3, 4, 5, 6, 7))
       cStandard = `type`
     }
     `type`
@@ -49,8 +57,15 @@ object PeriodType {
   def yearMonthDayTime(): PeriodType = {
     var `type` = cYMDTime
     if (`type` == null) {
-      `type` = new PeriodType("YearMonthDayTime", js.Array(DurationFieldType.years(), DurationFieldType.months(), DurationFieldType.days(), DurationFieldType.hours(), DurationFieldType.minutes(), DurationFieldType.seconds(), DurationFieldType.millis()),
-        js.Array(0, 1, -1, 2, 3, 4, 5, 6))
+      `type` = new PeriodType("YearMonthDayTime",
+                              js.Array(DurationFieldType.years(),
+                                       DurationFieldType.months(),
+                                       DurationFieldType.days(),
+                                       DurationFieldType.hours(),
+                                       DurationFieldType.minutes(),
+                                       DurationFieldType.seconds(),
+                                       DurationFieldType.millis()),
+                              js.Array(0, 1, -1, 2, 3, 4, 5, 6))
       cYMDTime = `type`
     }
     `type`
@@ -59,8 +74,11 @@ object PeriodType {
   def yearMonthDay(): PeriodType = {
     var `type` = cYMD
     if (`type` == null) {
-      `type` = new PeriodType("YearMonthDay", js.Array(DurationFieldType.years(), DurationFieldType.months(), DurationFieldType.days()),
-        js.Array(0, 1, -1, 2, -1, -1, -1, -1))
+      `type` = new PeriodType("YearMonthDay",
+                              js.Array(DurationFieldType.years(),
+                                       DurationFieldType.months(),
+                                       DurationFieldType.days()),
+                              js.Array(0, 1, -1, 2, -1, -1, -1, -1))
       cYMD = `type`
     }
     `type`
@@ -69,8 +87,15 @@ object PeriodType {
   def yearWeekDayTime(): PeriodType = {
     var `type` = cYWDTime
     if (`type` == null) {
-      `type` = new PeriodType("YearWeekDayTime", js.Array(DurationFieldType.years(), DurationFieldType.weeks(), DurationFieldType.days(), DurationFieldType.hours(), DurationFieldType.minutes(), DurationFieldType.seconds(), DurationFieldType.millis()),
-        js.Array(0, -1, 1, 2, 3, 4, 5, 6))
+      `type` = new PeriodType("YearWeekDayTime",
+                              js.Array(DurationFieldType.years(),
+                                       DurationFieldType.weeks(),
+                                       DurationFieldType.days(),
+                                       DurationFieldType.hours(),
+                                       DurationFieldType.minutes(),
+                                       DurationFieldType.seconds(),
+                                       DurationFieldType.millis()),
+                              js.Array(0, -1, 1, 2, 3, 4, 5, 6))
       cYWDTime = `type`
     }
     `type`
@@ -79,8 +104,11 @@ object PeriodType {
   def yearWeekDay(): PeriodType = {
     var `type` = cYWD
     if (`type` == null) {
-      `type` = new PeriodType("YearWeekDay", js.Array(DurationFieldType.years(), DurationFieldType.weeks(), DurationFieldType.days()),
-        js.Array(0, -1, 1, 2, -1, -1, -1, -1))
+      `type` = new PeriodType("YearWeekDay",
+                              js.Array(DurationFieldType.years(),
+                                       DurationFieldType.weeks(),
+                                       DurationFieldType.days()),
+                              js.Array(0, -1, 1, 2, -1, -1, -1, -1))
       cYWD = `type`
     }
     `type`
@@ -89,8 +117,14 @@ object PeriodType {
   def yearDayTime(): PeriodType = {
     var `type` = cYDTime
     if (`type` == null) {
-      `type` = new PeriodType("YearDayTime", js.Array(DurationFieldType.years(), DurationFieldType.days(), DurationFieldType.hours(), DurationFieldType.minutes(), DurationFieldType.seconds(), DurationFieldType.millis()),
-        js.Array(0, -1, -1, 1, 2, 3, 4, 5))
+      `type` = new PeriodType("YearDayTime",
+                              js.Array(DurationFieldType.years(),
+                                       DurationFieldType.days(),
+                                       DurationFieldType.hours(),
+                                       DurationFieldType.minutes(),
+                                       DurationFieldType.seconds(),
+                                       DurationFieldType.millis()),
+                              js.Array(0, -1, -1, 1, 2, 3, 4, 5))
       cYDTime = `type`
     }
     `type`
@@ -99,7 +133,9 @@ object PeriodType {
   def yearDay(): PeriodType = {
     var `type` = cYD
     if (`type` == null) {
-      `type` = new PeriodType("YearDay", js.Array(DurationFieldType.years(), DurationFieldType.days()),
+      `type` = new PeriodType(
+        "YearDay",
+        js.Array(DurationFieldType.years(), DurationFieldType.days()),
         js.Array(0, -1, -1, 1, -1, -1, -1, -1))
       cYD = `type`
     }
@@ -109,8 +145,13 @@ object PeriodType {
   def dayTime(): PeriodType = {
     var `type` = cDTime
     if (`type` == null) {
-      `type` = new PeriodType("DayTime", js.Array(DurationFieldType.days(), DurationFieldType.hours(), DurationFieldType.minutes(), DurationFieldType.seconds(), DurationFieldType.millis()),
-        js.Array(-1, -1, -1, 0, 1, 2, 3, 4))
+      `type` = new PeriodType("DayTime",
+                              js.Array(DurationFieldType.days(),
+                                       DurationFieldType.hours(),
+                                       DurationFieldType.minutes(),
+                                       DurationFieldType.seconds(),
+                                       DurationFieldType.millis()),
+                              js.Array(-1, -1, -1, 0, 1, 2, 3, 4))
       cDTime = `type`
     }
     `type`
@@ -119,8 +160,12 @@ object PeriodType {
   def time(): PeriodType = {
     var `type` = cTime
     if (`type` == null) {
-      `type` = new PeriodType("Time", js.Array(DurationFieldType.hours(), DurationFieldType.minutes(), DurationFieldType.seconds(), DurationFieldType.millis()),
-        js.Array(-1, -1, -1, -1, 0, 1, 2, 3))
+      `type` = new PeriodType("Time",
+                              js.Array(DurationFieldType.hours(),
+                                       DurationFieldType.minutes(),
+                                       DurationFieldType.seconds(),
+                                       DurationFieldType.millis()),
+                              js.Array(-1, -1, -1, -1, 0, 1, 2, 3))
       cTime = `type`
     }
     `type`
@@ -129,7 +174,9 @@ object PeriodType {
   def years(): PeriodType = {
     var `type` = cYears
     if (`type` == null) {
-      `type` = new PeriodType("Years", js.Array(DurationFieldType.years()), js.Array(0, -1, -1, -1, -1, -1, -1, -1))
+      `type` = new PeriodType("Years",
+                              js.Array(DurationFieldType.years()),
+                              js.Array(0, -1, -1, -1, -1, -1, -1, -1))
       cYears = `type`
     }
     `type`
@@ -138,7 +185,9 @@ object PeriodType {
   def months(): PeriodType = {
     var `type` = cMonths
     if (`type` == null) {
-      `type` = new PeriodType("Months", js.Array(DurationFieldType.months()), js.Array(-1, 0, -1, -1, -1, -1, -1, -1))
+      `type` = new PeriodType("Months",
+                              js.Array(DurationFieldType.months()),
+                              js.Array(-1, 0, -1, -1, -1, -1, -1, -1))
       cMonths = `type`
     }
     `type`
@@ -147,7 +196,9 @@ object PeriodType {
   def weeks(): PeriodType = {
     var `type` = cWeeks
     if (`type` == null) {
-      `type` = new PeriodType("Weeks", js.Array(DurationFieldType.weeks()), js.Array(-1, -1, 0, -1, -1, -1, -1, -1))
+      `type` = new PeriodType("Weeks",
+                              js.Array(DurationFieldType.weeks()),
+                              js.Array(-1, -1, 0, -1, -1, -1, -1, -1))
       cWeeks = `type`
     }
     `type`
@@ -156,7 +207,9 @@ object PeriodType {
   def days(): PeriodType = {
     var `type` = cDays
     if (`type` == null) {
-      `type` = new PeriodType("Days", js.Array(DurationFieldType.days()), js.Array(-1, -1, -1, 0, -1, -1, -1, -1))
+      `type` = new PeriodType("Days",
+                              js.Array(DurationFieldType.days()),
+                              js.Array(-1, -1, -1, 0, -1, -1, -1, -1))
       cDays = `type`
     }
     `type`
@@ -165,7 +218,9 @@ object PeriodType {
   def hours(): PeriodType = {
     var `type` = cHours
     if (`type` == null) {
-      `type` = new PeriodType("Hours", js.Array(DurationFieldType.hours()), js.Array(-1, -1, -1, -1, 0, -1, -1, -1))
+      `type` = new PeriodType("Hours",
+                              js.Array(DurationFieldType.hours()),
+                              js.Array(-1, -1, -1, -1, 0, -1, -1, -1))
       cHours = `type`
     }
     `type`
@@ -174,7 +229,9 @@ object PeriodType {
   def minutes(): PeriodType = {
     var `type` = cMinutes
     if (`type` == null) {
-      `type` = new PeriodType("Minutes", js.Array(DurationFieldType.minutes()), js.Array(-1, -1, -1, -1, -1, 0, -1, -1))
+      `type` = new PeriodType("Minutes",
+                              js.Array(DurationFieldType.minutes()),
+                              js.Array(-1, -1, -1, -1, -1, 0, -1, -1))
       cMinutes = `type`
     }
     `type`
@@ -183,7 +240,9 @@ object PeriodType {
   def seconds(): PeriodType = {
     var `type` = cSeconds
     if (`type` == null) {
-      `type` = new PeriodType("Seconds", js.Array(DurationFieldType.seconds()), js.Array(-1, -1, -1, -1, -1, -1, 0, -1))
+      `type` = new PeriodType("Seconds",
+                              js.Array(DurationFieldType.seconds()),
+                              js.Array(-1, -1, -1, -1, -1, -1, 0, -1))
       cSeconds = `type`
     }
     `type`
@@ -192,7 +251,9 @@ object PeriodType {
   def millis(): PeriodType = {
     var `type` = cMillis
     if (`type` == null) {
-      `type` = new PeriodType("Millis", js.Array(DurationFieldType.millis()), js.Array(-1, -1, -1, -1, -1, -1, -1, 0))
+      `type` = new PeriodType("Millis",
+                              js.Array(DurationFieldType.millis()),
+                              js.Array(-1, -1, -1, -1, -1, -1, -1, 0))
       cMillis = `type`
     }
     `type`
@@ -205,7 +266,8 @@ object PeriodType {
   def forFields(types: js.Array[DurationFieldType]): PeriodType = {
     synchronized {
       if (types == null || types.length == 0) {
-        throw new IllegalArgumentException("Types array must not be null or empty")
+        throw new IllegalArgumentException(
+          "Types array must not be null or empty")
       }
       for (i <- types.indices if types(i) == null) {
         throw new IllegalArgumentException("Types array must not contain null")
@@ -236,12 +298,13 @@ object PeriodType {
         return cached.asInstanceOf[PeriodType]
       }
       if (cached != null) {
-        throw new IllegalArgumentException("PeriodType does not support fields: " + cached)
+        throw new IllegalArgumentException(
+          "PeriodType does not support fields: " + cached)
       }
       var `type` = standard()
-      
+
       val list = types.jsSlice(0)
-      
+
       {
         val index = list.indexOf(DurationFieldType.years())
         if (index > 0) {
@@ -250,7 +313,7 @@ object PeriodType {
           `type` = `type`.withYearsRemoved()
         }
       }
-      
+
       {
         val index = list.indexOf(DurationFieldType.months())
         if (index > 0) {
@@ -316,7 +379,8 @@ object PeriodType {
 
       if (list.nonEmpty) {
         cache.put(inPartType, list)
-        throw new IllegalArgumentException("PeriodType does not support fields: " + list)
+        throw new IllegalArgumentException(
+          "PeriodType does not support fields: " + list)
       }
       val checkPartType = new PeriodType(null, `type`.iTypes, null)
       val checkedType = cache.get(checkPartType).asInstanceOf[PeriodType]
@@ -336,16 +400,19 @@ class PeriodType extends Serializable() {
   private var iName: String = _
   private var iTypes: js.Array[DurationFieldType] = _
   private var iIndices: js.Array[Int] = _
-  
-  protected def this(name: String, types: Array[DurationFieldType], indices: Array[Int]) {
+
+  protected def this(name: String,
+                     types: Array[DurationFieldType],
+                     indices: Array[Int]) {
     this()
     iName = name
     iTypes = types.toJSArray
     iIndices = indices.toJSArray
   }
 
-
-  protected def this(name: String, types: js.Array[DurationFieldType], indices: js.Array[Int]) {
+  protected def this(name: String,
+                     types: js.Array[DurationFieldType],
+                     indices: js.Array[Int]) {
     this()
     iName = name
     iTypes = types
@@ -386,7 +453,8 @@ class PeriodType extends Serializable() {
   def setIndexedField(period: ReadablePeriod,
                       index: Int,
                       values: Array[Int],
-                      newValue: Int): Boolean = setIndexedField(period,index,values.toJSArray,newValue)
+                      newValue: Int): Boolean =
+    setIndexedField(period, index, values.toJSArray, newValue)
 
   def addIndexedField(period: ReadablePeriod,
                       index: Int,
@@ -406,7 +474,8 @@ class PeriodType extends Serializable() {
   def addIndexedField(period: ReadablePeriod,
                       index: Int,
                       values: Array[Int],
-                      valueToAdd: Int): Boolean = addIndexedField(period,index,values.toJSArray,valueToAdd)
+                      valueToAdd: Int): Boolean =
+    addIndexedField(period, index, values.toJSArray, valueToAdd)
 
   def withYearsRemoved(): PeriodType = withFieldRemoved(0, "NoYears")
 
@@ -439,7 +508,11 @@ class PeriodType extends Serializable() {
     }
     val indices = js.Array[Int]()
     for (i <- indices.indices) {
-      indices(i) = if (i < indicesIndex) iIndices(i) else if (i > indicesIndex) if (iIndices(i) == -1) -1 else iIndices(i) - 1 else -1
+      indices(i) =
+        if (i < indicesIndex) iIndices(i)
+        else if (i > indicesIndex)
+          if (iIndices(i) == -1) -1 else iIndices(i) - 1
+        else -1
     }
     new PeriodType(getName + name, types, indices)
   }

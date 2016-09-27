@@ -9,9 +9,13 @@ import scala.scalajs.js
 
 object GregorianChronology {
 
-  private final val cCache = new collection.mutable.HashMap[DateTimeZone, js.Array[GregorianChronology]]()
-  private final val MILLIS_PER_YEAR = (365.2425 * DateTimeConstants.MILLIS_PER_DAY).toLong
-  private final val MILLIS_PER_MONTH = (365.2425 * DateTimeConstants.MILLIS_PER_DAY / 12).toLong
+  private final val cCache =
+    new collection.mutable.HashMap[DateTimeZone,
+                                   js.Array[GregorianChronology]]()
+  private final val MILLIS_PER_YEAR =
+    (365.2425 * DateTimeConstants.MILLIS_PER_DAY).toLong
+  private final val MILLIS_PER_MONTH =
+    (365.2425 * DateTimeConstants.MILLIS_PER_DAY / 12).toLong
   private final val DAYS_0000_TO_1970 = 719527
   private final val MIN_YEAR = -292275054
   private final val MAX_YEAR = 292278993
@@ -20,11 +24,14 @@ object GregorianChronology {
 
   def getInstanceUTC(): GregorianChronology = INSTANCE_UTC
 
-  def getInstance(): GregorianChronology = getInstance(DateTimeZone.getDefault, 4)
+  def getInstance(): GregorianChronology =
+    getInstance(DateTimeZone.getDefault, 4)
 
-  def getInstance(zone: DateTimeZone): GregorianChronology = getInstance(zone, 4)
+  def getInstance(zone: DateTimeZone): GregorianChronology =
+    getInstance(zone, 4)
 
-  def getInstance(zone: DateTimeZone, minDaysInFirstWeek: Int): GregorianChronology = {
+  def getInstance(zone: DateTimeZone,
+                  minDaysInFirstWeek: Int): GregorianChronology = {
     var _zone: DateTimeZone = zone
     if (_zone == null) {
       _zone = DateTimeZone.getDefault
@@ -45,14 +52,17 @@ object GregorianChronology {
     }
     chrono = chronos(minDaysInFirstWeek - 1)
     if (chrono == null) {
-      chronos.synchronized{
+      chronos.synchronized {
         chrono = chronos(minDaysInFirstWeek - 1)
         if (chrono == null) {
           if (_zone == DateTimeZone.UTC) {
             chrono = new GregorianChronology(null, null, minDaysInFirstWeek)
           } else {
             chrono = getInstance(DateTimeZone.UTC, minDaysInFirstWeek)
-            chrono = new GregorianChronology(ZonedChronology.getInstance(chrono, _zone), null, minDaysInFirstWeek)
+            chrono = new GregorianChronology(
+              ZonedChronology.getInstance(chrono, _zone),
+              null,
+              minDaysInFirstWeek)
           }
           chronos(minDaysInFirstWeek - 1) = chrono
         }
@@ -63,14 +73,17 @@ object GregorianChronology {
 }
 
 @SerialVersionUID(-861407383323710522L)
-class GregorianChronology private (base: Chronology, param: AnyRef, minDaysInFirstWeek: Int)
-  extends BasicGJChronology(base, param, minDaysInFirstWeek) {
+class GregorianChronology private (base: Chronology,
+                                   param: AnyRef,
+                                   minDaysInFirstWeek: Int)
+    extends BasicGJChronology(base, param, minDaysInFirstWeek) {
 
   private def readResolve(): AnyRef = {
     val base = getBase
     var minDays = getMinimumDaysInFirstWeek
     minDays = if (minDays == 0) 4 else minDays
-    if (base == null) getInstance(DateTimeZone.UTC, minDays) else getInstance(base.getZone, minDays)
+    if (base == null) getInstance(DateTimeZone.UTC, minDays)
+    else getInstance(base.getZone, minDays)
   }
 
   def withUTC(): Chronology = INSTANCE_UTC
@@ -100,7 +113,7 @@ class GregorianChronology private (base: Chronology, param: AnyRef, minDaysInFir
     var leapYears = year / 100
     if (year < 0) {
       leapYears = ((year + 3) >> 2) - leapYears + ((leapYears + 3) >> 2) -
-        1
+          1
     } else {
       leapYears = (year >> 2) - leapYears + (leapYears >> 2)
       if (isLeapYear(year)) {
@@ -120,5 +133,6 @@ class GregorianChronology private (base: Chronology, param: AnyRef, minDaysInFir
 
   def getAverageMillisPerMonth(): Long = MILLIS_PER_MONTH
 
-  def getApproxMillisAtEpochDividedByTwo(): Long = (1970L * MILLIS_PER_YEAR) / 2
+  def getApproxMillisAtEpochDividedByTwo(): Long =
+    (1970L * MILLIS_PER_YEAR) / 2
 }

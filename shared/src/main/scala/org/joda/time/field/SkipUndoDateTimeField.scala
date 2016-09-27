@@ -4,15 +4,18 @@ import org.joda.time.Chronology
 import org.joda.time.DateTimeField
 
 @SerialVersionUID(-5875876968979L)
-class SkipUndoDateTimeField(private val chronology: Chronology, field: DateTimeField, private val skip: Int)
-  extends DelegatedDateTimeField(field) {
-  
+class SkipUndoDateTimeField(private val chronology: Chronology,
+                            field: DateTimeField,
+                            private val skip: Int)
+    extends DelegatedDateTimeField(field) {
+
   private var iChronology: Chronology = null
   private var iSkip: Int = _
 
   iChronology = chronology
   val min = super.getMinimumValue
-  @transient private val iMinValue: Int = if (min < skip) min + 1 else if (min == skip + 1) skip else min
+  @transient private val iMinValue: Int =
+    if (min < skip) min + 1 else if (min == skip + 1) skip else min
   iSkip = skip
 
   def this(chronology: Chronology, field: DateTimeField) {

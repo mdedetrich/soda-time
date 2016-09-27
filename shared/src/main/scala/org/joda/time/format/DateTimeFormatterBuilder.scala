@@ -27,10 +27,12 @@ object DateTimeFormatterBuilder {
     }
   }
 
-  class CharacterLiteral(private val value: Char) extends InternalPrinter with InternalParser {
-    
+  class CharacterLiteral(private val value: Char)
+      extends InternalPrinter
+      with InternalParser {
+
     private var iValue: Char = _
-    
+
     iValue = value
 
     def estimatePrintedLength(): Int = 1
@@ -44,13 +46,17 @@ object DateTimeFormatterBuilder {
       appendable.append(iValue)
     }
 
-    def printTo(appendable: Appendable, partial: ReadablePartial, locale: Locale) {
+    def printTo(appendable: Appendable,
+                partial: ReadablePartial,
+                locale: Locale) {
       appendable.append(iValue)
     }
 
     def estimateParsedLength(): Int = 1
 
-    def parseInto(bucket: DateTimeParserBucket, text: CharSequence, position: Int): Int = {
+    def parseInto(bucket: DateTimeParserBucket,
+                  text: CharSequence,
+                  position: Int): Int = {
       if (position >= text.length) {
         return ~position
       }
@@ -71,10 +77,12 @@ object DateTimeFormatterBuilder {
     }
   }
 
-  class StringLiteral(value: String) extends InternalPrinter() with InternalParser {
-    
+  class StringLiteral(value: String)
+      extends InternalPrinter()
+      with InternalParser {
+
     var iValue: String = _
-    
+
     iValue = value
 
     def estimatePrintedLength(): Int = iValue.length
@@ -88,13 +96,17 @@ object DateTimeFormatterBuilder {
       appendable.append(iValue)
     }
 
-    def printTo(appendable: Appendable, partial: ReadablePartial, locale: Locale) {
+    def printTo(appendable: Appendable,
+                partial: ReadablePartial,
+                locale: Locale) {
       appendable.append(iValue)
     }
 
     def estimateParsedLength(): Int = iValue.length
 
-    def parseInto(bucket: DateTimeParserBucket, text: CharSequence, position: Int): Int = {
+    def parseInto(bucket: DateTimeParserBucket,
+                  text: CharSequence,
+                  position: Int): Int = {
       if (csStartsWithIgnoreCase(text, position, iValue)) {
         return position + iValue.length
       }
@@ -102,8 +114,11 @@ object DateTimeFormatterBuilder {
     }
   }
 
-  abstract class NumberFormatter(fieldType: DateTimeFieldType, maxParsedDigits: Int, signed: Boolean)
-    extends InternalPrinter() with InternalParser {
+  abstract class NumberFormatter(fieldType: DateTimeFieldType,
+                                 maxParsedDigits: Int,
+                                 signed: Boolean)
+      extends InternalPrinter()
+      with InternalParser {
 
     protected var iFieldType: DateTimeFieldType = null
     protected var iMaxParsedDigits: Int = _
@@ -115,8 +130,10 @@ object DateTimeFormatterBuilder {
 
     def estimateParsedLength(): Int = iMaxParsedDigits
 
-    def parseInto(bucket: DateTimeParserBucket, text: CharSequence, position: Int): Int = {
-      var _position:Int = position
+    def parseInto(bucket: DateTimeParserBucket,
+                  text: CharSequence,
+                  position: Int): Int = {
+      var _position: Int = position
       var limit = Math.min(iMaxParsedDigits, text.length - _position)
       var negative = false
       var length = 0
@@ -130,7 +147,7 @@ object DateTimeFormatterBuilder {
             c
           }
           if (length + 1 >= limit || _c < '0' ||
-            c > '9') {
+              c > '9') {
             break()
           }
           if (negative) {
@@ -154,7 +171,8 @@ object DateTimeFormatterBuilder {
       var value: Int = 0
       if (length >= 9) {
         _position += length
-        value = Integer.parseInt(text.subSequence(_position,_position).toString)
+        value =
+          Integer.parseInt(text.subSequence(_position, _position).toString)
       } else {
         var i = _position
         if (negative) {
@@ -180,8 +198,10 @@ object DateTimeFormatterBuilder {
     }
   }
 
-  class UnpaddedNumber (fieldType: DateTimeFieldType, maxParsedDigits: Int, signed: Boolean)
-    extends NumberFormatter(fieldType, maxParsedDigits, signed) {
+  class UnpaddedNumber(fieldType: DateTimeFieldType,
+                       maxParsedDigits: Int,
+                       signed: Boolean)
+      extends NumberFormatter(fieldType, maxParsedDigits, signed) {
 
     def estimatePrintedLength(): Int = iMaxParsedDigits
 
@@ -199,10 +219,13 @@ object DateTimeFormatterBuilder {
       }
     }
 
-    def printTo(appendable: Appendable, partial: ReadablePartial, locale: Locale) {
+    def printTo(appendable: Appendable,
+                partial: ReadablePartial,
+                locale: Locale) {
       if (partial.isSupported(iFieldType)) {
         try {
-          FormatUtils.appendUnpaddedInteger(appendable, partial.get(iFieldType))
+          FormatUtils
+            .appendUnpaddedInteger(appendable, partial.get(iFieldType))
         } catch {
           case e: RuntimeException => appendable.append('�')
         }
@@ -212,14 +235,15 @@ object DateTimeFormatterBuilder {
     }
   }
 
-  class PaddedNumber (fieldType: DateTimeFieldType,
-                      maxParsedDigits: Int,
-                      signed: Boolean,
-                      minPrintedDigits: Int) extends NumberFormatter(fieldType, maxParsedDigits, signed) {
+  class PaddedNumber(fieldType: DateTimeFieldType,
+                     maxParsedDigits: Int,
+                     signed: Boolean,
+                     minPrintedDigits: Int)
+      extends NumberFormatter(fieldType, maxParsedDigits, signed) {
 
     private var iMinPrintedDigits: Int = _
     iMinPrintedDigits = minPrintedDigits
-    
+
     def estimatePrintedLength(): Int = iMaxParsedDigits
 
     def printTo(appendable: Appendable,
@@ -230,18 +254,26 @@ object DateTimeFormatterBuilder {
                 locale: Locale) {
       try {
         val field = iFieldType.getField(chrono)
-        FormatUtils.appendPaddedInteger(appendable, field.get(instant), iMinPrintedDigits)
+        FormatUtils.appendPaddedInteger(appendable,
+                                        field.get(instant),
+                                        iMinPrintedDigits)
       } catch {
-        case e: RuntimeException => appendUnknownString(appendable, iMinPrintedDigits)
+        case e: RuntimeException =>
+          appendUnknownString(appendable, iMinPrintedDigits)
       }
     }
 
-    def printTo(appendable: Appendable, partial: ReadablePartial, locale: Locale) {
+    def printTo(appendable: Appendable,
+                partial: ReadablePartial,
+                locale: Locale) {
       if (partial.isSupported(iFieldType)) {
         try {
-          FormatUtils.appendPaddedInteger(appendable, partial.get(iFieldType), iMinPrintedDigits)
+          FormatUtils.appendPaddedInteger(appendable,
+                                          partial.get(iFieldType),
+                                          iMinPrintedDigits)
         } catch {
-          case e: RuntimeException => appendUnknownString(appendable, iMinPrintedDigits)
+          case e: RuntimeException =>
+            appendUnknownString(appendable, iMinPrintedDigits)
         }
       } else {
         appendUnknownString(appendable, iMinPrintedDigits)
@@ -249,10 +281,14 @@ object DateTimeFormatterBuilder {
     }
   }
 
-  class FixedNumber (fieldType: DateTimeFieldType, numDigits: Int, signed: Boolean)
-    extends PaddedNumber(fieldType, numDigits, signed, numDigits) {
+  class FixedNumber(fieldType: DateTimeFieldType,
+                    numDigits: Int,
+                    signed: Boolean)
+      extends PaddedNumber(fieldType, numDigits, signed, numDigits) {
 
-    override def parseInto(bucket: DateTimeParserBucket, text: CharSequence, position: Int): Int = {
+    override def parseInto(bucket: DateTimeParserBucket,
+                           text: CharSequence,
+                           position: Int): Int = {
       val newPos = super.parseInto(bucket, text, position)
       if (newPos < 0) {
         return newPos
@@ -275,9 +311,12 @@ object DateTimeFormatterBuilder {
     }
   }
 
-  class TwoDigitYear(private val `type`: DateTimeFieldType, private val pivot: Int, private val lenientParse: Boolean)
-    extends InternalPrinter() with InternalParser {
-    
+  class TwoDigitYear(private val `type`: DateTimeFieldType,
+                     private val pivot: Int,
+                     private val lenientParse: Boolean)
+      extends InternalPrinter()
+      with InternalParser {
+
     private var iLenientParse: Boolean = _
     private var iPivot: Int = _
     private var iType: DateTimeFieldType = null
@@ -288,8 +327,10 @@ object DateTimeFormatterBuilder {
 
     def estimateParsedLength(): Int = if (iLenientParse) 4 else 2
 
-    def parseInto(bucket: DateTimeParserBucket, text: CharSequence, position: Int): Int = {
-      var _position:Int = position
+    def parseInto(bucket: DateTimeParserBucket,
+                  text: CharSequence,
+                  position: Int): Int = {
+      var _position: Int = position
       var limit = text.length - _position
       if (!iLenientParse) {
         limit = Math.min(2, limit)
@@ -328,7 +369,8 @@ object DateTimeFormatterBuilder {
           var value: Int = 0
           if (length >= 9) {
             _position += length
-            value = Integer.parseInt(text.subSequence(_position, position).toString)
+            value =
+              Integer.parseInt(text.subSequence(_position, position).toString)
           } else {
             var i = _position
             if (negative) {
@@ -405,7 +447,9 @@ object DateTimeFormatterBuilder {
       }
     }
 
-    def printTo(appendable: Appendable, partial: ReadablePartial, locale: Locale) {
+    def printTo(appendable: Appendable,
+                partial: ReadablePartial,
+                locale: Locale) {
       val year = getTwoDigitYear(partial)
       if (year < 0) {
         appendable.append('�')
@@ -432,11 +476,14 @@ object DateTimeFormatterBuilder {
   }
 
   object TextField {
-    private val cParseCache: Map[Locale, Map[DateTimeFieldType, Array[Any]]] = new ConcurrentHashMap[Locale, Map[DateTimeFieldType, Array[Any]]]()
+    private val cParseCache: Map[Locale, Map[DateTimeFieldType, Array[Any]]] =
+      new ConcurrentHashMap[Locale, Map[DateTimeFieldType, Array[Any]]]()
   }
 
-  class TextField(private val iFieldType: DateTimeFieldType, private val iShort: Boolean)
-    extends InternalPrinter() with InternalParser {
+  class TextField(private val iFieldType: DateTimeFieldType,
+                  private val iShort: Boolean)
+      extends InternalPrinter()
+      with InternalParser {
 
     def estimatePrintedLength(): Int = if (iShort) 6 else 20
 
@@ -453,7 +500,9 @@ object DateTimeFormatterBuilder {
       }
     }
 
-    def printTo(appendable: Appendable, partial: ReadablePartial, locale: Locale) {
+    def printTo(appendable: Appendable,
+                partial: ReadablePartial,
+                locale: Locale) {
       try {
         appendable.append(print(partial, locale))
       } catch {
@@ -461,7 +510,9 @@ object DateTimeFormatterBuilder {
       }
     }
 
-    private def print(instant: Long, chrono: Chronology, locale: Locale): String = {
+    private def print(instant: Long,
+                      chrono: Chronology,
+                      locale: Locale): String = {
       val field = iFieldType.getField(chrono)
       if (iShort) {
         field.getAsShortText(instant, locale)
@@ -485,7 +536,9 @@ object DateTimeFormatterBuilder {
 
     def estimateParsedLength(): Int = estimatePrintedLength()
 
-    def parseInto(bucket: DateTimeParserBucket, text: CharSequence, position: Int): Int = {
+    def parseInto(bucket: DateTimeParserBucket,
+                  text: CharSequence,
+                  position: Int): Int = {
       val locale = bucket.getLocale
       var validValues: Map[String, Boolean] = null
       var maxLength = 0
@@ -509,14 +562,17 @@ object DateTimeFormatterBuilder {
         while (i <= max) {
           property.set(i)
           validValues.put(property.getAsShortText(locale), true)
-          validValues.put(property.getAsShortText(locale).toLowerCase(locale), true)
-          validValues.put(property.getAsShortText(locale).toUpperCase(locale), true)
+          validValues
+            .put(property.getAsShortText(locale).toLowerCase(locale), true)
+          validValues
+            .put(property.getAsShortText(locale).toUpperCase(locale), true)
           validValues.put(property.getAsText(locale), true)
           validValues.put(property.getAsText(locale).toLowerCase(locale), true)
           validValues.put(property.getAsText(locale).toUpperCase(locale), true)
           i += 1
         }
-        if ("en" == locale.getLanguage && iFieldType == DateTimeFieldType.era()) {
+        if ("en" == locale.getLanguage && iFieldType == DateTimeFieldType
+              .era()) {
           validValues.put("BCE", true)
           validValues.put("bce", true)
           validValues.put("CE", true)
@@ -543,15 +599,18 @@ object DateTimeFormatterBuilder {
     }
   }
 
-  class Fraction (private val fieldType: DateTimeFieldType, val minDigits: Int, var maxDigits: Int)
-    extends InternalPrinter() with InternalParser {
+  class Fraction(private val fieldType: DateTimeFieldType,
+                 val minDigits: Int,
+                 var maxDigits: Int)
+      extends InternalPrinter()
+      with InternalParser {
 
     private var iFieldType: DateTimeFieldType = null
     protected var iMinDigits: Int = _
     protected var iMaxDigits: Int = _
 
     iFieldType = fieldType
-    
+
     if (maxDigits > 18) {
       maxDigits = 18
     }
@@ -570,12 +629,16 @@ object DateTimeFormatterBuilder {
       printTo(appendable, instant, chrono)
     }
 
-    def printTo(appendable: Appendable, partial: ReadablePartial, locale: Locale) {
+    def printTo(appendable: Appendable,
+                partial: ReadablePartial,
+                locale: Locale) {
       val millis = partial.getChronology.set(partial, 0L)
       printTo(appendable, millis, partial.getChronology)
     }
 
-    protected def printTo(appendable: Appendable, instant: Long, chrono: Chronology) {
+    protected def printTo(appendable: Appendable,
+                          instant: Long,
+                          chrono: Chronology) {
       val field = iFieldType.getField(chrono)
       var minDigits = iMinDigits
       var fraction: Long = 0l
@@ -597,7 +660,9 @@ object DateTimeFormatterBuilder {
       val fractionData = getFractionData(fraction, field)
       val scaled = fractionData(0)
       val maxDigits = fractionData(1).toInt
-      str = if ((scaled & 0x7fffffff) == scaled) Integer.toString(scaled.toInt) else scaled.toString
+      str =
+        if ((scaled & 0x7fffffff) == scaled) Integer.toString(scaled.toInt)
+        else scaled.toString
       var length = str.length
       var digits = maxDigits
       while (length < digits) {
@@ -623,67 +688,68 @@ object DateTimeFormatterBuilder {
       appendable.append(str)
     }
 
-    private def getFractionData(fraction: Long, field: DateTimeField): Array[Long] = {
+    private def getFractionData(fraction: Long,
+                                field: DateTimeField): Array[Long] = {
       val rangeMillis = field.getDurationField.getUnitMillis
       var scalar: Long = 0l
       var maxDigits = iMaxDigits
-      while(true) {
+      while (true) {
         maxDigits match {
-          case 1 => 
+          case 1 =>
             scalar = 10L
             break()
-          case 2 => 
+          case 2 =>
             scalar = 100L
             break()
-          case 3 => 
+          case 3 =>
             scalar = 1000L
             break()
-          case 4 => 
+          case 4 =>
             scalar = 10000L
             break()
-          case 5 => 
+          case 5 =>
             scalar = 100000L
             break()
-          case 6 => 
+          case 6 =>
             scalar = 1000000L
             break()
-          case 7 => 
+          case 7 =>
             scalar = 10000000L
             break()
-          case 8 => 
+          case 8 =>
             scalar = 100000000L
             break()
-          case 9 => 
+          case 9 =>
             scalar = 1000000000L
             break()
-          case 10 => 
+          case 10 =>
             scalar = 10000000000L
             break()
-          case 11 => 
+          case 11 =>
             scalar = 100000000000L
             break()
-          case 12 => 
+          case 12 =>
             scalar = 1000000000000L
             break()
-          case 13 => 
+          case 13 =>
             scalar = 10000000000000L
             break()
-          case 14 => 
+          case 14 =>
             scalar = 100000000000000L
             break()
-          case 15 => 
+          case 15 =>
             scalar = 1000000000000000L
             break()
-          case 16 => 
+          case 16 =>
             scalar = 10000000000000000L
             break()
-          case 17 => 
+          case 17 =>
             scalar = 100000000000000000L
             break()
-          case 18 => 
+          case 18 =>
             scalar = 1000000000000000000L
             break()
-          case _ => 
+          case _ =>
             scalar = 1L
             break()
         }
@@ -700,10 +766,12 @@ object DateTimeFormatterBuilder {
 
     def estimateParsedLength(): Int = iMaxDigits
 
-    def parseInto(bucket: DateTimeParserBucket, text: CharSequence, position: Int): Int = {
+    def parseInto(bucket: DateTimeParserBucket,
+                  text: CharSequence,
+                  position: Int): Int = {
       val field = iFieldType.getField(bucket.getChronology)
       val limit = Math.min(iMaxDigits, text.length - position)
-      var value:Long = 0
+      var value: Long = 0
       var n = field.getDurationField.getUnitMillis * 10
       var length = 0
       while (length < limit) {
@@ -723,7 +791,9 @@ object DateTimeFormatterBuilder {
       if (value > Integer.MAX_VALUE) {
         return ~position
       }
-      val parseField = new PreciseDateTimeField(DateTimeFieldType.millisOfSecond(), MillisDurationField.INSTANCE,
+      val parseField = new PreciseDateTimeField(
+        DateTimeFieldType.millisOfSecond(),
+        MillisDurationField.INSTANCE,
         field.getDurationField)
       bucket.saveField(parseField, value.toInt)
       position + length
@@ -734,13 +804,15 @@ object DateTimeFormatterBuilder {
                        private val zeroOffsetParseText: String,
                        private val showSeparators: Boolean,
                        private var minFields: Int,
-                       private var maxFields: Int) extends InternalPrinter() with InternalParser {
+                       private var maxFields: Int)
+      extends InternalPrinter()
+      with InternalParser {
 
     private var iZeroOffsetPrintText: String = null
     private var iZeroOffsetParseText: String = null
-    private var iShowSeparators: Boolean  = _
-    private var iMinFields: Int  = _
-    private var iMaxFields: Int  = _
+    private var iShowSeparators: Boolean = _
+    private var iMinFields: Int = _
+    private var iMaxFields: Int = _
 
     iZeroOffsetPrintText = zeroOffsetPrintText
     iZeroOffsetParseText = zeroOffsetParseText
@@ -776,7 +848,7 @@ object DateTimeFormatterBuilder {
                 displayZone: DateTimeZone,
                 locale: Locale) {
       var _displayOffset: Int = displayOffset
-      
+
       if (displayZone == null) {
         return
       }
@@ -829,13 +901,17 @@ object DateTimeFormatterBuilder {
       FormatUtils.appendPaddedInteger(buf, _displayOffset, 3)
     }
 
-    def printTo(appendable: Appendable, partial: ReadablePartial, locale: Locale): Unit = {
+    def printTo(appendable: Appendable,
+                partial: ReadablePartial,
+                locale: Locale): Unit = {
       // no zone info
     }
 
     def estimateParsedLength(): Int = estimatePrintedLength()
 
-    def parseInto(bucket: DateTimeParserBucket, text: CharSequence, position: Int): Int = {
+    def parseInto(bucket: DateTimeParserBucket,
+                  text: CharSequence,
+                  position: Int): Int = {
       var _position = position
       var limit: Int = text.length - _position
 
@@ -865,11 +941,9 @@ object DateTimeFormatterBuilder {
       var c: Char = text.charAt(_position)
       if (c == '-') {
         negative = true
-      }
-      else if (c == '+') {
+      } else if (c == '+') {
         negative = false
-      }
-      else {
+      } else {
         return ~_position
       }
 
@@ -900,7 +974,7 @@ object DateTimeFormatterBuilder {
       offset = hours * DateTimeConstants.MILLIS_PER_HOUR
       limit -= 2
       _position += 2
-      
+
       {
         if (limit <= 0) {
           break() //todo: label break is not supported
@@ -911,18 +985,15 @@ object DateTimeFormatterBuilder {
           expectSeparators = true
           limit -= 1
           _position += 1
-        }
-        else if (c >= '0' && c <= '9') {
+        } else if (c >= '0' && c <= '9') {
           expectSeparators = false
-        }
-        else {
+        } else {
           break() //todo: label break is not supported
         }
         var count: Int = digitCount(text, _position, 2)
         if (count == 0 && !expectSeparators) {
           break() //todo: label break is not supported
-        }
-        else if (count < 2) {
+        } else if (count < 2) {
           return ~_position
         }
         val minutes: Int = FormatUtils.parseTwoDigits(text, _position)
@@ -945,8 +1016,7 @@ object DateTimeFormatterBuilder {
         count = digitCount(text, _position, 2)
         if (count == 0 && !expectSeparators) {
           break() //todo: label break is not supported
-        }
-        else if (count < 2) {
+        } else if (count < 2) {
           return ~_position
         }
         val seconds: Int = FormatUtils.parseTwoDigits(text, _position)
@@ -969,8 +1039,7 @@ object DateTimeFormatterBuilder {
         count = digitCount(text, _position, 3)
         if (count == 0 && !expectSeparators) {
           break() //todo: label break is not supported
-        }
-        else if (count < 1) {
+        } else if (count < 1) {
           return ~_position
         }
         offset += (text.charAt({
@@ -995,7 +1064,9 @@ object DateTimeFormatterBuilder {
       _position
     }
 
-    private def digitCount(text: CharSequence, position: Int, amount: Int): Int = {
+    private def digitCount(text: CharSequence,
+                           position: Int,
+                           amount: Int): Int = {
       var _amount: Int = amount
       var limit = Math.min(text.length - position, _amount)
       _amount = 0
@@ -1016,10 +1087,13 @@ object DateTimeFormatterBuilder {
     val SHORT_NAME = 1
   }
 
-  class TimeZoneName(private val iType: Int, private val iParseLookup: Map[String, DateTimeZone])
-    extends InternalPrinter() with InternalParser {
+  class TimeZoneName(private val iType: Int,
+                     private val iParseLookup: Map[String, DateTimeZone])
+      extends InternalPrinter()
+      with InternalParser {
 
-    def estimatePrintedLength(): Int = if (iType == TimeZoneName.SHORT_NAME) 4 else 20
+    def estimatePrintedLength(): Int =
+      if (iType == TimeZoneName.SHORT_NAME) 4 else 20
 
     def printTo(appendable: Appendable,
                 instant: Long,
@@ -1030,29 +1104,39 @@ object DateTimeFormatterBuilder {
       appendable.append(print(instant - displayOffset, displayZone, locale))
     }
 
-    private def print(instant: Long, displayZone: DateTimeZone, locale: Locale): String = {
+    private def print(instant: Long,
+                      displayZone: DateTimeZone,
+                      locale: Locale): String = {
       if (displayZone == null) {
         return ""
       }
       iType match {
-        case TimeZoneName.LONG_NAME => return displayZone.getName(instant, locale)
-        case TimeZoneName.SHORT_NAME => return displayZone.getShortName(instant, locale)
+        case TimeZoneName.LONG_NAME =>
+          return displayZone.getName(instant, locale)
+        case TimeZoneName.SHORT_NAME =>
+          return displayZone.getShortName(instant, locale)
       }
       ""
     }
 
-    def printTo(appendable: Appendable, partial: ReadablePartial, locale: Locale) {
-    }
+    def printTo(appendable: Appendable,
+                partial: ReadablePartial,
+                locale: Locale) {}
 
-    def estimateParsedLength(): Int = if (iType == TimeZoneName.SHORT_NAME) 4 else 20
+    def estimateParsedLength(): Int =
+      if (iType == TimeZoneName.SHORT_NAME) 4 else 20
 
-    def parseInto(bucket: DateTimeParserBucket, text: CharSequence, position: Int): Int = {
+    def parseInto(bucket: DateTimeParserBucket,
+                  text: CharSequence,
+                  position: Int): Int = {
       var parseLookup = iParseLookup
-      parseLookup = if (parseLookup != null) parseLookup else DateTimeUtils.getDefaultTimeZoneNames
+      parseLookup =
+        if (parseLookup != null) parseLookup
+        else DateTimeUtils.getDefaultTimeZoneNames
       var matched: String = null
-      
+
       val iterator = parseLookup.keySet().iterator()
-      
+
       while (iterator.hasNext) {
         val name = iterator.next()
         if (csStartsWith(text, position, name)) {
@@ -1061,7 +1145,7 @@ object DateTimeFormatterBuilder {
           }
         }
       }
-      
+
       if (matched != null) {
         bucket.setZone(parseLookup.get(matched))
         return position + matched.length
@@ -1069,8 +1153,11 @@ object DateTimeFormatterBuilder {
       ~position
     }
   }
-  
-  class TimeZoneId extends Enumeration with InternalPrinter with InternalParser {
+
+  class TimeZoneId
+      extends Enumeration
+      with InternalPrinter
+      with InternalParser {
     import TimeZoneId._
     def estimatePrintedLength(): Int = MAX_LENGTH
 
@@ -1083,16 +1170,19 @@ object DateTimeFormatterBuilder {
       appendable.append(if (displayZone != null) displayZone.getID else "")
     }
 
-    def printTo(appendable: Appendable, partial: ReadablePartial, locale: Locale) {
-    }
+    def printTo(appendable: Appendable,
+                partial: ReadablePartial,
+                locale: Locale) {}
 
     def estimateParsedLength(): Int = MAX_LENGTH
 
-    def parseInto(bucket: DateTimeParserBucket, text: CharSequence, position: Int): Int = {
+    def parseInto(bucket: DateTimeParserBucket,
+                  text: CharSequence,
+                  position: Int): Int = {
       var best: String = null
-      
+
       val iterator = ALL_IDS.iterator()
-      
+
       while (iterator.hasNext) {
         val id = iterator.next()
         if (csStartsWith(text, position, id)) {
@@ -1118,9 +1208,9 @@ object DateTimeFormatterBuilder {
 
     var max = 0
     val MAX_LENGTH = max
-    
+
     val iterator = ALL_IDS.iterator()
-    
+
     while (iterator.hasNext) {
       val id = iterator.next()
       max = Math.max(max, id.length)
@@ -1128,7 +1218,9 @@ object DateTimeFormatterBuilder {
 
   }
 
-  class Composite(elementPairs: List[Any]) extends InternalPrinter() with InternalParser {
+  class Composite(elementPairs: List[Any])
+      extends InternalPrinter()
+      with InternalParser {
 
     private var iPrinters: Array[InternalPrinter] = null
     private var iParsers: Array[InternalParser] = null
@@ -1189,11 +1281,18 @@ object DateTimeFormatterBuilder {
       }
       val len = elements.length
       for (i <- 0 until len) {
-        elements(i).printTo(appendable, instant, chrono, displayOffset, displayZone, _locale)
+        elements(i).printTo(appendable,
+                            instant,
+                            chrono,
+                            displayOffset,
+                            displayZone,
+                            _locale)
       }
     }
 
-    def printTo(appendable: Appendable, partial: ReadablePartial, locale: Locale) {
+    def printTo(appendable: Appendable,
+                partial: ReadablePartial,
+                locale: Locale) {
       var _locale: Locale = locale
       val elements = iPrinters
       if (elements == null) {
@@ -1210,7 +1309,9 @@ object DateTimeFormatterBuilder {
 
     def estimateParsedLength(): Int = iParsedLengthEstimate
 
-    def parseInto(bucket: DateTimeParserBucket, text: CharSequence, position: Int): Int = {
+    def parseInto(bucket: DateTimeParserBucket,
+                  text: CharSequence,
+                  position: Int): Int = {
       var _position: Int = position
       val elements = iParsers
       if (elements == null) {
@@ -1229,19 +1330,25 @@ object DateTimeFormatterBuilder {
 
     def isParser(): Boolean = iParsers != null
 
-    private def decompose(elementPairs: List[Any], printerList: List[Any], parserList: List[Any]) {
+    private def decompose(elementPairs: List[Any],
+                          printerList: List[Any],
+                          parserList: List[Any]) {
       val size = elementPairs.size
       var i = 0
       while (i < size) {
         var element = elementPairs.get(i)
         if (element.isInstanceOf[Composite]) {
-          addArrayToList(printerList, element.asInstanceOf[Composite].iPrinters.map(_.asInstanceOf[Any]))
+          addArrayToList(
+            printerList,
+            element.asInstanceOf[Composite].iPrinters.map(_.asInstanceOf[Any]))
         } else {
           printerList.add(element)
         }
         element = elementPairs.get(i + 1)
         if (element.isInstanceOf[Composite]) {
-          addArrayToList(parserList, element.asInstanceOf[Composite].iParsers.map(_.asInstanceOf[Any]))
+          addArrayToList(
+            parserList,
+            element.asInstanceOf[Composite].iParsers.map(_.asInstanceOf[Any]))
         } else {
           parserList.add(element)
         }
@@ -1258,7 +1365,8 @@ object DateTimeFormatterBuilder {
     }
   }
 
-  class MatchingParser(private val parsers: Array[InternalParser]) extends InternalParser() {
+  class MatchingParser(private val parsers: Array[InternalParser])
+      extends InternalParser() {
 
     private var iParsedLengthEstimate: Int = _
     private var iParsers: Array[InternalParser] = null
@@ -1276,12 +1384,14 @@ object DateTimeFormatterBuilder {
         }
       }
     }
-    
+
     iParsedLengthEstimate = est
 
     def estimateParsedLength(): Int = iParsedLengthEstimate
 
-    def parseInto(bucket: DateTimeParserBucket, text: CharSequence, position: Int): Int = {
+    def parseInto(bucket: DateTimeParserBucket,
+                  text: CharSequence,
+                  position: Int): Int = {
       val parsers = iParsers
       val length = parsers.length
       val originalState = bucket.saveState()
@@ -1327,18 +1437,23 @@ object DateTimeFormatterBuilder {
     }
   }
 
-  def csStartsWith(text: CharSequence, position: Int, search: String): Boolean = {
+  def csStartsWith(text: CharSequence,
+                   position: Int,
+                   search: String): Boolean = {
     val searchLen = search.length
     if ((text.length - position) < searchLen) {
       return false
     }
-    for (i <- 0 until searchLen if text.charAt(position + i) != search.charAt(i)) {
+    for (i <- 0 until searchLen
+         if text.charAt(position + i) != search.charAt(i)) {
       return false
     }
     true
   }
 
-  def csStartsWithIgnoreCase(text: CharSequence, position: Int, search: String): Boolean = {
+  def csStartsWithIgnoreCase(text: CharSequence,
+                             position: Int,
+                             search: String): Boolean = {
     val searchLen = search.length
     if ((text.length - position) < searchLen) {
       return false
@@ -1350,7 +1465,7 @@ object DateTimeFormatterBuilder {
         val u1 = Character.toUpperCase(ch1)
         val u2 = Character.toUpperCase(ch2)
         if (u1 != u2 &&
-          Character.toLowerCase(u1) != Character.toLowerCase(u2)) {
+            Character.toLowerCase(u1) != Character.toLowerCase(u2)) {
           return false
         }
       }
@@ -1377,7 +1492,8 @@ class DateTimeFormatterBuilder {
     if (printer != null || parser != null) {
       return new DateTimeFormatter(printer, parser)
     }
-    throw new UnsupportedOperationException("Both printing and parsing not supported")
+    throw new UnsupportedOperationException(
+      "Both printing and parsing not supported")
   }
 
   def toPrinter(): DateTimePrinter = {
@@ -1426,13 +1542,16 @@ class DateTimeFormatterBuilder {
     append0(null, DateTimeParserInternalParser.of(parser))
   }
 
-  def append(printer: DateTimePrinter, parser: DateTimeParser): DateTimeFormatterBuilder = {
+  def append(printer: DateTimePrinter,
+             parser: DateTimeParser): DateTimeFormatterBuilder = {
     checkPrinter(printer)
     checkParser(parser)
-    append0(DateTimePrinterInternalPrinter.of(printer), DateTimeParserInternalParser.of(parser))
+    append0(DateTimePrinterInternalPrinter.of(printer),
+            DateTimeParserInternalParser.of(parser))
   }
 
-  def append(printer: DateTimePrinter, parsers: Array[DateTimeParser]): DateTimeFormatterBuilder = {
+  def append(printer: DateTimePrinter,
+             parsers: Array[DateTimeParser]): DateTimeFormatterBuilder = {
     if (printer != null) {
       checkPrinter(printer)
     }
@@ -1444,14 +1563,16 @@ class DateTimeFormatterBuilder {
       if (parsers(0) == null) {
         throw new IllegalArgumentException("No parser supplied")
       }
-      return append0(DateTimePrinterInternalPrinter.of(printer), DateTimeParserInternalParser.of(parsers(0)))
+      return append0(DateTimePrinterInternalPrinter.of(printer),
+                     DateTimeParserInternalParser.of(parsers(0)))
     }
     val copyOfParsers = Array.ofDim[InternalParser](length)
     var i: Int = 0
     i = 0
     while (i < length - 1) {
-      if ( {
-        copyOfParsers(i) = DateTimeParserInternalParser.of(parsers(i)); copyOfParsers(i)
+      if ({
+        copyOfParsers(i) = DateTimeParserInternalParser.of(parsers(i));
+        copyOfParsers(i)
       } ==
         null) {
         throw new IllegalArgumentException("Incomplete parser array")
@@ -1459,7 +1580,8 @@ class DateTimeFormatterBuilder {
       i += 1
     }
     copyOfParsers(i) = DateTimeParserInternalParser.of(parsers(i))
-    append0(DateTimePrinterInternalPrinter.of(printer), new MatchingParser(copyOfParsers))
+    append0(DateTimePrinterInternalPrinter.of(printer),
+            new MatchingParser(copyOfParsers))
   }
 
   def appendOptional(parser: DateTimeParser): DateTimeFormatterBuilder = {
@@ -1487,14 +1609,16 @@ class DateTimeFormatterBuilder {
     this
   }
 
-  private def append0(printer: InternalPrinter, parser: InternalParser): DateTimeFormatterBuilder = {
+  private def append0(printer: InternalPrinter,
+                      parser: InternalParser): DateTimeFormatterBuilder = {
     iFormatter = null
     iElementPairs.add(printer)
     iElementPairs.add(parser)
     this
   }
 
-  def appendLiteral(c: Char): DateTimeFormatterBuilder = append0(new CharacterLiteral(c))
+  def appendLiteral(c: Char): DateTimeFormatterBuilder =
+    append0(new CharacterLiteral(c))
 
   def appendLiteral(text: String): DateTimeFormatterBuilder = {
     if (text == null) {
@@ -1507,8 +1631,10 @@ class DateTimeFormatterBuilder {
     }
   }
 
-  def appendDecimal(fieldType: DateTimeFieldType, minDigits: Int, maxDigits: Int): DateTimeFormatterBuilder = {
-    var _maxDigits:Int = maxDigits
+  def appendDecimal(fieldType: DateTimeFieldType,
+                    minDigits: Int,
+                    maxDigits: Int): DateTimeFormatterBuilder = {
+    var _maxDigits: Int = maxDigits
     if (fieldType == null) {
       throw new IllegalArgumentException("Field type must not be null")
     }
@@ -1525,18 +1651,22 @@ class DateTimeFormatterBuilder {
     }
   }
 
-  def appendFixedDecimal(fieldType: DateTimeFieldType, numDigits: Int): DateTimeFormatterBuilder = {
+  def appendFixedDecimal(fieldType: DateTimeFieldType,
+                         numDigits: Int): DateTimeFormatterBuilder = {
     if (fieldType == null) {
       throw new IllegalArgumentException("Field type must not be null")
     }
     if (numDigits <= 0) {
-      throw new IllegalArgumentException("Illegal number of digits: " + numDigits)
+      throw new IllegalArgumentException(
+        "Illegal number of digits: " + numDigits)
     }
     append0(new FixedNumber(fieldType, numDigits, false))
   }
 
-  def appendSignedDecimal(fieldType: DateTimeFieldType, minDigits: Int, maxDigits: Int): DateTimeFormatterBuilder = {
-    var _maxDigits:Int = maxDigits
+  def appendSignedDecimal(fieldType: DateTimeFieldType,
+                          minDigits: Int,
+                          maxDigits: Int): DateTimeFormatterBuilder = {
+    var _maxDigits: Int = maxDigits
     if (fieldType == null) {
       throw new IllegalArgumentException("Field type must not be null")
     }
@@ -1553,12 +1683,14 @@ class DateTimeFormatterBuilder {
     }
   }
 
-  def appendFixedSignedDecimal(fieldType: DateTimeFieldType, numDigits: Int): DateTimeFormatterBuilder = {
+  def appendFixedSignedDecimal(fieldType: DateTimeFieldType,
+                               numDigits: Int): DateTimeFormatterBuilder = {
     if (fieldType == null) {
       throw new IllegalArgumentException("Field type must not be null")
     }
     if (numDigits <= 0) {
-      throw new IllegalArgumentException("Illegal number of digits: " + numDigits)
+      throw new IllegalArgumentException(
+        "Illegal number of digits: " + numDigits)
     }
     append0(new FixedNumber(fieldType, numDigits, true))
   }
@@ -1577,8 +1709,10 @@ class DateTimeFormatterBuilder {
     append0(new TextField(fieldType, true))
   }
 
-  def appendFraction(fieldType: DateTimeFieldType, minDigits: Int, maxDigits: Int): DateTimeFormatterBuilder = {
-    var _maxDigits:Int = maxDigits
+  def appendFraction(fieldType: DateTimeFieldType,
+                     minDigits: Int,
+                     maxDigits: Int): DateTimeFormatterBuilder = {
+    var _maxDigits: Int = maxDigits
     if (fieldType == null) {
       throw new IllegalArgumentException("Field type must not be null")
     }
@@ -1591,19 +1725,23 @@ class DateTimeFormatterBuilder {
     append0(new Fraction(fieldType, minDigits, _maxDigits))
   }
 
-  def appendFractionOfSecond(minDigits: Int, maxDigits: Int): DateTimeFormatterBuilder = {
+  def appendFractionOfSecond(minDigits: Int,
+                             maxDigits: Int): DateTimeFormatterBuilder = {
     appendFraction(DateTimeFieldType.secondOfDay(), minDigits, maxDigits)
   }
 
-  def appendFractionOfMinute(minDigits: Int, maxDigits: Int): DateTimeFormatterBuilder = {
+  def appendFractionOfMinute(minDigits: Int,
+                             maxDigits: Int): DateTimeFormatterBuilder = {
     appendFraction(DateTimeFieldType.minuteOfDay(), minDigits, maxDigits)
   }
 
-  def appendFractionOfHour(minDigits: Int, maxDigits: Int): DateTimeFormatterBuilder = {
+  def appendFractionOfHour(minDigits: Int,
+                           maxDigits: Int): DateTimeFormatterBuilder = {
     appendFraction(DateTimeFieldType.hourOfDay(), minDigits, maxDigits)
   }
 
-  def appendFractionOfDay(minDigits: Int, maxDigits: Int): DateTimeFormatterBuilder = {
+  def appendFractionOfDay(minDigits: Int,
+                          maxDigits: Int): DateTimeFormatterBuilder = {
     appendFraction(DateTimeFieldType.dayOfYear(), minDigits, maxDigits)
   }
 
@@ -1663,7 +1801,8 @@ class DateTimeFormatterBuilder {
     appendDecimal(DateTimeFieldType.weekOfWeekyear(), minDigits, 2)
   }
 
-  def appendWeekyear(minDigits: Int, maxDigits: Int): DateTimeFormatterBuilder = {
+  def appendWeekyear(minDigits: Int,
+                     maxDigits: Int): DateTimeFormatterBuilder = {
     appendSignedDecimal(DateTimeFieldType.weekyear(), minDigits, maxDigits)
   }
 
@@ -1675,27 +1814,36 @@ class DateTimeFormatterBuilder {
     appendSignedDecimal(DateTimeFieldType.year(), minDigits, maxDigits)
   }
 
-  def appendTwoDigitYear(pivot: Int): DateTimeFormatterBuilder = appendTwoDigitYear(pivot, lenientParse = false)
+  def appendTwoDigitYear(pivot: Int): DateTimeFormatterBuilder =
+    appendTwoDigitYear(pivot, lenientParse = false)
 
-  def appendTwoDigitYear(pivot: Int, lenientParse: Boolean): DateTimeFormatterBuilder = {
+  def appendTwoDigitYear(pivot: Int,
+                         lenientParse: Boolean): DateTimeFormatterBuilder = {
     append0(new TwoDigitYear(DateTimeFieldType.year(), pivot, lenientParse))
   }
 
-  def appendTwoDigitWeekyear(pivot: Int): DateTimeFormatterBuilder = appendTwoDigitWeekyear(pivot, lenientParse = false)
+  def appendTwoDigitWeekyear(pivot: Int): DateTimeFormatterBuilder =
+    appendTwoDigitWeekyear(pivot, lenientParse = false)
 
-  def appendTwoDigitWeekyear(pivot: Int, lenientParse: Boolean): DateTimeFormatterBuilder = {
-    append0(new TwoDigitYear(DateTimeFieldType.weekyear(), pivot, lenientParse))
+  def appendTwoDigitWeekyear(
+      pivot: Int,
+      lenientParse: Boolean): DateTimeFormatterBuilder = {
+    append0(
+      new TwoDigitYear(DateTimeFieldType.weekyear(), pivot, lenientParse))
   }
 
-  def appendYearOfEra(minDigits: Int, maxDigits: Int): DateTimeFormatterBuilder = {
+  def appendYearOfEra(minDigits: Int,
+                      maxDigits: Int): DateTimeFormatterBuilder = {
     appendDecimal(DateTimeFieldType.yearOfEra(), minDigits, maxDigits)
   }
 
-  def appendYearOfCentury(minDigits: Int, maxDigits: Int): DateTimeFormatterBuilder = {
+  def appendYearOfCentury(minDigits: Int,
+                          maxDigits: Int): DateTimeFormatterBuilder = {
     appendDecimal(DateTimeFieldType.yearOfCentury(), minDigits, maxDigits)
   }
 
-  def appendCenturyOfEra(minDigits: Int, maxDigits: Int): DateTimeFormatterBuilder = {
+  def appendCenturyOfEra(minDigits: Int,
+                         maxDigits: Int): DateTimeFormatterBuilder = {
     appendSignedDecimal(DateTimeFieldType.centuryOfEra(), minDigits, maxDigits)
   }
 
@@ -1719,13 +1867,15 @@ class DateTimeFormatterBuilder {
     appendShortText(DateTimeFieldType.monthOfYear())
   }
 
-  def appendEraText(): DateTimeFormatterBuilder = appendText(DateTimeFieldType.era())
+  def appendEraText(): DateTimeFormatterBuilder =
+    appendText(DateTimeFieldType.era())
 
   def appendTimeZoneName(): DateTimeFormatterBuilder = {
     append0(new TimeZoneName(TimeZoneName.LONG_NAME, null), null)
   }
 
-  def appendTimeZoneName(parseLookup: Map[String, DateTimeZone]): DateTimeFormatterBuilder = {
+  def appendTimeZoneName(
+      parseLookup: Map[String, DateTimeZone]): DateTimeFormatterBuilder = {
     val pp = new TimeZoneName(TimeZoneName.LONG_NAME, parseLookup)
     append0(pp, pp)
   }
@@ -1734,7 +1884,8 @@ class DateTimeFormatterBuilder {
     append0(new TimeZoneName(TimeZoneName.SHORT_NAME, null), null)
   }
 
-  def appendTimeZoneShortName(parseLookup: Map[String, DateTimeZone]): DateTimeFormatterBuilder = {
+  def appendTimeZoneShortName(
+      parseLookup: Map[String, DateTimeZone]): DateTimeFormatterBuilder = {
     val pp = new TimeZoneName(TimeZoneName.SHORT_NAME, parseLookup)
     append0(pp, pp)
   }
@@ -1747,7 +1898,12 @@ class DateTimeFormatterBuilder {
                            showSeparators: Boolean,
                            minFields: Int,
                            maxFields: Int): DateTimeFormatterBuilder = {
-    append0(new TimeZoneOffset(zeroOffsetText, zeroOffsetText, showSeparators, minFields, maxFields))
+    append0(
+      new TimeZoneOffset(zeroOffsetText,
+                         zeroOffsetText,
+                         showSeparators,
+                         minFields,
+                         maxFields))
   }
 
   def appendTimeZoneOffset(zeroOffsetPrintText: String,
@@ -1755,7 +1911,12 @@ class DateTimeFormatterBuilder {
                            showSeparators: Boolean,
                            minFields: Int,
                            maxFields: Int): DateTimeFormatterBuilder = {
-    append0(new TimeZoneOffset(zeroOffsetPrintText, zeroOffsetParseText, showSeparators, minFields, maxFields))
+    append0(
+      new TimeZoneOffset(zeroOffsetPrintText,
+                         zeroOffsetParseText,
+                         showSeparators,
+                         minFields,
+                         maxFields))
   }
 
   def appendPattern(pattern: String): DateTimeFormatterBuilder = {
@@ -1764,11 +1925,11 @@ class DateTimeFormatterBuilder {
   }
 
   private def getFormatter(): Any = {
-    var f:Any = iFormatter
+    var f: Any = iFormatter
     if (f == null) {
       if (iElementPairs.size == 2) {
-        val printer:Any = iElementPairs.get(0)
-        val parser:Any = iElementPairs.get(1)
+        val printer: Any = iElementPairs.get(0)
+        val parser: Any = iElementPairs.get(1)
         if (printer != null) {
           if (printer == parser || parser == null) {
             f = printer

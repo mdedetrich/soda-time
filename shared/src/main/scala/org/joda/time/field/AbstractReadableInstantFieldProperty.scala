@@ -23,8 +23,9 @@ abstract class AbstractReadableInstantFieldProperty extends Serializable() {
   protected def getMillis(): Long
 
   protected def getChronology(): Chronology = {
-    throw new UnsupportedOperationException("The method getChronology() was added in v1.4 and needs " +
-      "to be implemented by subclasses of AbstractReadableInstantFieldProperty")
+    throw new UnsupportedOperationException(
+      "The method getChronology() was added in v1.4 and needs " +
+        "to be implemented by subclasses of AbstractReadableInstantFieldProperty")
   }
 
   def get(): Int = getField.get(getMillis)
@@ -43,14 +44,16 @@ abstract class AbstractReadableInstantFieldProperty extends Serializable() {
 
   def getDifference(instant: ReadableInstant): Int = {
     if (instant == null) {
-      return getField.getDifference(getMillis, DateTimeUtils.currentTimeMillis())
+      return getField
+        .getDifference(getMillis, DateTimeUtils.currentTimeMillis())
     }
     getField.getDifference(getMillis, instant.getMillis)
   }
 
   def getDifferenceAsLong(instant: ReadableInstant): Long = {
     if (instant == null) {
-      return getField.getDifferenceAsLong(getMillis, DateTimeUtils.currentTimeMillis())
+      return getField
+        .getDifferenceAsLong(getMillis, DateTimeUtils.currentTimeMillis())
     }
     getField.getDifferenceAsLong(getMillis, instant.getMillis)
   }
@@ -73,7 +76,8 @@ abstract class AbstractReadableInstantFieldProperty extends Serializable() {
 
   def getMaximumValue(): Int = getField.getMaximumValue(getMillis)
 
-  def getMaximumTextLength(locale: Locale): Int = getField.getMaximumTextLength(locale)
+  def getMaximumTextLength(locale: Locale): Int =
+    getField.getMaximumTextLength(locale)
 
   def getMaximumShortTextLength(locale: Locale): Int = {
     getField.getMaximumShortTextLength(locale)
@@ -124,12 +128,12 @@ abstract class AbstractReadableInstantFieldProperty extends Serializable() {
       return true
     }
     if (`object`.isInstanceOf[AbstractReadableInstantFieldProperty] ==
-      false) {
+          false) {
       return false
     }
     val other = `object`.asInstanceOf[AbstractReadableInstantFieldProperty]
     get == other.get && getFieldType == other.getFieldType &&
-      FieldUtils.==(getChronology, other.getChronology)
+    FieldUtils.==(getChronology, other.getChronology)
   }
 
   override def hashCode(): Int = {

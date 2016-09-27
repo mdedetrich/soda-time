@@ -6,7 +6,8 @@ trait ReadWritableInterval extends ReadableInterval {
 
   def setInterval(interval: ReadableInterval): Unit
 
-  def setInterval(startInstant: ReadableInstant, endInstant: ReadableInstant): Unit
+  def setInterval(startInstant: ReadableInstant,
+                  endInstant: ReadableInstant): Unit
 
   def setChronology(chrono: Chronology): Unit
 

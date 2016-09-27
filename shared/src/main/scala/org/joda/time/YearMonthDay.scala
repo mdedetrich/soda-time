@@ -13,7 +13,9 @@ import YearMonthDay._
 
 object YearMonthDay {
 
-  private val FIELD_TYPES = Array(DateTimeFieldType.year(), DateTimeFieldType.monthOfYear(), DateTimeFieldType.dayOfMonth())
+  private val FIELD_TYPES = Array(DateTimeFieldType.year(),
+                                  DateTimeFieldType.monthOfYear(),
+                                  DateTimeFieldType.dayOfMonth())
 
   val YEAR = 0
   val MONTH_OF_YEAR = 1
@@ -23,7 +25,9 @@ object YearMonthDay {
     if (calendar == null) {
       throw new IllegalArgumentException("The calendar must not be null")
     }
-    new YearMonthDay(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH))
+    new YearMonthDay(calendar.get(Calendar.YEAR),
+                     calendar.get(Calendar.MONTH) + 1,
+                     calendar.get(Calendar.DAY_OF_MONTH))
   }
 
   def fromDateFields(date: Date): YearMonthDay = {
@@ -35,8 +39,10 @@ object YearMonthDay {
 
   @SerialVersionUID(5727734012190224363L)
   @Deprecated
-  class Property(private val iYearMonthDay: YearMonthDay, private val iFieldIndex: Int)
-    extends AbstractPartialFieldProperty() with Serializable {
+  class Property(private val iYearMonthDay: YearMonthDay,
+                 private val iFieldIndex: Int)
+      extends AbstractPartialFieldProperty()
+      with Serializable {
 
     def getField(): DateTimeField = iYearMonthDay.getField(iFieldIndex)
 
@@ -48,13 +54,15 @@ object YearMonthDay {
 
     def addToCopy(valueToAdd: Int): YearMonthDay = {
       var newValues = iYearMonthDay.getValues
-      newValues = getField.add(iYearMonthDay, iFieldIndex, newValues, valueToAdd)
+      newValues =
+        getField.add(iYearMonthDay, iFieldIndex, newValues, valueToAdd)
       new YearMonthDay(iYearMonthDay, newValues)
     }
 
     def addWrapFieldToCopy(valueToAdd: Int): YearMonthDay = {
       var newValues = iYearMonthDay.getValues
-      newValues = getField.addWrapField(iYearMonthDay, iFieldIndex, newValues, valueToAdd)
+      newValues = getField
+        .addWrapField(iYearMonthDay, iFieldIndex, newValues, valueToAdd)
       new YearMonthDay(iYearMonthDay, newValues)
     }
 
@@ -66,7 +74,8 @@ object YearMonthDay {
 
     def setCopy(text: String, locale: Locale): YearMonthDay = {
       var newValues = iYearMonthDay.getValues
-      newValues = getField.set(iYearMonthDay, iFieldIndex, newValues, text, locale)
+      newValues =
+        getField.set(iYearMonthDay, iFieldIndex, newValues, text, locale)
       new YearMonthDay(iYearMonthDay, newValues)
     }
 
@@ -80,7 +89,10 @@ object YearMonthDay {
 
 @SerialVersionUID(797544782896179L)
 @Deprecated
-class YearMonthDay extends BasePartial() with ReadablePartial with Serializable {
+class YearMonthDay
+    extends BasePartial()
+    with ReadablePartial
+    with Serializable {
 
   def this(zone: DateTimeZone) {
     this()
@@ -104,12 +116,16 @@ class YearMonthDay extends BasePartial() with ReadablePartial with Serializable 
 
   def this(instant: AnyRef) {
     this()
-    super.auxConstructor(instant, null, ISODateTimeFormat.dateOptionalTimeParser())
+    super.auxConstructor(instant,
+                         null,
+                         ISODateTimeFormat.dateOptionalTimeParser())
   }
 
   def this(instant: AnyRef, chronology: Chronology) {
     this()
-    super.auxConstructor(instant, DateTimeUtils.getChronology(chronology), ISODateTimeFormat.dateOptionalTimeParser())
+    super.auxConstructor(instant,
+                         DateTimeUtils.getChronology(chronology),
+                         ISODateTimeFormat.dateOptionalTimeParser())
   }
 
   def this(year: Int,
@@ -136,12 +152,13 @@ class YearMonthDay extends BasePartial() with ReadablePartial with Serializable 
 
   def size(): Int = 3
 
-  protected def getField(index: Int, chrono: Chronology): DateTimeField = index match {
-    case YEAR => chrono.year()
-    case MONTH_OF_YEAR => chrono.monthOfYear()
-    case DAY_OF_MONTH => chrono.dayOfMonth()
-    case _ => throw new IndexOutOfBoundsException("Invalid index: " + index)
-  }
+  protected def getField(index: Int, chrono: Chronology): DateTimeField =
+    index match {
+      case YEAR => chrono.year()
+      case MONTH_OF_YEAR => chrono.monthOfYear()
+      case DAY_OF_MONTH => chrono.dayOfMonth()
+      case _ => throw new IndexOutOfBoundsException("Invalid index: " + index)
+    }
 
   override def getFieldType(index: Int): DateTimeFieldType = FIELD_TYPES(index)
 
@@ -191,8 +208,11 @@ class YearMonthDay extends BasePartial() with ReadablePartial with Serializable 
       val fieldType = period.getFieldType(i)
       val index = indexOf(fieldType)
       if (index >= 0) {
-        newValues = getField(index).add(this, index, newValues, FieldUtils.safeMultiply(period.getValue(i),
-          scalar))
+        newValues = getField(index).add(
+          this,
+          index,
+          newValues,
+          FieldUtils.safeMultiply(period.getValue(i), scalar))
       }
     }
     new YearMonthDay(this, newValues)
@@ -291,13 +311,16 @@ class YearMonthDay extends BasePartial() with ReadablePartial with Serializable 
 
   def withMonthOfYear(monthOfYear: Int): YearMonthDay = {
     var newValues = getValues
-    newValues = getChronology.monthOfYear().set(this, MONTH_OF_YEAR, newValues, monthOfYear)
+    newValues = getChronology
+      .monthOfYear()
+      .set(this, MONTH_OF_YEAR, newValues, monthOfYear)
     new YearMonthDay(this, newValues)
   }
 
   def withDayOfMonth(dayOfMonth: Int): YearMonthDay = {
     var newValues = getValues
-    newValues = getChronology.dayOfMonth().set(this, DAY_OF_MONTH, newValues, dayOfMonth)
+    newValues =
+      getChronology.dayOfMonth().set(this, DAY_OF_MONTH, newValues, dayOfMonth)
     new YearMonthDay(this, newValues)
   }
 

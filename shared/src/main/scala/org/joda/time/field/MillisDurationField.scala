@@ -11,7 +11,9 @@ object MillisDurationField {
 }
 
 @SerialVersionUID(2656707858124633367L)
-class MillisDurationField private () extends DurationField() with Serializable {
+class MillisDurationField private ()
+    extends DurationField()
+    with Serializable {
 
   def getType(): DurationFieldType = DurationFieldType.millis()
 
@@ -27,7 +29,8 @@ class MillisDurationField private () extends DurationField() with Serializable {
 
   def getValueAsLong(duration: Long): Long = duration
 
-  def getValue(duration: Long, instant: Long): Int = FieldUtils.safeToInt(duration)
+  def getValue(duration: Long, instant: Long): Int =
+    FieldUtils.safeToInt(duration)
 
   def getValueAsLong(duration: Long, instant: Long): Long = duration
 
@@ -41,13 +44,16 @@ class MillisDurationField private () extends DurationField() with Serializable {
 
   def add(instant: Long, value: Int): Long = FieldUtils.safeAdd(instant, value)
 
-  def add(instant: Long, value: Long): Long = FieldUtils.safeAdd(instant, value)
+  def add(instant: Long, value: Long): Long =
+    FieldUtils.safeAdd(instant, value)
 
   def getDifference(minuendInstant: Long, subtrahendInstant: Long): Int = {
-    FieldUtils.safeToInt(FieldUtils.safeSubtract(minuendInstant, subtrahendInstant))
+    FieldUtils.safeToInt(
+      FieldUtils.safeSubtract(minuendInstant, subtrahendInstant))
   }
 
-  def getDifferenceAsLong(minuendInstant: Long, subtrahendInstant: Long): Long = {
+  def getDifferenceAsLong(minuendInstant: Long,
+                          subtrahendInstant: Long): Long = {
     FieldUtils.safeSubtract(minuendInstant, subtrahendInstant)
   }
 

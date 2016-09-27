@@ -1,6 +1,5 @@
 package org.joda.time
 
-
 trait ReadableDuration extends Comparable[ReadableDuration] {
 
   def getMillis(): Long

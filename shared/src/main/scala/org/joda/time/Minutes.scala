@@ -15,7 +15,8 @@ object Minutes {
   val MAX_VALUE = new Minutes(Integer.MAX_VALUE)
   val MIN_VALUE = new Minutes(Integer.MIN_VALUE)
 
-  private val PARSER = ISOPeriodFormat.standard().withParseType(PeriodType.minutes())
+  private val PARSER =
+    ISOPeriodFormat.standard().withParseType(PeriodType.minutes())
 
   def minutes(minutes: Int): Minutes = minutes match {
     case 0 => ZERO
@@ -28,14 +29,18 @@ object Minutes {
   }
 
   def minutesBetween(start: ReadableInstant, end: ReadableInstant): Minutes = {
-    val amount = BaseSingleFieldPeriod.between(start, end, DurationFieldType.minutes())
+    val amount =
+      BaseSingleFieldPeriod.between(start, end, DurationFieldType.minutes())
     Minutes.minutes(amount)
   }
 
   def minutesBetween(start: ReadablePartial, end: ReadablePartial): Minutes = {
     if (start.isInstanceOf[LocalTime] && end.isInstanceOf[LocalTime]) {
       val chrono = DateTimeUtils.getChronology(start.getChronology)
-      val minutes = chrono.minutes().getDifference(end.asInstanceOf[LocalTime].getLocalMillis, start.asInstanceOf[LocalTime].getLocalMillis)
+      val minutes = chrono
+        .minutes()
+        .getDifference(end.asInstanceOf[LocalTime].getLocalMillis,
+                       start.asInstanceOf[LocalTime].getLocalMillis)
       return Minutes.minutes(minutes)
     }
     val amount = BaseSingleFieldPeriod.between(start, end, ZERO)
@@ -46,12 +51,14 @@ object Minutes {
     if (interval == null) {
       return Minutes.ZERO
     }
-    val amount = BaseSingleFieldPeriod.between(interval.getStart, interval.getEnd, DurationFieldType.minutes())
+    val amount = BaseSingleFieldPeriod
+      .between(interval.getStart, interval.getEnd, DurationFieldType.minutes())
     Minutes.minutes(amount)
   }
 
   def standardMinutesIn(period: ReadablePeriod): Minutes = {
-    val amount = BaseSingleFieldPeriod.standardPeriodIn(period, DateTimeConstants.MILLIS_PER_MINUTE)
+    val amount = BaseSingleFieldPeriod
+      .standardPeriodIn(period, DateTimeConstants.MILLIS_PER_MINUTE)
     Minutes.minutes(amount)
   }
 
@@ -87,7 +94,8 @@ class Minutes private (minutes: Int) extends BaseSingleFieldPeriod(minutes) {
   }
 
   def toStandardSeconds(): Seconds = {
-    Seconds.seconds(FieldUtils.safeMultiply(getValue, DateTimeConstants.SECONDS_PER_MINUTE))
+    Seconds.seconds(
+      FieldUtils.safeMultiply(getValue, DateTimeConstants.SECONDS_PER_MINUTE))
   }
 
   def toStandardDuration(): Duration = {

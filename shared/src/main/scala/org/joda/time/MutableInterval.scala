@@ -10,7 +10,11 @@ object MutableInterval {
 }
 
 @SerialVersionUID(-5982824024992428470L)
-class MutableInterval extends BaseInterval with ReadWritableInterval with Cloneable with Serializable {
+class MutableInterval
+    extends BaseInterval
+    with ReadWritableInterval
+    with Cloneable
+    with Serializable {
 
   def this(startInstant: Long, endInstant: Long) {
     this()

@@ -8,9 +8,11 @@ import scala.util.control.Breaks._
 
 class DefaultNameProvider extends NameProvider {
 
-  private val iByLocaleCache: HashMap[Locale, Map[String, Map[String, Any]]] = new HashMap(7)
+  private val iByLocaleCache: HashMap[Locale, Map[String, Map[String, Any]]] =
+    new HashMap(7)
 
-  private val iByLocaleCache2: HashMap[Locale, Map[String, Map[Boolean, Any]]] = new HashMap(7)
+  private val iByLocaleCache2: HashMap[Locale, Map[String, Map[Boolean, Any]]] =
+    new HashMap(7)
 
   def getShortName(locale: Locale, id: String, nameKey: String): String = {
     val nameSet = getNameSet(locale, id, nameKey)
@@ -22,7 +24,9 @@ class DefaultNameProvider extends NameProvider {
     if (nameSet == null) null else nameSet(1)
   }
 
-  private def getNameSet(locale: Locale, id: String, nameKey: String): Array[String] = {
+  private def getNameSet(locale: Locale,
+                         id: String,
+                         nameKey: String): Array[String] = {
     synchronized {
       if (locale == null || id == null || nameKey == null) {
         return null
@@ -35,23 +39,28 @@ class DefaultNameProvider extends NameProvider {
       var byNameKeyCache = byIdCache.get(id)
       if (byNameKeyCache == null) {
         byNameKeyCache = new HashMap(7)
-        byIdCache.put(id,byNameKeyCache)
-        val zoneStringsEn = DateTimeUtils.getDateFormatSymbols(Locale.ENGLISH).getZoneStrings
+        byIdCache.put(id, byNameKeyCache)
+        val zoneStringsEn =
+          DateTimeUtils.getDateFormatSymbols(Locale.ENGLISH).getZoneStrings
         var setEn: Array[String] = null
-        for (strings <- zoneStringsEn if strings != null && strings.length == 5 && id == strings(0)) {
+        for (strings <- zoneStringsEn
+             if strings != null && strings.length == 5 && id == strings(0)) {
           setEn = strings
           break()
         }
-        val zoneStringsLoc = DateTimeUtils.getDateFormatSymbols(locale).getZoneStrings
+        val zoneStringsLoc =
+          DateTimeUtils.getDateFormatSymbols(locale).getZoneStrings
         var setLoc: Array[String] = null
-        for (strings <- zoneStringsLoc if strings != null && strings.length == 5 && id == strings(0)) {
+        for (strings <- zoneStringsLoc
+             if strings != null && strings.length == 5 && id == strings(0)) {
           setLoc = strings
           break()
         }
         if (setEn != null && setLoc != null) {
           byNameKeyCache.put(setEn(2), Array(setLoc(2), setLoc(1)))
           if (setEn(2) == setEn(4)) {
-            byNameKeyCache.put(setEn(4) + "-Summer", Array(setLoc(4), setLoc(3)))
+            byNameKeyCache.put(setEn(4) + "-Summer",
+                               Array(setLoc(4), setLoc(3)))
           } else {
             byNameKeyCache.put(setEn(4), Array(setLoc(4), setLoc(3)))
           }
@@ -94,15 +103,19 @@ class DefaultNameProvider extends NameProvider {
       if (byNameKeyCache == null) {
         byNameKeyCache = new HashMap(7)
         byIdCache.put(id, byNameKeyCache)
-        val zoneStringsEn = DateTimeUtils.getDateFormatSymbols(Locale.ENGLISH).getZoneStrings
+        val zoneStringsEn =
+          DateTimeUtils.getDateFormatSymbols(Locale.ENGLISH).getZoneStrings
         var setEn: Array[String] = null
-        for (strings <- zoneStringsEn if strings != null && strings.length == 5 && id == strings(0)) {
+        for (strings <- zoneStringsEn
+             if strings != null && strings.length == 5 && id == strings(0)) {
           setEn = strings
           break()
         }
-        val zoneStringsLoc = DateTimeUtils.getDateFormatSymbols(locale).getZoneStrings
+        val zoneStringsLoc =
+          DateTimeUtils.getDateFormatSymbols(locale).getZoneStrings
         var setLoc: Array[String] = null
-        for (strings <- zoneStringsLoc if strings != null && strings.length == 5 && id == strings(0)) {
+        for (strings <- zoneStringsLoc
+             if strings != null && strings.length == 5 && id == strings(0)) {
           setLoc = strings
           break()
         }

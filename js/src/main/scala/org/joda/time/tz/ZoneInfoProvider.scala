@@ -13,9 +13,10 @@ import scala.scalajs.js
 import scala.collection.JavaConversions._
 
 object ZoneInfoProvider {
-  
-  private def loadZoneInfoMap(in:InputStream):collection.mutable.Map[String,AnyRef] = {
-    val map = new collection.mutable.HashMap[String,AnyRef]()
+
+  private def loadZoneInfoMap(
+      in: InputStream): collection.mutable.Map[String, AnyRef] = {
+    val map = new collection.mutable.HashMap[String, AnyRef]()
     val din = new DataInputStream(in)
     try {
       readZoneInfoMap(din, map)
@@ -29,9 +30,9 @@ object ZoneInfoProvider {
       }
     }
   }
-  
 
-  private def readZoneInfoMap(din: DataInputStream, zimap: collection.mutable.Map[String, AnyRef]) {
+  private def readZoneInfoMap(din: DataInputStream,
+                              zimap: collection.mutable.Map[String, AnyRef]) {
     var size = din.readUnsignedShort()
     val pool = js.Array[String]()
     for (i <- 0 until size) {
@@ -48,11 +49,13 @@ class ZoneInfoProvider extends Provider {
 
   private var iResourcePath: String = null
   private var iLoader: ClassLoader = null
-  private var iZoneInfoMap: collection.mutable.Map[String,AnyRef] = loadZoneInfoMap(openResource("ZoneInfoMap"))
-  private var iZoneInfoKeys = iZoneInfoMap.keySet.to[collection.immutable.TreeSet]
+  private var iZoneInfoMap: collection.mutable.Map[String, AnyRef] =
+    loadZoneInfoMap(openResource("ZoneInfoMap"))
+  private var iZoneInfoKeys =
+    iZoneInfoMap.keySet.to[collection.immutable.TreeSet]
   private var iFileDir: File = null
 
-  def this(fileDir:File) {
+  def this(fileDir: File) {
     this()
     if (fileDir == null) {
       throw new IllegalArgumentException("No file directory provided")
@@ -71,7 +74,9 @@ class ZoneInfoProvider extends Provider {
     iLoader = null
   }
 
-  private def this(resourcePath: String, loader: ClassLoader, favorSystemLoader: Boolean) {
+  private def this(resourcePath: String,
+                   loader: ClassLoader,
+                   favorSystemLoader: Boolean) {
     this()
     var _loader: ClassLoader = loader
     var _resourcePath: String = resourcePath
@@ -132,9 +137,12 @@ class ZoneInfoProvider extends Provider {
       in = new FileInputStream(new File(iFileDir, name))
     } else {
       val path = iResourcePath.concat(name)
-      in = if (iLoader != null) iLoader.getResourceAsStream(path) else ClassLoader.getSystemResourceAsStream(path)
+      in =
+        if (iLoader != null) iLoader.getResourceAsStream(path)
+        else ClassLoader.getSystemResourceAsStream(path)
       if (in == null) {
-        val buf = new StringBuilder(40).append("Resource not found: \"")
+        val buf = new StringBuilder(40)
+          .append("Resource not found: \"")
           .append(path)
           .append("\" ClassLoader: ")
           .append(if (iLoader != null) iLoader.toString else "system")

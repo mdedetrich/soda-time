@@ -3,13 +3,15 @@ package org.joda.time.chrono
 import org.joda.time.DateTimeZone
 import org.joda.time.Instant
 
-class GJCacheKey(private val zone: DateTimeZone, private val cutoverInstant: Instant, private val minDaysInFirstWeek: Int) {
+class GJCacheKey(private val zone: DateTimeZone,
+                 private val cutoverInstant: Instant,
+                 private val minDaysInFirstWeek: Int) {
 
   override def hashCode(): Int = {
     val prime = 31
     var result = 1
     result = prime * result +
-      (if ((cutoverInstant == null)) 0 else cutoverInstant.hashCode)
+        (if ((cutoverInstant == null)) 0 else cutoverInstant.hashCode)
     result = prime * result + minDaysInFirstWeek
     result = prime * result + (if ((zone == null)) 0 else zone.hashCode)
     result

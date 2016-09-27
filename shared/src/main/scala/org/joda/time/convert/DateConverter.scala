@@ -7,7 +7,10 @@ object DateConverter {
   val INSTANCE = new DateConverter()
 }
 
-class DateConverter extends AbstractConverter() with InstantConverter with PartialConverter {
+class DateConverter
+    extends AbstractConverter()
+    with InstantConverter
+    with PartialConverter {
 
   override def getInstantMillis(`object`: AnyRef, chrono: Chronology): Long = {
     val date = `object`.asInstanceOf[Date]

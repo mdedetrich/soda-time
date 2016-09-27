@@ -18,7 +18,9 @@ abstract class DateTimeField {
 
   def getAsText(instant: Long): String
 
-  def getAsText(partial: ReadablePartial, fieldValue: Int, locale: Locale): String
+  def getAsText(partial: ReadablePartial,
+                fieldValue: Int,
+                locale: Locale): String
 
   def getAsText(partial: ReadablePartial, locale: Locale): String
 
@@ -28,7 +30,9 @@ abstract class DateTimeField {
 
   def getAsShortText(instant: Long): String
 
-  def getAsShortText(partial: ReadablePartial, fieldValue: Int, locale: Locale): String
+  def getAsShortText(partial: ReadablePartial,
+                     fieldValue: Int,
+                     locale: Locale): String
 
   def getAsShortText(partial: ReadablePartial, locale: Locale): String
 

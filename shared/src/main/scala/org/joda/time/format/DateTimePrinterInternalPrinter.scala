@@ -20,8 +20,9 @@ object DateTimePrinterInternalPrinter {
   }
 }
 
-class DateTimePrinterInternalPrinter private (@BeanProperty val underlying: DateTimePrinter)
-  extends InternalPrinter {
+class DateTimePrinterInternalPrinter private (
+    @BeanProperty val underlying: DateTimePrinter)
+    extends InternalPrinter {
 
   def estimatePrintedLength(): Int = underlying.estimatePrintedLength()
 
@@ -33,18 +34,23 @@ class DateTimePrinterInternalPrinter private (@BeanProperty val underlying: Date
               locale: Locale) {
     if (appendable.isInstanceOf[StringBuffer]) {
       val buf = appendable.asInstanceOf[StringBuffer]
-      underlying.printTo(buf, instant, chrono, displayOffset, displayZone, locale)
+      underlying
+        .printTo(buf, instant, chrono, displayOffset, displayZone, locale)
     }
     if (appendable.isInstanceOf[Writer]) {
       val out = appendable.asInstanceOf[Writer]
-      underlying.printTo(out, instant, chrono, displayOffset, displayZone, locale)
+      underlying
+        .printTo(out, instant, chrono, displayOffset, displayZone, locale)
     }
     val buf = new StringBuffer(estimatePrintedLength())
-    underlying.printTo(buf, instant, chrono, displayOffset, displayZone, locale)
+    underlying
+      .printTo(buf, instant, chrono, displayOffset, displayZone, locale)
     appendable.append(buf)
   }
 
-  def printTo(appendable: Appendable, partial: ReadablePartial, locale: Locale) {
+  def printTo(appendable: Appendable,
+              partial: ReadablePartial,
+              locale: Locale) {
     if (appendable.isInstanceOf[StringBuffer]) {
       val buf = appendable.asInstanceOf[StringBuffer]
       underlying.printTo(buf, partial, locale)

@@ -8,7 +8,7 @@ object ConverterSet {
     var converters = _set.iConverters
     var length = converters.length
     var converter: Converter = null
-    
+
     {
       val i = length
       while (i >= 0) {
@@ -18,7 +18,7 @@ object ConverterSet {
           return converter
         }
         if (supportedType == null ||
-          (`type` != null && !supportedType.isAssignableFrom(`type`))) {
+            (`type` != null && !supportedType.isAssignableFrom(`type`))) {
           _set = _set.remove(i, null)
           converters = _set.iConverters
           length = converters.length
@@ -40,7 +40,7 @@ object ConverterSet {
         val j = length
         while (j >= 0) {
           if (j != i &&
-            converters(j).getSupportedType.isAssignableFrom(supportedType)) {
+              converters(j).getSupportedType.isAssignableFrom(supportedType)) {
             _set = _set.remove(j, null)
             converters = _set.iConverters
             length = converters.length
@@ -81,7 +81,7 @@ class ConverterSet(private val iConverters: Array[Converter]) {
     val length = entries.length
     var index = if (_type == null) 0 else _type.hashCode & (length - 1)
     var e: Entry = null
-    while ( {
+    while ({
       e = entries(index); e
     } != null) {
       if (e.iType == _type) {
@@ -122,11 +122,12 @@ class ConverterSet(private val iConverters: Array[Converter]) {
     System.arraycopy(iConverters, 0, converters, 0, iConverters.length)
   }
 
-  def add[A <: Converter](converter: Converter, removed: Array[A]): ConverterSet = {
+  def add[A <: Converter](converter: Converter,
+                          removed: Array[A]): ConverterSet = {
     val converters = iConverters
     val length = converters.length
     for (i <- 0 until length) {
-      val existing:A = converters(i).asInstanceOf[A]
+      val existing: A = converters(i).asInstanceOf[A]
       if (converter == existing) {
         if (removed != null) {
           removed(0) = null.asInstanceOf[A]

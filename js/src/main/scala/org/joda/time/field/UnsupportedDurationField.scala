@@ -7,13 +7,15 @@ import UnsupportedDurationField._
 
 object UnsupportedDurationField {
 
-  private var cCache: collection.mutable.HashMap[DurationFieldType, UnsupportedDurationField] = _
+  private var cCache: collection.mutable.HashMap[DurationFieldType,
+                                                 UnsupportedDurationField] = _
 
   def getInstance(`type`: DurationFieldType): UnsupportedDurationField = {
     synchronized {
       var field: UnsupportedDurationField = null
       if (cCache == null) {
-        cCache = new collection.mutable.HashMap[DurationFieldType, UnsupportedDurationField]
+        cCache = new collection.mutable.HashMap[DurationFieldType,
+                                                UnsupportedDurationField]
         field = null
       } else {
         field = cCache.get(`type`).orNull
@@ -29,7 +31,8 @@ object UnsupportedDurationField {
 
 @SerialVersionUID(-6390301302770925357L)
 class UnsupportedDurationField private (private val iType: DurationFieldType)
-  extends DurationField with Serializable {
+    extends DurationField
+    with Serializable {
 
   def getType(): DurationFieldType = iType
 
@@ -59,9 +62,11 @@ class UnsupportedDurationField private (private val iType: DurationFieldType)
 
   def add(instant: Long, value: Long): Long = throw unsupported()
 
-  def getDifference(minuendInstant: Long, subtrahendInstant: Long): Int = throw unsupported()
+  def getDifference(minuendInstant: Long, subtrahendInstant: Long): Int =
+    throw unsupported()
 
-  def getDifferenceAsLong(minuendInstant: Long, subtrahendInstant: Long): Long = throw unsupported()
+  def getDifferenceAsLong(minuendInstant: Long,
+                          subtrahendInstant: Long): Long = throw unsupported()
 
   def getUnitMillis(): Long = 0
 

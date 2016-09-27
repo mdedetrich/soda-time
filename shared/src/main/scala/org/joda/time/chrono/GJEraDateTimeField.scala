@@ -10,7 +10,8 @@ import org.joda.time.field.FieldUtils
 import org.joda.time.field.UnsupportedDurationField
 
 @SerialVersionUID(4240986525305515528L)
-class GJEraDateTimeField(private val iChronology: BasicChronology) extends BaseDateTimeField(DateTimeFieldType.era()) {
+class GJEraDateTimeField(private val iChronology: BasicChronology)
+    extends BaseDateTimeField(DateTimeFieldType.era()) {
 
   def isLenient(): Boolean = false
 
@@ -27,7 +28,10 @@ class GJEraDateTimeField(private val iChronology: BasicChronology) extends BaseD
   }
 
   def set(instant: Long, era: Int): Long = {
-    FieldUtils.verifyValueBounds(this, era, DateTimeConstants.BCE, DateTimeConstants.CE)
+    FieldUtils.verifyValueBounds(this,
+                                 era,
+                                 DateTimeConstants.BCE,
+                                 DateTimeConstants.CE)
     val oldEra = get(instant)
     if (oldEra != era) {
       val year = iChronology.getYear(instant)

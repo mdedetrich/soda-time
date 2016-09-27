@@ -6,9 +6,12 @@ import org.joda.time.DateTimeFieldType
 
 object ISODateTimeFormat {
 
-  def forFields(fields: Collection[DateTimeFieldType], extended: Boolean, strictISO: Boolean): DateTimeFormatter = {
+  def forFields(fields: Collection[DateTimeFieldType],
+                extended: Boolean,
+                strictISO: Boolean): DateTimeFormatter = {
     if (fields == null || fields.size == 0) {
-      throw new IllegalArgumentException("The fields must not be null or empty")
+      throw new IllegalArgumentException(
+        "The fields must not be null or empty")
     }
     val workingFields = new HashSet[DateTimeFieldType](fields)
     val inputSize = workingFields.size
@@ -34,7 +37,8 @@ object ISODateTimeFormat {
     val datePresent = workingFields.size < inputSize
     time(bld, workingFields, extended, strictISO, reducedPrec, datePresent)
     if (bld.canBuildFormatter() == false) {
-      throw new IllegalArgumentException("No valid format for fields: " + fields)
+      throw new IllegalArgumentException(
+        "No valid format for fields: " + fields)
     }
     try {
       fields.retainAll(workingFields)
@@ -173,23 +177,24 @@ object ISODateTimeFormat {
     }
     if (hour || minute || second || milli) {
       if (strictISO && reducedPrec) {
-        throw new IllegalArgumentException("No valid ISO8601 format for fields because Date was reduced precision: " +
-          fields)
+        throw new IllegalArgumentException(
+          "No valid ISO8601 format for fields because Date was reduced precision: " +
+            fields)
       }
       if (datePresent) {
         bld.appendLiteral('T')
       }
     }
-    if (hour && minute && second || (hour && !second && !milli)) {
-    } else {
+    if (hour && minute && second || (hour && !second && !milli)) {} else {
       if (strictISO && datePresent) {
-        throw new IllegalArgumentException("No valid ISO8601 format for fields because Time was truncated: " +
-          fields)
+        throw new IllegalArgumentException(
+          "No valid ISO8601 format for fields because Time was truncated: " +
+            fields)
       }
-      if (!hour && (minute && second || (minute && !milli) || second)) {
-      } else {
+      if (!hour && (minute && second || (minute && !milli) || second)) {} else {
         if (strictISO) {
-          throw new IllegalArgumentException("No valid ISO8601 format for fields: " + fields)
+          throw new IllegalArgumentException(
+            "No valid ISO8601 format for fields: " + fields)
         }
       }
     }
@@ -220,13 +225,16 @@ object ISODateTimeFormat {
     }
   }
 
-  private def checkNotStrictISO(fields: Collection[DateTimeFieldType], strictISO: Boolean) {
+  private def checkNotStrictISO(fields: Collection[DateTimeFieldType],
+                                strictISO: Boolean) {
     if (strictISO) {
-      throw new IllegalArgumentException("No valid ISO8601 format for fields: " + fields)
+      throw new IllegalArgumentException(
+        "No valid ISO8601 format for fields: " + fields)
     }
   }
 
-  private def appendSeparator(bld: DateTimeFormatterBuilder, extended: Boolean) {
+  private def appendSeparator(bld: DateTimeFormatterBuilder,
+                              extended: Boolean) {
     if (extended) {
       bld.appendLiteral('-')
     }
@@ -398,9 +406,12 @@ object ISODateTimeFormat {
 
     private def dateParser(): DateTimeFormatter = {
       if (dp == null) {
-        val tOffset = new DateTimeFormatterBuilder().appendLiteral('T').append(offsetElement())
+        val tOffset = new DateTimeFormatterBuilder()
+          .appendLiteral('T')
+          .append(offsetElement())
           .toParser()
-        return new DateTimeFormatterBuilder().append(dateElementParser())
+        return new DateTimeFormatterBuilder()
+          .append(dateElementParser())
           .appendOptional(tOffset)
           .toFormatter()
       }
@@ -416,16 +427,25 @@ object ISODateTimeFormat {
 
     private def dateElementParser(): DateTimeFormatter = {
       if (dpe == null) {
-        return new DateTimeFormatterBuilder().append(null, Array(new DateTimeFormatterBuilder().append(yearElement())
-          .appendOptional(new DateTimeFormatterBuilder().append(monthElement())
-          .appendOptional(dayOfMonthElement().getParser)
-          .toParser())
-          .toParser(), new DateTimeFormatterBuilder().append(weekyearElement())
-          .append(weekElement())
-          .appendOptional(dayOfWeekElement().getParser)
-          .toParser(), new DateTimeFormatterBuilder().append(yearElement())
-          .append(dayOfYearElement())
-          .toParser()))
+        return new DateTimeFormatterBuilder()
+          .append(null,
+                  Array(new DateTimeFormatterBuilder()
+                          .append(yearElement())
+                          .appendOptional(
+                            new DateTimeFormatterBuilder()
+                              .append(monthElement())
+                              .appendOptional(dayOfMonthElement().getParser)
+                              .toParser())
+                          .toParser(),
+                        new DateTimeFormatterBuilder()
+                          .append(weekyearElement())
+                          .append(weekElement())
+                          .appendOptional(dayOfWeekElement().getParser)
+                          .toParser(),
+                        new DateTimeFormatterBuilder()
+                          .append(yearElement())
+                          .append(dayOfYearElement())
+                          .toParser()))
           .toFormatter()
       }
       dpe
@@ -433,7 +453,8 @@ object ISODateTimeFormat {
 
     private def timeParser(): DateTimeFormatter = {
       if (tp == null) {
-        return new DateTimeFormatterBuilder().appendOptional(literalTElement().getParser)
+        return new DateTimeFormatterBuilder()
+          .appendOptional(literalTElement().getParser)
           .append(timeElementParser())
           .appendOptional(offsetElement().getParser)
           .toFormatter()
@@ -443,7 +464,8 @@ object ISODateTimeFormat {
 
     private def localTimeParser(): DateTimeFormatter = {
       if (ltp == null) {
-        return new DateTimeFormatterBuilder().appendOptional(literalTElement().getParser)
+        return new DateTimeFormatterBuilder()
+          .appendOptional(literalTElement().getParser)
           .append(timeElementParser())
           .toFormatter()
           .withZoneUTC()
@@ -453,20 +475,38 @@ object ISODateTimeFormat {
 
     private def timeElementParser(): DateTimeFormatter = {
       if (tpe == null) {
-        val decimalPoint = new DateTimeFormatterBuilder().append(null, Array(new DateTimeFormatterBuilder().appendLiteral('.').toParser(), new DateTimeFormatterBuilder().appendLiteral(',').toParser()))
+        val decimalPoint = new DateTimeFormatterBuilder()
+          .append(
+            null,
+            Array(
+              new DateTimeFormatterBuilder().appendLiteral('.').toParser(),
+              new DateTimeFormatterBuilder().appendLiteral(',').toParser()))
           .toParser()
-        return new DateTimeFormatterBuilder().append(hourElement())
-          .append(null, Array(new DateTimeFormatterBuilder().append(minuteElement())
-          .append(null, Array(new DateTimeFormatterBuilder().append(secondElement())
-          .appendOptional(new DateTimeFormatterBuilder().append(decimalPoint)
-          .appendFractionOfSecond(1, 9)
-          .toParser())
-          .toParser(), new DateTimeFormatterBuilder().append(decimalPoint)
-          .appendFractionOfMinute(1, 9)
-          .toParser(), null))
-          .toParser(), new DateTimeFormatterBuilder().append(decimalPoint)
-          .appendFractionOfHour(1, 9)
-          .toParser(), null))
+        return new DateTimeFormatterBuilder()
+          .append(hourElement())
+          .append(null,
+                  Array(new DateTimeFormatterBuilder()
+                          .append(minuteElement())
+                          .append(null,
+                                  Array(new DateTimeFormatterBuilder()
+                                          .append(secondElement())
+                                          .appendOptional(
+                                            new DateTimeFormatterBuilder()
+                                              .append(decimalPoint)
+                                              .appendFractionOfSecond(1, 9)
+                                              .toParser())
+                                          .toParser(),
+                                        new DateTimeFormatterBuilder()
+                                          .append(decimalPoint)
+                                          .appendFractionOfMinute(1, 9)
+                                          .toParser(),
+                                        null))
+                          .toParser(),
+                        new DateTimeFormatterBuilder()
+                          .append(decimalPoint)
+                          .appendFractionOfHour(1, 9)
+                          .toParser(),
+                        null))
           .toFormatter()
       }
       tpe
@@ -474,10 +514,13 @@ object ISODateTimeFormat {
 
     private def dateTimeParser(): DateTimeFormatter = {
       if (dtp == null) {
-        val time = new DateTimeFormatterBuilder().appendLiteral('T').append(timeElementParser())
+        val time = new DateTimeFormatterBuilder()
+          .appendLiteral('T')
+          .append(timeElementParser())
           .appendOptional(offsetElement().getParser)
           .toParser()
-        return new DateTimeFormatterBuilder().append(null, Array(time, dateOptionalTimeParser().getParser))
+        return new DateTimeFormatterBuilder()
+          .append(null, Array(time, dateOptionalTimeParser().getParser))
           .toFormatter()
       }
       dtp
@@ -485,10 +528,13 @@ object ISODateTimeFormat {
 
     private def dateOptionalTimeParser(): DateTimeFormatter = {
       if (dotp == null) {
-        val timeOrOffset = new DateTimeFormatterBuilder().appendLiteral('T').appendOptional(timeElementParser().getParser)
+        val timeOrOffset = new DateTimeFormatterBuilder()
+          .appendLiteral('T')
+          .appendOptional(timeElementParser().getParser)
           .appendOptional(offsetElement().getParser)
           .toParser()
-        return new DateTimeFormatterBuilder().append(dateElementParser())
+        return new DateTimeFormatterBuilder()
+          .append(dateElementParser())
           .appendOptional(timeOrOffset)
           .toFormatter()
       }
@@ -497,9 +543,12 @@ object ISODateTimeFormat {
 
     private def localDateOptionalTimeParser(): DateTimeFormatter = {
       if (ldotp == null) {
-        val time = new DateTimeFormatterBuilder().appendLiteral('T').append(timeElementParser())
+        val time = new DateTimeFormatterBuilder()
+          .appendLiteral('T')
+          .append(timeElementParser())
           .toParser()
-        return new DateTimeFormatterBuilder().append(dateElementParser())
+        return new DateTimeFormatterBuilder()
+          .append(dateElementParser())
           .appendOptional(time)
           .toFormatter()
           .withZoneUTC()
@@ -509,7 +558,8 @@ object ISODateTimeFormat {
 
     private def time(): DateTimeFormatter = {
       if (t == null) {
-        return new DateTimeFormatterBuilder().append(hourMinuteSecondFraction())
+        return new DateTimeFormatterBuilder()
+          .append(hourMinuteSecondFraction())
           .append(offsetElement())
           .toFormatter()
       }
@@ -518,7 +568,8 @@ object ISODateTimeFormat {
 
     private def timeNoMillis(): DateTimeFormatter = {
       if (tx == null) {
-        return new DateTimeFormatterBuilder().append(hourMinuteSecond())
+        return new DateTimeFormatterBuilder()
+          .append(hourMinuteSecond())
           .append(offsetElement())
           .toFormatter()
       }
@@ -527,7 +578,8 @@ object ISODateTimeFormat {
 
     private def tTime(): DateTimeFormatter = {
       if (tt == null) {
-        return new DateTimeFormatterBuilder().append(literalTElement())
+        return new DateTimeFormatterBuilder()
+          .append(literalTElement())
           .append(time())
           .toFormatter()
       }
@@ -536,7 +588,8 @@ object ISODateTimeFormat {
 
     private def tTimeNoMillis(): DateTimeFormatter = {
       if (ttx == null) {
-        return new DateTimeFormatterBuilder().append(literalTElement())
+        return new DateTimeFormatterBuilder()
+          .append(literalTElement())
           .append(timeNoMillis())
           .toFormatter()
       }
@@ -545,7 +598,9 @@ object ISODateTimeFormat {
 
     private def dateTime(): DateTimeFormatter = {
       if (dt == null) {
-        return new DateTimeFormatterBuilder().append(date()).append(tTime())
+        return new DateTimeFormatterBuilder()
+          .append(date())
+          .append(tTime())
           .toFormatter()
       }
       dt
@@ -553,7 +608,9 @@ object ISODateTimeFormat {
 
     private def dateTimeNoMillis(): DateTimeFormatter = {
       if (dtx == null) {
-        return new DateTimeFormatterBuilder().append(date()).append(tTimeNoMillis())
+        return new DateTimeFormatterBuilder()
+          .append(date())
+          .append(tTimeNoMillis())
           .toFormatter()
       }
       dtx
@@ -561,7 +618,8 @@ object ISODateTimeFormat {
 
     private def ordinalDate(): DateTimeFormatter = {
       if (od == null) {
-        return new DateTimeFormatterBuilder().append(yearElement())
+        return new DateTimeFormatterBuilder()
+          .append(yearElement())
           .append(dayOfYearElement())
           .toFormatter()
       }
@@ -570,7 +628,8 @@ object ISODateTimeFormat {
 
     private def ordinalDateTime(): DateTimeFormatter = {
       if (odt == null) {
-        return new DateTimeFormatterBuilder().append(ordinalDate())
+        return new DateTimeFormatterBuilder()
+          .append(ordinalDate())
           .append(tTime())
           .toFormatter()
       }
@@ -579,7 +638,8 @@ object ISODateTimeFormat {
 
     private def ordinalDateTimeNoMillis(): DateTimeFormatter = {
       if (odtx == null) {
-        return new DateTimeFormatterBuilder().append(ordinalDate())
+        return new DateTimeFormatterBuilder()
+          .append(ordinalDate())
           .append(tTimeNoMillis())
           .toFormatter()
       }
@@ -588,7 +648,9 @@ object ISODateTimeFormat {
 
     private def weekDateTime(): DateTimeFormatter = {
       if (wdt == null) {
-        return new DateTimeFormatterBuilder().append(weekDate()).append(tTime())
+        return new DateTimeFormatterBuilder()
+          .append(weekDate())
+          .append(tTime())
           .toFormatter()
       }
       wdt
@@ -596,7 +658,9 @@ object ISODateTimeFormat {
 
     private def weekDateTimeNoMillis(): DateTimeFormatter = {
       if (wdtx == null) {
-        return new DateTimeFormatterBuilder().append(weekDate()).append(tTimeNoMillis())
+        return new DateTimeFormatterBuilder()
+          .append(weekDate())
+          .append(tTimeNoMillis())
           .toFormatter()
       }
       wdtx
@@ -604,8 +668,9 @@ object ISODateTimeFormat {
 
     private def basicDate(): DateTimeFormatter = {
       if (bd == null) {
-        return new DateTimeFormatterBuilder().appendYear(4, 4).appendFixedDecimal(DateTimeFieldType.monthOfYear(),
-          2)
+        return new DateTimeFormatterBuilder()
+          .appendYear(4, 4)
+          .appendFixedDecimal(DateTimeFieldType.monthOfYear(), 2)
           .appendFixedDecimal(DateTimeFieldType.dayOfMonth(), 2)
           .toFormatter()
       }
@@ -614,7 +679,8 @@ object ISODateTimeFormat {
 
     private def basicTime(): DateTimeFormatter = {
       if (bt == null) {
-        return new DateTimeFormatterBuilder().appendFixedDecimal(DateTimeFieldType.hourOfDay(), 2)
+        return new DateTimeFormatterBuilder()
+          .appendFixedDecimal(DateTimeFieldType.hourOfDay(), 2)
           .appendFixedDecimal(DateTimeFieldType.minuteOfHour(), 2)
           .appendFixedDecimal(DateTimeFieldType.secondOfMinute(), 2)
           .appendLiteral('.')
@@ -627,7 +693,8 @@ object ISODateTimeFormat {
 
     private def basicTimeNoMillis(): DateTimeFormatter = {
       if (btx == null) {
-        return new DateTimeFormatterBuilder().appendFixedDecimal(DateTimeFieldType.hourOfDay(), 2)
+        return new DateTimeFormatterBuilder()
+          .appendFixedDecimal(DateTimeFieldType.hourOfDay(), 2)
           .appendFixedDecimal(DateTimeFieldType.minuteOfHour(), 2)
           .appendFixedDecimal(DateTimeFieldType.secondOfMinute(), 2)
           .appendTimeZoneOffset("Z", showSeparators = false, 2, 2)
@@ -638,7 +705,8 @@ object ISODateTimeFormat {
 
     private def basicTTime(): DateTimeFormatter = {
       if (btt == null) {
-        return new DateTimeFormatterBuilder().append(literalTElement())
+        return new DateTimeFormatterBuilder()
+          .append(literalTElement())
           .append(basicTime())
           .toFormatter()
       }
@@ -647,7 +715,8 @@ object ISODateTimeFormat {
 
     private def basicTTimeNoMillis(): DateTimeFormatter = {
       if (bttx == null) {
-        return new DateTimeFormatterBuilder().append(literalTElement())
+        return new DateTimeFormatterBuilder()
+          .append(literalTElement())
           .append(basicTimeNoMillis())
           .toFormatter()
       }
@@ -656,7 +725,9 @@ object ISODateTimeFormat {
 
     private def basicDateTime(): DateTimeFormatter = {
       if (bdt == null) {
-        return new DateTimeFormatterBuilder().append(basicDate()).append(basicTTime())
+        return new DateTimeFormatterBuilder()
+          .append(basicDate())
+          .append(basicTTime())
           .toFormatter()
       }
       bdt
@@ -664,7 +735,9 @@ object ISODateTimeFormat {
 
     private def basicDateTimeNoMillis(): DateTimeFormatter = {
       if (bdtx == null) {
-        return new DateTimeFormatterBuilder().append(basicDate()).append(basicTTimeNoMillis())
+        return new DateTimeFormatterBuilder()
+          .append(basicDate())
+          .append(basicTTimeNoMillis())
           .toFormatter()
       }
       bdtx
@@ -672,8 +745,9 @@ object ISODateTimeFormat {
 
     private def basicOrdinalDate(): DateTimeFormatter = {
       if (bod == null) {
-        return new DateTimeFormatterBuilder().appendYear(4, 4).appendFixedDecimal(DateTimeFieldType.dayOfYear(),
-          3)
+        return new DateTimeFormatterBuilder()
+          .appendYear(4, 4)
+          .appendFixedDecimal(DateTimeFieldType.dayOfYear(), 3)
           .toFormatter()
       }
       bod
@@ -681,7 +755,8 @@ object ISODateTimeFormat {
 
     private def basicOrdinalDateTime(): DateTimeFormatter = {
       if (bodt == null) {
-        return new DateTimeFormatterBuilder().append(basicOrdinalDate())
+        return new DateTimeFormatterBuilder()
+          .append(basicOrdinalDate())
           .append(basicTTime())
           .toFormatter()
       }
@@ -690,7 +765,8 @@ object ISODateTimeFormat {
 
     private def basicOrdinalDateTimeNoMillis(): DateTimeFormatter = {
       if (bodtx == null) {
-        return new DateTimeFormatterBuilder().append(basicOrdinalDate())
+        return new DateTimeFormatterBuilder()
+          .append(basicOrdinalDate())
           .append(basicTTimeNoMillis())
           .toFormatter()
       }
@@ -699,7 +775,8 @@ object ISODateTimeFormat {
 
     private def basicWeekDate(): DateTimeFormatter = {
       if (bwd == null) {
-        return new DateTimeFormatterBuilder().appendWeekyear(4, 4)
+        return new DateTimeFormatterBuilder()
+          .appendWeekyear(4, 4)
           .appendLiteral('W')
           .appendFixedDecimal(DateTimeFieldType.weekOfWeekyear(), 2)
           .appendFixedDecimal(DateTimeFieldType.dayOfWeek(), 1)
@@ -710,7 +787,8 @@ object ISODateTimeFormat {
 
     private def basicWeekDateTime(): DateTimeFormatter = {
       if (bwdt == null) {
-        return new DateTimeFormatterBuilder().append(basicWeekDate())
+        return new DateTimeFormatterBuilder()
+          .append(basicWeekDate())
           .append(basicTTime())
           .toFormatter()
       }
@@ -719,7 +797,8 @@ object ISODateTimeFormat {
 
     private def basicWeekDateTimeNoMillis(): DateTimeFormatter = {
       if (bwdtx == null) {
-        return new DateTimeFormatterBuilder().append(basicWeekDate())
+        return new DateTimeFormatterBuilder()
+          .append(basicWeekDate())
           .append(basicTTimeNoMillis())
           .toFormatter()
       }
@@ -728,7 +807,8 @@ object ISODateTimeFormat {
 
     private def yearMonth(): DateTimeFormatter = {
       if (ym == null) {
-        return new DateTimeFormatterBuilder().append(yearElement())
+        return new DateTimeFormatterBuilder()
+          .append(yearElement())
           .append(monthElement())
           .toFormatter()
       }
@@ -737,7 +817,8 @@ object ISODateTimeFormat {
 
     private def yearMonthDay(): DateTimeFormatter = {
       if (ymd == null) {
-        return new DateTimeFormatterBuilder().append(yearElement())
+        return new DateTimeFormatterBuilder()
+          .append(yearElement())
           .append(monthElement())
           .append(dayOfMonthElement())
           .toFormatter()
@@ -747,7 +828,8 @@ object ISODateTimeFormat {
 
     private def weekyearWeek(): DateTimeFormatter = {
       if (ww == null) {
-        return new DateTimeFormatterBuilder().append(weekyearElement())
+        return new DateTimeFormatterBuilder()
+          .append(weekyearElement())
           .append(weekElement())
           .toFormatter()
       }
@@ -756,7 +838,8 @@ object ISODateTimeFormat {
 
     private def weekyearWeekDay(): DateTimeFormatter = {
       if (wwd == null) {
-        return new DateTimeFormatterBuilder().append(weekyearElement())
+        return new DateTimeFormatterBuilder()
+          .append(weekyearElement())
           .append(weekElement())
           .append(dayOfWeekElement())
           .toFormatter()
@@ -766,7 +849,8 @@ object ISODateTimeFormat {
 
     private def hourMinute(): DateTimeFormatter = {
       if (hm == null) {
-        return new DateTimeFormatterBuilder().append(hourElement())
+        return new DateTimeFormatterBuilder()
+          .append(hourElement())
           .append(minuteElement())
           .toFormatter()
       }
@@ -775,7 +859,8 @@ object ISODateTimeFormat {
 
     private def hourMinuteSecond(): DateTimeFormatter = {
       if (hms == null) {
-        return new DateTimeFormatterBuilder().append(hourElement())
+        return new DateTimeFormatterBuilder()
+          .append(hourElement())
           .append(minuteElement())
           .append(secondElement())
           .toFormatter()
@@ -785,7 +870,8 @@ object ISODateTimeFormat {
 
     private def hourMinuteSecondMillis(): DateTimeFormatter = {
       if (hmsl == null) {
-        return new DateTimeFormatterBuilder().append(hourElement())
+        return new DateTimeFormatterBuilder()
+          .append(hourElement())
           .append(minuteElement())
           .append(secondElement())
           .appendLiteral('.')
@@ -797,7 +883,8 @@ object ISODateTimeFormat {
 
     private def hourMinuteSecondFraction(): DateTimeFormatter = {
       if (hmsf == null) {
-        return new DateTimeFormatterBuilder().append(hourElement())
+        return new DateTimeFormatterBuilder()
+          .append(hourElement())
           .append(minuteElement())
           .append(secondElement())
           .append(fractionElement())
@@ -808,7 +895,9 @@ object ISODateTimeFormat {
 
     private def dateHour(): DateTimeFormatter = {
       if (dh == null) {
-        return new DateTimeFormatterBuilder().append(date()).append(literalTElement())
+        return new DateTimeFormatterBuilder()
+          .append(date())
+          .append(literalTElement())
           .append(hour())
           .toFormatter()
       }
@@ -817,7 +906,9 @@ object ISODateTimeFormat {
 
     private def dateHourMinute(): DateTimeFormatter = {
       if (dhm == null) {
-        return new DateTimeFormatterBuilder().append(date()).append(literalTElement())
+        return new DateTimeFormatterBuilder()
+          .append(date())
+          .append(literalTElement())
           .append(hourMinute())
           .toFormatter()
       }
@@ -826,7 +917,9 @@ object ISODateTimeFormat {
 
     private def dateHourMinuteSecond(): DateTimeFormatter = {
       if (dhms == null) {
-        return new DateTimeFormatterBuilder().append(date()).append(literalTElement())
+        return new DateTimeFormatterBuilder()
+          .append(date())
+          .append(literalTElement())
           .append(hourMinuteSecond())
           .toFormatter()
       }
@@ -835,7 +928,9 @@ object ISODateTimeFormat {
 
     private def dateHourMinuteSecondMillis(): DateTimeFormatter = {
       if (dhmsl == null) {
-        return new DateTimeFormatterBuilder().append(date()).append(literalTElement())
+        return new DateTimeFormatterBuilder()
+          .append(date())
+          .append(literalTElement())
           .append(hourMinuteSecondMillis())
           .toFormatter()
       }
@@ -844,7 +939,9 @@ object ISODateTimeFormat {
 
     private def dateHourMinuteSecondFraction(): DateTimeFormatter = {
       if (dhmsf == null) {
-        return new DateTimeFormatterBuilder().append(date()).append(literalTElement())
+        return new DateTimeFormatterBuilder()
+          .append(date())
+          .append(literalTElement())
           .append(hourMinuteSecondFraction())
           .toFormatter()
       }
@@ -860,7 +957,9 @@ object ISODateTimeFormat {
 
     private def monthElement(): DateTimeFormatter = {
       if (mye == null) {
-        return new DateTimeFormatterBuilder().appendLiteral('-').appendMonthOfYear(2)
+        return new DateTimeFormatterBuilder()
+          .appendLiteral('-')
+          .appendMonthOfYear(2)
           .toFormatter()
       }
       mye
@@ -868,7 +967,9 @@ object ISODateTimeFormat {
 
     private def dayOfMonthElement(): DateTimeFormatter = {
       if (dme == null) {
-        return new DateTimeFormatterBuilder().appendLiteral('-').appendDayOfMonth(2)
+        return new DateTimeFormatterBuilder()
+          .appendLiteral('-')
+          .appendDayOfMonth(2)
           .toFormatter()
       }
       dme
@@ -876,7 +977,8 @@ object ISODateTimeFormat {
 
     private def weekyearElement(): DateTimeFormatter = {
       if (we == null) {
-        return new DateTimeFormatterBuilder().appendWeekyear(4, 9)
+        return new DateTimeFormatterBuilder()
+          .appendWeekyear(4, 9)
           .toFormatter()
       }
       we
@@ -884,7 +986,9 @@ object ISODateTimeFormat {
 
     private def weekElement(): DateTimeFormatter = {
       if (wwe == null) {
-        return new DateTimeFormatterBuilder().appendLiteral("-W").appendWeekOfWeekyear(2)
+        return new DateTimeFormatterBuilder()
+          .appendLiteral("-W")
+          .appendWeekOfWeekyear(2)
           .toFormatter()
       }
       wwe
@@ -892,7 +996,9 @@ object ISODateTimeFormat {
 
     private def dayOfWeekElement(): DateTimeFormatter = {
       if (dwe == null) {
-        return new DateTimeFormatterBuilder().appendLiteral('-').appendDayOfWeek(1)
+        return new DateTimeFormatterBuilder()
+          .appendLiteral('-')
+          .appendDayOfWeek(1)
           .toFormatter()
       }
       dwe
@@ -900,7 +1006,9 @@ object ISODateTimeFormat {
 
     private def dayOfYearElement(): DateTimeFormatter = {
       if (dye == null) {
-        return new DateTimeFormatterBuilder().appendLiteral('-').appendDayOfYear(3)
+        return new DateTimeFormatterBuilder()
+          .appendLiteral('-')
+          .appendDayOfYear(3)
           .toFormatter()
       }
       dye
@@ -922,7 +1030,9 @@ object ISODateTimeFormat {
 
     private def minuteElement(): DateTimeFormatter = {
       if (mhe == null) {
-        return new DateTimeFormatterBuilder().appendLiteral(':').appendMinuteOfHour(2)
+        return new DateTimeFormatterBuilder()
+          .appendLiteral(':')
+          .appendMinuteOfHour(2)
           .toFormatter()
       }
       mhe
@@ -930,7 +1040,9 @@ object ISODateTimeFormat {
 
     private def secondElement(): DateTimeFormatter = {
       if (sme == null) {
-        return new DateTimeFormatterBuilder().appendLiteral(':').appendSecondOfMinute(2)
+        return new DateTimeFormatterBuilder()
+          .appendLiteral(':')
+          .appendSecondOfMinute(2)
           .toFormatter()
       }
       sme
@@ -938,7 +1050,9 @@ object ISODateTimeFormat {
 
     private def fractionElement(): DateTimeFormatter = {
       if (fse == null) {
-        return new DateTimeFormatterBuilder().appendLiteral('.').appendFractionOfSecond(3, 9)
+        return new DateTimeFormatterBuilder()
+          .appendLiteral('.')
+          .appendFractionOfSecond(3, 9)
           .toFormatter()
       }
       fse
@@ -946,7 +1060,8 @@ object ISODateTimeFormat {
 
     private def offsetElement(): DateTimeFormatter = {
       if (ze == null) {
-        return new DateTimeFormatterBuilder().appendTimeZoneOffset("Z", showSeparators = true, 2, 4)
+        return new DateTimeFormatterBuilder()
+          .appendTimeZoneOffset("Z", showSeparators = true, 2, 4)
           .toFormatter()
       }
       ze

@@ -1,15 +1,24 @@
 package org.joda.time.convert
 
-import org.joda.time.{Chronology, PeriodType, ReadWritablePeriod, ReadablePeriod}
+import org.joda.time.{
+  Chronology,
+  PeriodType,
+  ReadWritablePeriod,
+  ReadablePeriod
+}
 
 object ReadablePeriodConverter {
 
   val INSTANCE = new ReadablePeriodConverter()
 }
 
-class ReadablePeriodConverter protected () extends AbstractConverter() with PeriodConverter {
+class ReadablePeriodConverter protected ()
+    extends AbstractConverter()
+    with PeriodConverter {
 
-  def setInto(duration: ReadWritablePeriod, `object`: AnyRef, chrono: Chronology) {
+  def setInto(duration: ReadWritablePeriod,
+              `object`: AnyRef,
+              chrono: Chronology) {
     duration.setPeriod(`object`.asInstanceOf[ReadablePeriod])
   }
 

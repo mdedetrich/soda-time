@@ -8,9 +8,13 @@ object ReadableInstantConverter {
   val INSTANCE = new ReadableInstantConverter()
 }
 
-class ReadableInstantConverter extends AbstractConverter() with InstantConverter with PartialConverter {
+class ReadableInstantConverter
+    extends AbstractConverter()
+    with InstantConverter
+    with PartialConverter {
 
-  override def getChronology(`object`: AnyRef, zone: DateTimeZone): Chronology = {
+  override def getChronology(`object`: AnyRef,
+                             zone: DateTimeZone): Chronology = {
     var chrono = `object`.asInstanceOf[ReadableInstant].getChronology
     if (chrono == null) {
       return ISOChronology.getInstance(zone)
@@ -25,7 +29,8 @@ class ReadableInstantConverter extends AbstractConverter() with InstantConverter
     chrono
   }
 
-  override def getChronology(`object`: AnyRef, chrono: Chronology): Chronology = {
+  override def getChronology(`object`: AnyRef,
+                             chrono: Chronology): Chronology = {
     var _chrono: Chronology = chrono
     if (_chrono == null) {
       _chrono = `object`.asInstanceOf[ReadableInstant].getChronology

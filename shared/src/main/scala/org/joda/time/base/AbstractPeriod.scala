@@ -12,7 +12,8 @@ abstract class AbstractPeriod protected () extends ReadablePeriod() {
 
   def size(): Int = getPeriodType.size
 
-  def getFieldType(index: Int): DurationFieldType = getPeriodType.getFieldType(index)
+  def getFieldType(index: Int): DurationFieldType =
+    getPeriodType.getFieldType(index)
 
   def getFieldTypes(): Array[DurationFieldType] = {
     val result = Array.ofDim[DurationFieldType](size)
@@ -38,7 +39,8 @@ abstract class AbstractPeriod protected () extends ReadablePeriod() {
     getValue(index)
   }
 
-  def isSupported(`type`: DurationFieldType): Boolean = getPeriodType.isSupported(`type`)
+  def isSupported(`type`: DurationFieldType): Boolean =
+    getPeriodType.isSupported(`type`)
 
   def indexOf(`type`: DurationFieldType): Int = getPeriodType.indexOf(`type`)
 
@@ -57,7 +59,9 @@ abstract class AbstractPeriod protected () extends ReadablePeriod() {
     if (size != other.size) {
       return false
     }
-    for (i <- 0 until size() if getValue(i) != other.getValue(i) || getFieldType(i) != other.getFieldType(i)) {
+    for (i <- 0 until size()
+         if getValue(i) != other.getValue(i) || getFieldType(i) != other
+           .getFieldType(i)) {
       return false
     }
     true

@@ -1,20 +1,22 @@
 name := "Soda Time"
 
-val scala211Version="2.11.8"
-val scala210Version="2.10.6"
+val scala211Version = "2.11.8"
+val scala210Version = "2.10.6"
 
 scalaVersion in ThisBuild := scala211Version
-crossScalaVersions in ThisBuild := Seq(scala211Version,scala210Version)
+crossScalaVersions in ThisBuild := Seq(scala211Version, scala210Version)
 
-lazy val root = project.in(file(".")).
-  aggregate(sodatimeJS, sodatimeJVM).
-  settings(
+lazy val root = project
+  .in(file("."))
+  .aggregate(sodatimeJS, sodatimeJVM)
+  .settings(
     publish := {},
     publishLocal := {}
   )
 
-lazy val sodatime = crossProject.in(file(".")).
-  settings(
+lazy val sodatime = crossProject
+  .in(file("."))
+  .settings(
     name := "soda-time",
     version := "0.0.1-SNAPSHOT",
     organization := "org.mdedetrich",
@@ -24,10 +26,12 @@ lazy val sodatime = crossProject.in(file(".")).
       if (isSnapshot.value)
         Some("snapshots" at nexus + "content/repositories/snapshots")
       else
-        Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+        Some("releases" at nexus + "service/local/staging/deploy/maven2")
     },
     publishArtifact in Test := false,
-    pomIncludeRepository := { _ => false },
+    pomIncludeRepository := { _ =>
+      false
+    },
     pomExtra := <url>https://github.com/mdedetrich/soda-time</url>
       <licenses>
         <license>
@@ -47,11 +51,11 @@ lazy val sodatime = crossProject.in(file(".")).
           <email>mdedetrich@gmail.com</email>
         </developer>
       </developers>
-  ).
-  jvmSettings(
+  )
+  .jvmSettings(
     // Add JVM-specific settings here
-  ).
-  jsSettings(
+  )
+  .jsSettings(
     // Add JS-specific settings here
   )
 

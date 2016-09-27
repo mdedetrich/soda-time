@@ -53,9 +53,11 @@ object LocalTime {
     parse(str, ISODateTimeFormat.localTimeParser())
   }
 
-  def parse(str: String, formatter: DateTimeFormatter): LocalTime = formatter.parseLocalTime(str)
+  def parse(str: String, formatter: DateTimeFormatter): LocalTime =
+    formatter.parseLocalTime(str)
 
-  def fromMillisOfDay(millisOfDay: Long): LocalTime = fromMillisOfDay(millisOfDay, null)
+  def fromMillisOfDay(millisOfDay: Long): LocalTime =
+    fromMillisOfDay(millisOfDay, null)
 
   def fromMillisOfDay(millisOfDay: Long, chrono: Chronology): LocalTime = {
     var _chrono: Chronology = chrono
@@ -67,20 +69,26 @@ object LocalTime {
     if (calendar == null) {
       throw new IllegalArgumentException("The calendar must not be null")
     }
-    new LocalTime(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND),
-      calendar.get(Calendar.MILLISECOND))
+    new LocalTime(calendar.get(Calendar.HOUR_OF_DAY),
+                  calendar.get(Calendar.MINUTE),
+                  calendar.get(Calendar.SECOND),
+                  calendar.get(Calendar.MILLISECOND))
   }
 
   def fromDateFields(date: Date): LocalTime = {
     if (date == null) {
       throw new IllegalArgumentException("The date must not be null")
     }
-    new LocalTime(date.getHours, date.getMinutes, date.getSeconds, ((date.getTime % 1000).toInt + 1000) % 1000)
+    new LocalTime(date.getHours,
+                  date.getMinutes,
+                  date.getSeconds,
+                  ((date.getTime % 1000).toInt + 1000) % 1000)
   }
 
   @SerialVersionUID(-325842547277223L)
-  class Property(@transient private var iInstant: LocalTime, @transient private var iField: DateTimeField)
-    extends AbstractReadableInstantFieldProperty() {
+  class Property(@transient private var iInstant: LocalTime,
+                 @transient private var iField: DateTimeField)
+      extends AbstractReadableInstantFieldProperty() {
 
     private def writeObject(oos: ObjectOutputStream) {
       oos.writeObject(iInstant)
@@ -113,13 +121,15 @@ object LocalTime {
       val millis = iField.add(iInstant.getLocalMillis, value)
       val rounded = iInstant.getChronology.millisOfDay().get(millis)
       if (rounded != millis) {
-        throw new IllegalArgumentException("The addition exceeded the boundaries of LocalTime")
+        throw new IllegalArgumentException(
+          "The addition exceeded the boundaries of LocalTime")
       }
       iInstant.withLocalMillis(millis)
     }
 
     def addWrapFieldToCopy(value: Int): LocalTime = {
-      iInstant.withLocalMillis(iField.addWrapField(iInstant.getLocalMillis, value))
+      iInstant.withLocalMillis(
+        iField.addWrapField(iInstant.getLocalMillis, value))
     }
 
     def setCopy(value: Int): LocalTime = {
@@ -127,7 +137,8 @@ object LocalTime {
     }
 
     def setCopy(text: String, locale: Locale): LocalTime = {
-      iInstant.withLocalMillis(iField.set(iInstant.getLocalMillis, text, locale))
+      iInstant.withLocalMillis(
+        iField.set(iInstant.getLocalMillis, text, locale))
     }
 
     def setCopy(text: String): LocalTime = setCopy(text, null)
@@ -149,7 +160,8 @@ object LocalTime {
     }
 
     def roundHalfCeilingCopy(): LocalTime = {
-      iInstant.withLocalMillis(iField.roundHalfCeiling(iInstant.getLocalMillis))
+      iInstant.withLocalMillis(
+        iField.roundHalfCeiling(iInstant.getLocalMillis))
     }
 
     def roundHalfEvenCopy(): LocalTime = {
@@ -159,9 +171,13 @@ object LocalTime {
 }
 
 @SerialVersionUID(-12873158713873L)
-class LocalTime(instant: Long, private var chronology: Chronology) extends BaseLocal with ReadablePartial with Serializable {
+class LocalTime(instant: Long, private var chronology: Chronology)
+    extends BaseLocal
+    with ReadablePartial
+    with Serializable {
 
-  private val localMillis = chronology.getZone.getMillisKeepLocal(DateTimeZone.UTC, instant)
+  private val localMillis =
+    chronology.getZone.getMillisKeepLocal(DateTimeZone.UTC, instant)
 
   private var iChronology: Chronology = null
   private var iLocalMillis: Long = chronology.millisOfDay().get(localMillis)
@@ -199,8 +215,13 @@ class LocalTime(instant: Long, private var chronology: Chronology) extends BaseL
     var chronology = converter.getChronology(instant, zone)
     chronology = DateTimeUtils.getChronology(chronology)
     iChronology = chronology.withUTC()
-    val values = converter.getPartialValues(this, instant, chronology, ISODateTimeFormat.localTimeParser())
-    iLocalMillis = iChronology.getDateTimeMillis(0L, values(0), values(1), values(2), values(3))
+    val values = converter.getPartialValues(
+      this,
+      instant,
+      chronology,
+      ISODateTimeFormat.localTimeParser())
+    iLocalMillis = iChronology
+      .getDateTimeMillis(0L, values(0), values(1), values(2), values(3))
   }
 
   def this(instant: AnyRef, chronology: Chronology) {
@@ -210,8 +231,13 @@ class LocalTime(instant: Long, private var chronology: Chronology) extends BaseL
     _chronology = converter.getChronology(instant, _chronology)
     _chronology = DateTimeUtils.getChronology(_chronology)
     iChronology = _chronology.withUTC()
-    val values = converter.getPartialValues(this, instant, _chronology, ISODateTimeFormat.localTimeParser())
-    iLocalMillis = iChronology.getDateTimeMillis(0L, values(0), values(1), values(2), values(3))
+    val values = converter.getPartialValues(
+      this,
+      instant,
+      _chronology,
+      ISODateTimeFormat.localTimeParser())
+    iLocalMillis = iChronology
+      .getDateTimeMillis(0L, values(0), values(1), values(2), values(3))
   }
 
   def this(instant: AnyRef) {
@@ -226,7 +252,11 @@ class LocalTime(instant: Long, private var chronology: Chronology) extends BaseL
     this()
     var _chronology: Chronology = chronology
     _chronology = DateTimeUtils.getChronology(_chronology).withUTC()
-    val instant = _chronology.getDateTimeMillis(0L, hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond)
+    val instant = _chronology.getDateTimeMillis(0L,
+                                                hourOfDay,
+                                                minuteOfHour,
+                                                secondOfMinute,
+                                                millisOfSecond)
     iChronology = _chronology
     iLocalMillis = instant
   }
@@ -236,14 +266,22 @@ class LocalTime(instant: Long, private var chronology: Chronology) extends BaseL
   }
 
   def this(hourOfDay: Int, minuteOfHour: Int, secondOfMinute: Int) {
-    this(hourOfDay, minuteOfHour, secondOfMinute, 0, ISOChronology.getInstanceUTC)
+    this(hourOfDay,
+         minuteOfHour,
+         secondOfMinute,
+         0,
+         ISOChronology.getInstanceUTC)
   }
 
   def this(hourOfDay: Int,
            minuteOfHour: Int,
            secondOfMinute: Int,
            millisOfSecond: Int) {
-    this(hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond, ISOChronology.getInstanceUTC)
+    this(hourOfDay,
+         minuteOfHour,
+         secondOfMinute,
+         millisOfSecond,
+         ISOChronology.getInstanceUTC)
   }
 
   private def readResolve(): AnyRef = {
@@ -258,13 +296,14 @@ class LocalTime(instant: Long, private var chronology: Chronology) extends BaseL
 
   def size(): Int = 4
 
-  protected def getField(index: Int, chrono: Chronology): DateTimeField = index match {
-    case HOUR_OF_DAY => chrono.hourOfDay()
-    case MINUTE_OF_HOUR => chrono.minuteOfHour()
-    case SECOND_OF_MINUTE => chrono.secondOfMinute()
-    case MILLIS_OF_SECOND => chrono.millisOfSecond()
-    case _ => throw new IndexOutOfBoundsException("Invalid index: " + index)
-  }
+  protected def getField(index: Int, chrono: Chronology): DateTimeField =
+    index match {
+      case HOUR_OF_DAY => chrono.hourOfDay()
+      case MINUTE_OF_HOUR => chrono.minuteOfHour()
+      case SECOND_OF_MINUTE => chrono.secondOfMinute()
+      case MILLIS_OF_SECOND => chrono.millisOfSecond()
+      case _ => throw new IndexOutOfBoundsException("Invalid index: " + index)
+    }
 
   def getValue(index: Int): Int = index match {
     case HOUR_OF_DAY => getChronology.hourOfDay().get(getLocalMillis)
@@ -276,10 +315,12 @@ class LocalTime(instant: Long, private var chronology: Chronology) extends BaseL
 
   override def get(fieldType: DateTimeFieldType): Int = {
     if (fieldType == null) {
-      throw new IllegalArgumentException("The DateTimeFieldType must not be null")
+      throw new IllegalArgumentException(
+        "The DateTimeFieldType must not be null")
     }
     if (!isSupported(fieldType)) {
-      throw new IllegalArgumentException("Field '" + fieldType + "' is not supported")
+      throw new IllegalArgumentException(
+        "Field '" + fieldType + "' is not supported")
     }
     fieldType.getField(getChronology).get(getLocalMillis)
   }
@@ -301,7 +342,7 @@ class LocalTime(instant: Long, private var chronology: Chronology) extends BaseL
     }
     val field = `type`.getField(getChronology)
     if (TIME_DURATION_TYPES.contains(`type`) ||
-      field.getUnitMillis < getChronology.days().getUnitMillis) {
+        field.getUnitMillis < getChronology.days().getUnitMillis) {
       return field.isSupported
     }
     false
@@ -332,14 +373,17 @@ class LocalTime(instant: Long, private var chronology: Chronology) extends BaseL
     if (partial.isInstanceOf[LocalTime]) {
       val other = partial.asInstanceOf[LocalTime]
       if (iChronology == other.iChronology) {
-        return if (iLocalMillis < other.iLocalMillis) -1 else if (iLocalMillis == other.iLocalMillis) 0 else 1
+        return if (iLocalMillis < other.iLocalMillis) -1
+        else if (iLocalMillis == other.iLocalMillis) 0
+        else 1
       }
     }
     super.compareTo(partial)
   }
 
   def withLocalMillis(newMillis: Long): LocalTime = {
-    if (newMillis == getLocalMillis) this else new LocalTime(newMillis, getChronology)
+    if (newMillis == getLocalMillis) this
+    else new LocalTime(newMillis, getChronology)
   }
 
   def withFields(partial: ReadablePartial): LocalTime = {
@@ -354,7 +398,8 @@ class LocalTime(instant: Long, private var chronology: Chronology) extends BaseL
       throw new IllegalArgumentException("Field must not be null")
     }
     if (!isSupported(fieldType)) {
-      throw new IllegalArgumentException("Field '" + fieldType + "' is not supported")
+      throw new IllegalArgumentException(
+        "Field '" + fieldType + "' is not supported")
     }
     val instant = fieldType.getField(getChronology).set(getLocalMillis, value)
     withLocalMillis(instant)
@@ -365,7 +410,8 @@ class LocalTime(instant: Long, private var chronology: Chronology) extends BaseL
       throw new IllegalArgumentException("Field must not be null")
     }
     if (!isSupported(fieldType)) {
-      throw new IllegalArgumentException("Field '" + fieldType + "' is not supported")
+      throw new IllegalArgumentException(
+        "Field '" + fieldType + "' is not supported")
     }
     if (amount == 0) {
       return this
@@ -452,10 +498,12 @@ class LocalTime(instant: Long, private var chronology: Chronology) extends BaseL
 
   def property(fieldType: DateTimeFieldType): Property = {
     if (fieldType == null) {
-      throw new IllegalArgumentException("The DateTimeFieldType must not be null")
+      throw new IllegalArgumentException(
+        "The DateTimeFieldType must not be null")
     }
     if (isSupported(fieldType) == false) {
-      throw new IllegalArgumentException("Field '" + fieldType + "' is not supported")
+      throw new IllegalArgumentException(
+        "Field '" + fieldType + "' is not supported")
     }
     new Property(this, fieldType.getField(getChronology))
   }
@@ -543,7 +591,6 @@ class LocalTime(instant: Long, private var chronology: Chronology) extends BaseL
     if (pattern == null) {
       return toString
     }
-    DateTimeFormat.forPattern(pattern).withLocale(locale)
-      .print(this)
+    DateTimeFormat.forPattern(pattern).withLocale(locale).print(this)
   }
 }

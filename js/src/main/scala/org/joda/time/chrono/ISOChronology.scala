@@ -13,9 +13,11 @@ import ISOChronology._
 
 object ISOChronology {
 
-  private val INSTANCE_UTC = new ISOChronology(GregorianChronology.getInstanceUTC)
+  private val INSTANCE_UTC = new ISOChronology(
+    GregorianChronology.getInstanceUTC)
 
-  private val cCache = new collection.mutable.HashMap[DateTimeZone, ISOChronology]()
+  private val cCache =
+    new collection.mutable.HashMap[DateTimeZone, ISOChronology]()
 
   cCache.put(DateTimeZone.UTC, INSTANCE_UTC)
 
@@ -30,7 +32,8 @@ object ISOChronology {
     }
     var chrono = cCache.get(_zone).orNull
     if (chrono == null) {
-      chrono = new ISOChronology(ZonedChronology.getInstance(INSTANCE_UTC, _zone))
+      chrono = new ISOChronology(
+        ZonedChronology.getInstance(INSTANCE_UTC, _zone))
       val oldChrono = if (cCache.get(_zone).isEmpty) {
         cCache(_zone) = chrono
         chrono
@@ -45,7 +48,8 @@ object ISOChronology {
   }
 
   @SerialVersionUID(-6212696554273812441L)
-  private class Stub(@transient private var iZone: DateTimeZone) extends Serializable {
+  private class Stub(@transient private var iZone: DateTimeZone)
+      extends Serializable {
 
     private def readResolve(): AnyRef = ISOChronology.getInstance(iZone)
 
@@ -60,7 +64,8 @@ object ISOChronology {
 }
 
 @SerialVersionUID(-6212696554273812441L)
-class ISOChronology private (base: Chronology) extends AssembledChronology(base, null) {
+class ISOChronology private (base: Chronology)
+    extends AssembledChronology(base, null) {
 
   def withUTC(): Chronology = INSTANCE_UTC
 
@@ -86,13 +91,18 @@ class ISOChronology private (base: Chronology) extends AssembledChronology(base,
 
   protected def assemble(fields: Fields) {
     if (getBase.getZone == DateTimeZone.UTC) {
-      fields.centuryOfEra = new DividedDateTimeField(ISOYearOfEraDateTimeField.INSTANCE, DateTimeFieldType.centuryOfEra(),
+      fields.centuryOfEra = new DividedDateTimeField(
+        ISOYearOfEraDateTimeField.INSTANCE,
+        DateTimeFieldType.centuryOfEra(),
         100)
       fields.centuries = fields.centuryOfEra.getDurationField
-      fields.yearOfCentury = new RemainderDateTimeField(fields.centuryOfEra.asInstanceOf[DividedDateTimeField],
+      fields.yearOfCentury = new RemainderDateTimeField(
+        fields.centuryOfEra.asInstanceOf[DividedDateTimeField],
         DateTimeFieldType.yearOfCentury())
-      fields.weekyearOfCentury = new RemainderDateTimeField(fields.centuryOfEra.asInstanceOf[DividedDateTimeField],
-        fields.weekyears, DateTimeFieldType.weekyearOfCentury())
+      fields.weekyearOfCentury = new RemainderDateTimeField(
+        fields.centuryOfEra.asInstanceOf[DividedDateTimeField],
+        fields.weekyears,
+        DateTimeFieldType.weekyearOfCentury())
     }
   }
 

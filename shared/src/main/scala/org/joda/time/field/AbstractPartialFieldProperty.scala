@@ -49,7 +49,8 @@ abstract class AbstractPartialFieldProperty protected () {
     getField.getMaximumValue(getReadablePartial)
   }
 
-  def getMaximumTextLength(locale: Locale): Int = getField.getMaximumTextLength(locale)
+  def getMaximumTextLength(locale: Locale): Int =
+    getField.getMaximumTextLength(locale)
 
   def getMaximumShortTextLength(locale: Locale): Int = {
     getField.getMaximumShortTextLength(locale)
@@ -90,12 +91,13 @@ abstract class AbstractPartialFieldProperty protected () {
       return true
     }
     if (`object`.isInstanceOf[AbstractPartialFieldProperty] ==
-      false) {
+          false) {
       return false
     }
     val other = `object`.asInstanceOf[AbstractPartialFieldProperty]
     get == other.get && getFieldType == other.getFieldType &&
-      FieldUtils.==(getReadablePartial.getChronology, other.getReadablePartial.getChronology)
+    FieldUtils.==(getReadablePartial.getChronology,
+                  other.getReadablePartial.getChronology)
   }
 
   override def hashCode(): Int = {

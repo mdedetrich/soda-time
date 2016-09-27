@@ -17,7 +17,10 @@ object DateTimeParserBucket {
 
   private def sort(array: Array[SavedField], high: Int) {
     if (high > 10) {
-      Arrays.sort(array.map(_.asInstanceOf[AnyRef]), 0, high,array.asInstanceOf[Ordering[Object]])
+      Arrays.sort(array.map(_.asInstanceOf[AnyRef]),
+                  0,
+                  high,
+                  array.asInstanceOf[Ordering[Object]])
     } else {
       for (i <- 0 until high) {
         var j = i
@@ -53,8 +56,10 @@ object DateTimeParserBucket {
     }
 
     def set(millis: Long, reset: Boolean): Long = {
-      var _millis:Long = millis
-      _millis = if (iText == null) iField.set(_millis, iValue) else iField.set(_millis, iText, iLocale)
+      var _millis: Long = millis
+      _millis =
+        if (iText == null) iField.set(_millis, iValue)
+        else iField.set(_millis, iText, iLocale)
       if (reset) {
         _millis = iField.roundFloor(_millis)
       }
@@ -63,7 +68,8 @@ object DateTimeParserBucket {
 
     def compareTo(obj: SavedField): Int = {
       val other = obj.iField
-      val result = compareReverse(iField.getRangeDurationField, other.getRangeDurationField)
+      val result = compareReverse(iField.getRangeDurationField,
+                                  other.getRangeDurationField)
       if (result != 0) {
         return result
       }
@@ -90,7 +96,7 @@ class DateTimeParserBucket(private val instantLocal: Long,
                            locale: Locale,
                            private val pivotYear: Integer,
                            private val defaultYear: Int) {
-  
+
   private var iChrono = chrono.withUTC()
   private var iLocale = if (locale == null) Locale.getDefault else locale
   private var iDefaultZone = chrono.getZone
@@ -110,7 +116,7 @@ class DateTimeParserBucket(private val instantLocal: Long,
   iMillis = instantLocal
   iDefaultZone = chrono.getZone()
   iChrono = chrono.withUTC()
-  iLocale = if (locale == null) Locale.getDefault() else  locale
+  iLocale = if (locale == null) Locale.getDefault() else locale
   iDefaultYear = defaultYear
   iDefaultPivotYear = pivotYear
   // reset
@@ -154,7 +160,8 @@ class DateTimeParserBucket(private val instantLocal: Long,
     } else {
       newPos = ~newPos
     }
-    throw new IllegalArgumentException(FormatUtils.createErrorMessage(text.toString, newPos))
+    throw new IllegalArgumentException(
+      FormatUtils.createErrorMessage(text.toString, newPos))
   }
 
   def getChronology(): Chronology = iChrono
@@ -204,12 +211,14 @@ class DateTimeParserBucket(private val instantLocal: Long,
   }
 
   private def obtainSaveField(): SavedField = {
-    var savedFields:Array[SavedField] = iSavedFields
+    var savedFields: Array[SavedField] = iSavedFields
     val savedFieldsCount = iSavedFieldsCount
     if (savedFieldsCount == savedFields.length || iSavedFieldsShared) {
-      val newArray = Array.ofDim[SavedField](if (savedFieldsCount == savedFields.length) savedFieldsCount * 2 else savedFields.length)
+      val newArray = Array.ofDim[SavedField](
+        if (savedFieldsCount == savedFields.length) savedFieldsCount * 2
+        else savedFields.length)
       System.arraycopy(savedFields, 0, newArray, 0, savedFieldsCount)
-      iSavedFields = newArray 
+      iSavedFields = newArray
       savedFields = newArray
       iSavedFieldsShared = false
     }
@@ -296,8 +305,8 @@ class DateTimeParserBucket(private val instantLocal: Long,
       millis -= offset
       if (offset != iZone.getOffset(millis)) {
         var message = "Illegal instant due to time zone offset transition (" +
-          iZone +
-          ')'
+            iZone +
+            ')'
         if (text != null) {
           message = "Cannot parse \"" + text + "\": " + message
         }

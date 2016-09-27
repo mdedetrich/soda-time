@@ -7,8 +7,9 @@ import org.joda.time.DurationField
 import org.joda.time.field.PreciseDurationDateTimeField
 
 @SerialVersionUID(-3857947176719041436L)
-class GJDayOfWeekDateTimeField(private val iChronology: BasicChronology, days: DurationField)
-  extends PreciseDurationDateTimeField(DateTimeFieldType.dayOfWeek(), days) {
+class GJDayOfWeekDateTimeField(private val iChronology: BasicChronology,
+                               days: DurationField)
+    extends PreciseDurationDateTimeField(DateTimeFieldType.dayOfWeek(), days) {
 
   def get(instant: Long): Int = iChronology.getDayOfWeek(instant)
 

@@ -19,7 +19,8 @@ import org.joda.time.format.ISODateTimeFormat
 
 object GJChronology {
 
-  private val cCache = new collection.mutable.HashMap[GJCacheKey, GJChronology]()
+  private val cCache =
+    new collection.mutable.HashMap[GJCacheKey, GJChronology]()
 
   val DEFAULT_CUTOVER = new Instant(-12219292800000L)
 
@@ -31,11 +32,16 @@ object GJChronology {
     getInstance(DateTimeZone.getDefault, DEFAULT_CUTOVER, 4)
   }
 
-  def getInstance(zone: DateTimeZone): GJChronology = getInstance(zone, DEFAULT_CUTOVER, 4)
+  def getInstance(zone: DateTimeZone): GJChronology =
+    getInstance(zone, DEFAULT_CUTOVER, 4)
 
-  def getInstance(zone: DateTimeZone, gregorianCutover: ReadableInstant): GJChronology = getInstance(zone, gregorianCutover, 4)
+  def getInstance(zone: DateTimeZone,
+                  gregorianCutover: ReadableInstant): GJChronology =
+    getInstance(zone, gregorianCutover, 4)
 
-  def getInstance(zone: DateTimeZone, gregorianCutover: ReadableInstant, minDaysInFirstWeek: Int): GJChronology = {
+  def getInstance(zone: DateTimeZone,
+                  gregorianCutover: ReadableInstant,
+                  minDaysInFirstWeek: Int): GJChronology = {
     var _zone: DateTimeZone = zone
     _zone = DateTimeUtils.getZone(_zone)
     var cutoverInstant: Instant = null
@@ -43,21 +49,28 @@ object GJChronology {
       cutoverInstant = GJChronology.DEFAULT_CUTOVER
     } else {
       cutoverInstant = gregorianCutover.toInstant()
-      val cutoverDate = new LocalDate(cutoverInstant.getMillis, GregorianChronology.getInstance(_zone))
+      val cutoverDate = new LocalDate(cutoverInstant.getMillis,
+                                      GregorianChronology.getInstance(_zone))
       if (cutoverDate.getYear <= 0) {
-        throw new IllegalArgumentException("Cutover too early. Must be on or after 0001-01-01.")
+        throw new IllegalArgumentException(
+          "Cutover too early. Must be on or after 0001-01-01.")
       }
     }
     val cacheKey = new GJCacheKey(_zone, cutoverInstant, minDaysInFirstWeek)
     var chrono = cCache.get(cacheKey).orNull
     if (chrono == null) {
       if (_zone == DateTimeZone.UTC) {
-        chrono = new GJChronology(JulianChronology.getInstance(_zone, minDaysInFirstWeek), GregorianChronology.getInstance(_zone,
-          minDaysInFirstWeek), cutoverInstant)
+        chrono = new GJChronology(
+          JulianChronology.getInstance(_zone, minDaysInFirstWeek),
+          GregorianChronology.getInstance(_zone, minDaysInFirstWeek),
+          cutoverInstant)
       } else {
-        chrono = getInstance(DateTimeZone.UTC, cutoverInstant, minDaysInFirstWeek)
-        chrono = new GJChronology(ZonedChronology.getInstance(chrono, _zone), chrono.iJulianChronology,
-          chrono.iGregorianChronology, chrono.iCutoverInstant)
+        chrono =
+          getInstance(DateTimeZone.UTC, cutoverInstant, minDaysInFirstWeek)
+        chrono = new GJChronology(ZonedChronology.getInstance(chrono, _zone),
+                                  chrono.iJulianChronology,
+                                  chrono.iGregorianChronology,
+                                  chrono.iCutoverInstant)
       }
       val oldChrono = if (cCache.get(cacheKey).isEmpty) {
         cCache(cacheKey) = chrono
@@ -65,7 +78,7 @@ object GJChronology {
       } else {
         chrono
       }
-      
+
       if (oldChrono != null) {
         chrono = oldChrono
       }
@@ -73,9 +86,13 @@ object GJChronology {
     chrono
   }
 
-  def getInstance(zone: DateTimeZone, gregorianCutover: Long, minDaysInFirstWeek: Int): GJChronology = {
+  def getInstance(zone: DateTimeZone,
+                  gregorianCutover: Long,
+                  minDaysInFirstWeek: Int): GJChronology = {
     var cutoverInstant: Instant = null
-    cutoverInstant = if (gregorianCutover == DEFAULT_CUTOVER.getMillis) null else new Instant(gregorianCutover)
+    cutoverInstant =
+      if (gregorianCutover == DEFAULT_CUTOVER.getMillis) null
+      else new Instant(gregorianCutover)
     getInstance(zone, cutoverInstant, minDaysInFirstWeek)
   }
 }
@@ -83,48 +100,65 @@ object GJChronology {
 @SerialVersionUID(-2545574827706931671L)
 class GJChronology extends AssembledChronology {
 
-  private def this(julian: JulianChronology, gregorian: GregorianChronology, cutoverInstant: Instant) {
+  private def this(julian: JulianChronology,
+                   gregorian: GregorianChronology,
+                   cutoverInstant: Instant) {
     this()
-    super.auxConstructor(null,Array[AnyRef](julian, gregorian, cutoverInstant))
+    super
+      .auxConstructor(null, Array[AnyRef](julian, gregorian, cutoverInstant))
   }
 
-  private def this(base: Chronology, julian: JulianChronology, gregorian: GregorianChronology, cutoverInstant: Instant) {
+  private def this(base: Chronology,
+                   julian: JulianChronology,
+                   gregorian: GregorianChronology,
+                   cutoverInstant: Instant) {
     this()
-    super.auxConstructor(base, Array[AnyRef](julian, gregorian, cutoverInstant))
+    super
+      .auxConstructor(base, Array[AnyRef](julian, gregorian, cutoverInstant))
   }
 
-  private def convertByYear(instant: Long, from: Chronology, to: Chronology): Long = {
-    to.getDateTimeMillis(from.year().get(instant), from.monthOfYear().get(instant), from.dayOfMonth().get(instant),
-      from.millisOfDay().get(instant))
+  private def convertByYear(instant: Long,
+                            from: Chronology,
+                            to: Chronology): Long = {
+    to.getDateTimeMillis(from.year().get(instant),
+                         from.monthOfYear().get(instant),
+                         from.dayOfMonth().get(instant),
+                         from.millisOfDay().get(instant))
   }
 
-  private def convertByWeekyear(instant: Long, from: Chronology, to: Chronology): Long = {
+  private def convertByWeekyear(instant: Long,
+                                from: Chronology,
+                                to: Chronology): Long = {
     var newInstant: Long = 0l
     newInstant = to.weekyear().set(0, from.weekyear().get(instant))
-    newInstant = to.weekOfWeekyear().set(newInstant, from.weekOfWeekyear().get(instant))
+    newInstant =
+      to.weekOfWeekyear().set(newInstant, from.weekOfWeekyear().get(instant))
     newInstant = to.dayOfWeek().set(newInstant, from.dayOfWeek().get(instant))
-    newInstant = to.millisOfDay().set(newInstant, from.millisOfDay().get(instant))
+    newInstant =
+      to.millisOfDay().set(newInstant, from.millisOfDay().get(instant))
     newInstant
   }
 
-
-
-
   @SerialVersionUID(4097975388007713084L)
-  private class LinkedDurationField(durationField: DurationField, dateTimeFiled: ImpreciseCutoverField)
-    extends DecoratedDurationField(durationField, durationField.getType) {
+  private class LinkedDurationField(durationField: DurationField,
+                                    dateTimeFiled: ImpreciseCutoverField)
+      extends DecoratedDurationField(durationField, durationField.getType) {
 
     private val iField: ImpreciseCutoverField = dateTimeFiled
 
-    override def add(instant: Long, value: Int): Long = iField.add(instant, value)
+    override def add(instant: Long, value: Int): Long =
+      iField.add(instant, value)
 
-    override def add(instant: Long, value: Long): Long = iField.add(instant, value)
+    override def add(instant: Long, value: Long): Long =
+      iField.add(instant, value)
 
-    override def getDifference(minuendInstant: Long, subtrahendInstant: Long): Int = {
+    override def getDifference(minuendInstant: Long,
+                               subtrahendInstant: Long): Int = {
       iField.getDifference(minuendInstant, subtrahendInstant)
     }
 
-    override def getDifferenceAsLong(minuendInstant: Long, subtrahendInstant: Long): Long = {
+    override def getDifferenceAsLong(minuendInstant: Long,
+                                     subtrahendInstant: Long): Long = {
       iField.getDifferenceAsLong(minuendInstant, subtrahendInstant)
     }
   }
@@ -136,12 +170,13 @@ class GJChronology extends AssembledChronology {
   private var iGapDuration: Long = _
 
   private def readResolve(): AnyRef = {
-    GJChronology.getInstance(getZone, iCutoverInstant, getMinimumDaysInFirstWeek)
+    GJChronology
+      .getInstance(getZone, iCutoverInstant, getMinimumDaysInFirstWeek)
   }
 
   override def getZone(): DateTimeZone = {
     var base: Chronology = null
-    if ( {
+    if ({
       base = getBase; base
     } != null) {
       return base.getZone
@@ -167,14 +202,16 @@ class GJChronology extends AssembledChronology {
                                  dayOfMonth: Int,
                                  millisOfDay: Int): Long = {
     var base: Chronology = null
-    if ( {
+    if ({
       base = getBase; base
     } != null) {
       return base.getDateTimeMillis(year, monthOfYear, dayOfMonth, millisOfDay)
     }
-    var instant = iGregorianChronology.getDateTimeMillis(year, monthOfYear, dayOfMonth, millisOfDay)
+    var instant = iGregorianChronology
+      .getDateTimeMillis(year, monthOfYear, dayOfMonth, millisOfDay)
     if (instant < iCutoverMillis) {
-      instant = iJulianChronology.getDateTimeMillis(year, monthOfYear, dayOfMonth, millisOfDay)
+      instant = iJulianChronology
+        .getDateTimeMillis(year, monthOfYear, dayOfMonth, millisOfDay)
       if (instant >= iCutoverMillis) {
         throw new IllegalArgumentException("Specified date does not exist")
       }
@@ -190,31 +227,51 @@ class GJChronology extends AssembledChronology {
                                  secondOfMinute: Int,
                                  millisOfSecond: Int): Long = {
     var base: Chronology = null
-    if ( {
+    if ({
       base = getBase; base
     } != null) {
-      return base.getDateTimeMillis(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute,
-        millisOfSecond)
+      return base.getDateTimeMillis(year,
+                                    monthOfYear,
+                                    dayOfMonth,
+                                    hourOfDay,
+                                    minuteOfHour,
+                                    secondOfMinute,
+                                    millisOfSecond)
     }
     var instant: Long = 0l
     try {
-      instant = iGregorianChronology.getDateTimeMillis(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour,
-        secondOfMinute, millisOfSecond)
+      instant = iGregorianChronology.getDateTimeMillis(year,
+                                                       monthOfYear,
+                                                       dayOfMonth,
+                                                       hourOfDay,
+                                                       minuteOfHour,
+                                                       secondOfMinute,
+                                                       millisOfSecond)
     } catch {
       case ex: IllegalFieldValueException => {
         if (monthOfYear != 2 || dayOfMonth != 29) {
           throw ex
         }
-        instant = iGregorianChronology.getDateTimeMillis(year, monthOfYear, 28, hourOfDay, minuteOfHour,
-          secondOfMinute, millisOfSecond)
+        instant = iGregorianChronology.getDateTimeMillis(year,
+                                                         monthOfYear,
+                                                         28,
+                                                         hourOfDay,
+                                                         minuteOfHour,
+                                                         secondOfMinute,
+                                                         millisOfSecond)
         if (instant >= iCutoverMillis) {
           throw ex
         }
       }
     }
     if (instant < iCutoverMillis) {
-      instant = iJulianChronology.getDateTimeMillis(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour,
-        secondOfMinute, millisOfSecond)
+      instant = iJulianChronology.getDateTimeMillis(year,
+                                                    monthOfYear,
+                                                    dayOfMonth,
+                                                    hourOfDay,
+                                                    minuteOfHour,
+                                                    secondOfMinute,
+                                                    millisOfSecond)
       if (instant >= iCutoverMillis) {
         throw new IllegalArgumentException("Specified date does not exist")
       }
@@ -254,7 +311,10 @@ class GJChronology extends AssembledChronology {
     if (iCutoverMillis != GJChronology.DEFAULT_CUTOVER.getMillis) {
       sb.append(",cutover=")
       var printer: DateTimeFormatter = null
-      printer = if (withUTC().dayOfYear().remainder(iCutoverMillis) == 0) ISODateTimeFormat.date() else ISODateTimeFormat.dateTime()
+      printer =
+        if (withUTC().dayOfYear().remainder(iCutoverMillis) == 0)
+          ISODateTimeFormat.date()
+        else ISODateTimeFormat.dateTime()
       printer.withChronology(withUTC()).printTo(sb, iCutoverMillis)
     }
     if (getMinimumDaysInFirstWeek != 4) {
@@ -283,50 +343,95 @@ class GJChronology extends AssembledChronology {
     iGapDuration = iCutoverMillis - julianToGregorianByYear(iCutoverMillis)
     fields.copyFieldsFrom(gregorian)
     if (gregorian.millisOfDay().get(iCutoverMillis) == 0) {
-      fields.millisOfSecond = new CutoverField(julian.millisOfSecond(), fields.millisOfSecond, iCutoverMillis)
-      fields.millisOfDay = new CutoverField(julian.millisOfDay(), fields.millisOfDay, iCutoverMillis)
-      fields.secondOfMinute = new CutoverField(julian.secondOfMinute(), fields.secondOfMinute, iCutoverMillis)
-      fields.secondOfDay = new CutoverField(julian.secondOfDay(), fields.secondOfDay, iCutoverMillis)
-      fields.minuteOfHour = new CutoverField(julian.minuteOfHour(), fields.minuteOfHour, iCutoverMillis)
-      fields.minuteOfDay = new CutoverField(julian.minuteOfDay(), fields.minuteOfDay, iCutoverMillis)
-      fields.hourOfDay = new CutoverField(julian.hourOfDay(), fields.hourOfDay, iCutoverMillis)
-      fields.hourOfHalfday = new CutoverField(julian.hourOfHalfday(), fields.hourOfHalfday, iCutoverMillis)
-      fields.clockhourOfDay = new CutoverField(julian.clockhourOfDay(), fields.clockhourOfDay, iCutoverMillis)
-      fields.clockhourOfHalfday = new CutoverField(julian.clockhourOfHalfday(), fields.clockhourOfHalfday,
-        iCutoverMillis)
-      fields.halfdayOfDay = new CutoverField(julian.halfdayOfDay(), fields.halfdayOfDay, iCutoverMillis)
+      fields.millisOfSecond = new CutoverField(julian.millisOfSecond(),
+                                               fields.millisOfSecond,
+                                               iCutoverMillis)
+      fields.millisOfDay = new CutoverField(julian.millisOfDay(),
+                                            fields.millisOfDay,
+                                            iCutoverMillis)
+      fields.secondOfMinute = new CutoverField(julian.secondOfMinute(),
+                                               fields.secondOfMinute,
+                                               iCutoverMillis)
+      fields.secondOfDay = new CutoverField(julian.secondOfDay(),
+                                            fields.secondOfDay,
+                                            iCutoverMillis)
+      fields.minuteOfHour = new CutoverField(julian.minuteOfHour(),
+                                             fields.minuteOfHour,
+                                             iCutoverMillis)
+      fields.minuteOfDay = new CutoverField(julian.minuteOfDay(),
+                                            fields.minuteOfDay,
+                                            iCutoverMillis)
+      fields.hourOfDay =
+        new CutoverField(julian.hourOfDay(), fields.hourOfDay, iCutoverMillis)
+      fields.hourOfHalfday = new CutoverField(julian.hourOfHalfday(),
+                                              fields.hourOfHalfday,
+                                              iCutoverMillis)
+      fields.clockhourOfDay = new CutoverField(julian.clockhourOfDay(),
+                                               fields.clockhourOfDay,
+                                               iCutoverMillis)
+      fields.clockhourOfHalfday = new CutoverField(julian.clockhourOfHalfday(),
+                                                   fields.clockhourOfHalfday,
+                                                   iCutoverMillis)
+      fields.halfdayOfDay = new CutoverField(julian.halfdayOfDay(),
+                                             fields.halfdayOfDay,
+                                             iCutoverMillis)
     }
     fields.era = new CutoverField(julian.era(), fields.era, iCutoverMillis)
-    fields.year = new ImpreciseCutoverField(julian.year(), fields.year, iCutoverMillis)
+    fields.year =
+      new ImpreciseCutoverField(julian.year(), fields.year, iCutoverMillis)
     fields.years = fields.year.getDurationField
-    fields.yearOfEra = new ImpreciseCutoverField(julian.yearOfEra(), fields.yearOfEra, fields.years,
-      iCutoverMillis)
-    fields.centuryOfEra = new ImpreciseCutoverField(julian.centuryOfEra(), fields.centuryOfEra, iCutoverMillis)
+    fields.yearOfEra = new ImpreciseCutoverField(julian.yearOfEra(),
+                                                 fields.yearOfEra,
+                                                 fields.years,
+                                                 iCutoverMillis)
+    fields.centuryOfEra = new ImpreciseCutoverField(julian.centuryOfEra(),
+                                                    fields.centuryOfEra,
+                                                    iCutoverMillis)
     fields.centuries = fields.centuryOfEra.getDurationField
-    fields.yearOfCentury = new ImpreciseCutoverField(julian.yearOfCentury(), fields.yearOfCentury, fields.years,
-      fields.centuries, iCutoverMillis)
-    fields.monthOfYear = new ImpreciseCutoverField(julian.monthOfYear(), fields.monthOfYear, null, fields.years,
-      iCutoverMillis)
+    fields.yearOfCentury = new ImpreciseCutoverField(julian.yearOfCentury(),
+                                                     fields.yearOfCentury,
+                                                     fields.years,
+                                                     fields.centuries,
+                                                     iCutoverMillis)
+    fields.monthOfYear = new ImpreciseCutoverField(julian.monthOfYear(),
+                                                   fields.monthOfYear,
+                                                   null,
+                                                   fields.years,
+                                                   iCutoverMillis)
     fields.months = fields.monthOfYear.getDurationField
-    fields.weekyear = new ImpreciseCutoverField(julian.weekyear(), fields.weekyear, null, iCutoverMillis,
-      true)
+    fields.weekyear = new ImpreciseCutoverField(julian.weekyear(),
+                                                fields.weekyear,
+                                                null,
+                                                iCutoverMillis,
+                                                true)
     fields.weekyears = fields.weekyear.getDurationField
-    fields.weekyearOfCentury = new ImpreciseCutoverField(julian.weekyearOfCentury(), fields.weekyearOfCentury,
-      fields.weekyears, fields.centuries, iCutoverMillis)
+    fields.weekyearOfCentury = new ImpreciseCutoverField(
+      julian.weekyearOfCentury(),
+      fields.weekyearOfCentury,
+      fields.weekyears,
+      fields.centuries,
+      iCutoverMillis)
 
     {
       val cutover = gregorian.year().roundCeiling(iCutoverMillis)
-      fields.dayOfYear = new CutoverField(julian.dayOfYear(), fields.dayOfYear, fields.years, cutover,
-        false)
+      fields.dayOfYear = new CutoverField(julian.dayOfYear(),
+                                          fields.dayOfYear,
+                                          fields.years,
+                                          cutover,
+                                          false)
     }
 
     {
       val cutover = gregorian.weekyear().roundCeiling(iCutoverMillis)
-      fields.weekOfWeekyear = new CutoverField(julian.weekOfWeekyear(), fields.weekOfWeekyear, fields.weekyears,
-        cutover, true)
+      fields.weekOfWeekyear = new CutoverField(julian.weekOfWeekyear(),
+                                               fields.weekOfWeekyear,
+                                               fields.weekyears,
+                                               cutover,
+                                               true)
     }
 
-    val cf = new CutoverField(julian.dayOfMonth(), fields.dayOfMonth, iCutoverMillis)
+    val cf =
+      new CutoverField(julian.dayOfMonth(), fields.dayOfMonth, iCutoverMillis)
     cf.iRangeDurationField = fields.months
     fields.dayOfMonth = cf
   }
@@ -352,7 +457,8 @@ class GJChronology extends AssembledChronology {
                              val gregorianField: DateTimeField,
                              protected var rangeField: DurationField,
                              val cutoverMillis: Long,
-                             val convertByWeekyear: Boolean) extends BaseDateTimeField(gregorianField.getType) {
+                             val convertByWeekyear: Boolean)
+      extends BaseDateTimeField(gregorianField.getType) {
 
     var iJulianField: DateTimeField = null
     var iGregorianField: DateTimeField = null
@@ -360,7 +466,8 @@ class GJChronology extends AssembledChronology {
     var iCutover: Long = _
     var iConvertByWeekyear: Boolean = _
 
-    protected var iDurationField: DurationField = gregorianField.getDurationField
+    protected var iDurationField: DurationField =
+      gregorianField.getDurationField
 
     iJulianField = julianField
     iGregorianField = gregorianField
@@ -390,7 +497,9 @@ class GJChronology extends AssembledChronology {
       this(julianField, gregorianField, null, cutoverMillis, convertByWeekyear)
     }
 
-    def this(julianField: DateTimeField, gregorianField: DateTimeField, cutoverMillis: Long) {
+    def this(julianField: DateTimeField,
+             gregorianField: DateTimeField,
+             cutoverMillis: Long) {
       this(julianField, gregorianField, cutoverMillis, false)
     }
 
@@ -428,9 +537,11 @@ class GJChronology extends AssembledChronology {
       iGregorianField.getAsShortText(fieldValue, locale)
     }
 
-    override def add(instant: Long, value: Int): Long = iGregorianField.add(instant, value)
+    override def add(instant: Long, value: Int): Long =
+      iGregorianField.add(instant, value)
 
-    override def add(instant: Long, value: Long): Long = iGregorianField.add(instant, value)
+    override def add(instant: Long, value: Long): Long =
+      iGregorianField.add(instant, value)
 
     override def add(partial: ReadablePartial,
                      fieldIndex: Int,
@@ -442,7 +553,9 @@ class GJChronology extends AssembledChronology {
       if (DateTimeUtils.isContiguous(partial)) {
         var instant = 0L
         for (i <- 0 until partial.size()) {
-          instant = partial.getFieldType(i).getField(GJChronology.this)
+          instant = partial
+            .getFieldType(i)
+            .getField(GJChronology.this)
             .set(instant, values(i))
         }
         instant = add(instant, valueToAdd)
@@ -452,11 +565,13 @@ class GJChronology extends AssembledChronology {
       }
     }
 
-    override def getDifference(minuendInstant: Long, subtrahendInstant: Long): Int = {
+    override def getDifference(minuendInstant: Long,
+                               subtrahendInstant: Long): Int = {
       iGregorianField.getDifference(minuendInstant, subtrahendInstant)
     }
 
-    override def getDifferenceAsLong(minuendInstant: Long, subtrahendInstant: Long): Long = {
+    override def getDifferenceAsLong(minuendInstant: Long,
+                                     subtrahendInstant: Long): Long = {
       iGregorianField.getDifferenceAsLong(minuendInstant, subtrahendInstant)
     }
 
@@ -469,8 +584,10 @@ class GJChronology extends AssembledChronology {
             _instant = gregorianToJulian(_instant)
           }
           if (get(_instant) != value) {
-            throw IllegalFieldValueException.create(iGregorianField.getType, Integer.valueOf(value),
-              null, null)
+            throw IllegalFieldValueException.create(iGregorianField.getType,
+                                                    Integer.valueOf(value),
+                                                    null,
+                                                    null)
           }
         }
       } else {
@@ -480,8 +597,8 @@ class GJChronology extends AssembledChronology {
             _instant = julianToGregorian(_instant)
           }
           if (get(_instant) != value) {
-            throw IllegalFieldValueException.create(iJulianField.getType, Integer.valueOf(value),
-              null, null)
+            throw IllegalFieldValueException
+              .create(iJulianField.getType, Integer.valueOf(value), null, null)
           }
         }
       }
@@ -528,13 +645,16 @@ class GJChronology extends AssembledChronology {
       }
     }
 
-    override def getLeapDurationField(): DurationField = iGregorianField.getLeapDurationField
+    override def getLeapDurationField(): DurationField =
+      iGregorianField.getLeapDurationField
 
     def getMinimumValue(): Int = iJulianField.getMinimumValue
 
-    override def getMinimumValue(partial: ReadablePartial): Int = iJulianField.getMinimumValue(partial)
+    override def getMinimumValue(partial: ReadablePartial): Int =
+      iJulianField.getMinimumValue(partial)
 
-    override def getMinimumValue(partial: ReadablePartial, values: Array[Int]): Int = {
+    override def getMinimumValue(partial: ReadablePartial,
+                                 values: Array[Int]): Int = {
       iJulianField.getMinimumValue(partial, values)
     }
 
@@ -571,7 +691,8 @@ class GJChronology extends AssembledChronology {
       getMaximumValue(instant)
     }
 
-    override def getMaximumValue(partial: ReadablePartial, values: Array[Int]): Int = {
+    override def getMaximumValue(partial: ReadablePartial,
+                                 values: Array[Int]): Int = {
       val chrono = GJChronology.getInstanceUTC
       var instant = 0L
       for (i <- 0 until partial.size()) {
@@ -614,11 +735,13 @@ class GJChronology extends AssembledChronology {
     }
 
     override def getMaximumTextLength(locale: Locale): Int = {
-      Math.max(iJulianField.getMaximumTextLength(locale), iGregorianField.getMaximumTextLength(locale))
+      Math.max(iJulianField.getMaximumTextLength(locale),
+               iGregorianField.getMaximumTextLength(locale))
     }
 
     override def getMaximumShortTextLength(locale: Locale): Int = {
-      Math.max(iJulianField.getMaximumShortTextLength(locale), iGregorianField.getMaximumShortTextLength(locale))
+      Math.max(iJulianField.getMaximumShortTextLength(locale),
+               iGregorianField.getMaximumShortTextLength(locale))
     }
 
     protected def julianToGregorian(instant: Long): Long = {
@@ -643,7 +766,11 @@ class GJChronology extends AssembledChronology {
                                       gregorianField: DateTimeField,
                                       var durationField: DurationField,
                                       cutoverMillis: Long,
-                                      convertByWeekyear: Boolean) extends CutoverField(julianField, gregorianField, cutoverMillis, convertByWeekyear) {
+                                      convertByWeekyear: Boolean)
+      extends CutoverField(julianField,
+                           gregorianField,
+                           cutoverMillis,
+                           convertByWeekyear) {
 
     if (durationField == null) {
       durationField = new LinkedDurationField(iDurationField, this)
@@ -651,7 +778,9 @@ class GJChronology extends AssembledChronology {
 
     iDurationField = durationField
 
-    def this(julianField: DateTimeField, gregorianField: DateTimeField, cutoverMillis: Long) {
+    def this(julianField: DateTimeField,
+             gregorianField: DateTimeField,
+             cutoverMillis: Long) {
       this(julianField, gregorianField, null, cutoverMillis, false)
     }
 
@@ -733,11 +862,13 @@ class GJChronology extends AssembledChronology {
       _instant
     }
 
-    override def getDifference(minuendInstant: Long, subtrahendInstant: Long): Int = {
+    override def getDifference(minuendInstant: Long,
+                               subtrahendInstant: Long): Int = {
       var _minuendInstant: Long = minuendInstant
       if (_minuendInstant >= iCutover) {
         if (subtrahendInstant >= iCutover) {
-          return iGregorianField.getDifference(_minuendInstant, subtrahendInstant)
+          return iGregorianField
+            .getDifference(_minuendInstant, subtrahendInstant)
         }
         _minuendInstant = gregorianToJulian(_minuendInstant)
         iJulianField.getDifference(_minuendInstant, subtrahendInstant)
@@ -750,17 +881,20 @@ class GJChronology extends AssembledChronology {
       }
     }
 
-    override def getDifferenceAsLong(minuendInstant: Long, subtrahendInstant: Long): Long = {
+    override def getDifferenceAsLong(minuendInstant: Long,
+                                     subtrahendInstant: Long): Long = {
       var _minuendInstant: Long = minuendInstant
       if (_minuendInstant >= iCutover) {
         if (subtrahendInstant >= iCutover) {
-          return iGregorianField.getDifferenceAsLong(_minuendInstant, subtrahendInstant)
+          return iGregorianField
+            .getDifferenceAsLong(_minuendInstant, subtrahendInstant)
         }
         _minuendInstant = gregorianToJulian(_minuendInstant)
         iJulianField.getDifferenceAsLong(_minuendInstant, subtrahendInstant)
       } else {
         if (subtrahendInstant < iCutover) {
-          return iJulianField.getDifferenceAsLong(_minuendInstant, subtrahendInstant)
+          return iJulianField
+            .getDifferenceAsLong(_minuendInstant, subtrahendInstant)
         }
         _minuendInstant = julianToGregorian(_minuendInstant)
         iGregorianField.getDifferenceAsLong(_minuendInstant, subtrahendInstant)

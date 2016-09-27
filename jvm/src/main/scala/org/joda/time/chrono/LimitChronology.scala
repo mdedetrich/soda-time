@@ -17,7 +17,9 @@ import LimitChronology._
 
 object LimitChronology {
 
-  def getInstance(base: Chronology, lowerLimit: ReadableDateTime, upperLimit: ReadableDateTime): LimitChronology = {
+  def getInstance(base: Chronology,
+                  lowerLimit: ReadableDateTime,
+                  upperLimit: ReadableDateTime): LimitChronology = {
     var _lowerLimit = lowerLimit
     var _upperLimit = upperLimit
     if (base == null) {
@@ -27,16 +29,21 @@ object LimitChronology {
     _upperLimit = if (_upperLimit == null) null else _upperLimit.toDateTime()
     if (_lowerLimit != null && _upperLimit != null) {
       if (!_lowerLimit.isBefore(_upperLimit)) {
-        throw new IllegalArgumentException("The lower limit must be come before than the upper limit")
+        throw new IllegalArgumentException(
+          "The lower limit must be come before than the upper limit")
       }
     }
-    new LimitChronology(base, _lowerLimit.asInstanceOf[DateTime], _upperLimit.asInstanceOf[DateTime])
+    new LimitChronology(base,
+                        _lowerLimit.asInstanceOf[DateTime],
+                        _upperLimit.asInstanceOf[DateTime])
   }
 }
 
 @SerialVersionUID(7670866536893052522L)
-class LimitChronology private (base: Chronology, val lowerLimit: DateTime, val upperLimit: DateTime)
-  extends AssembledChronology(base, null) {
+class LimitChronology private (base: Chronology,
+                               val lowerLimit: DateTime,
+                               val upperLimit: DateTime)
+    extends AssembledChronology(base, null) {
 
   private var iLowerLimit: DateTime = null
   private var iUpperLimit: DateTime = null
@@ -44,7 +51,6 @@ class LimitChronology private (base: Chronology, val lowerLimit: DateTime, val u
 
   iLowerLimit = lowerLimit
   iUpperLimit = upperLimit
-
 
   def getLowerLimit(): DateTime = iLowerLimit
 
@@ -86,7 +92,8 @@ class LimitChronology private (base: Chronology, val lowerLimit: DateTime, val u
                                  monthOfYear: Int,
                                  dayOfMonth: Int,
                                  millisOfDay: Int): Long = {
-    val instant = getBase.getDateTimeMillis(year, monthOfYear, dayOfMonth, millisOfDay)
+    val instant =
+      getBase.getDateTimeMillis(year, monthOfYear, dayOfMonth, millisOfDay)
     checkLimits(instant, "resulting")
     instant
   }
@@ -98,8 +105,13 @@ class LimitChronology private (base: Chronology, val lowerLimit: DateTime, val u
                                  minuteOfHour: Int,
                                  secondOfMinute: Int,
                                  millisOfSecond: Int): Long = {
-    val instant = getBase.getDateTimeMillis(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute,
-      millisOfSecond)
+    val instant = getBase.getDateTimeMillis(year,
+                                            monthOfYear,
+                                            dayOfMonth,
+                                            hourOfDay,
+                                            minuteOfHour,
+                                            secondOfMinute,
+                                            millisOfSecond)
     checkLimits(instant, "resulting")
     instant
   }
@@ -111,7 +123,11 @@ class LimitChronology private (base: Chronology, val lowerLimit: DateTime, val u
                                  millisOfSecond: Int): Long = {
     var _instant = instant
     checkLimits(_instant, null)
-    _instant = getBase.getDateTimeMillis(_instant, hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond)
+    _instant = getBase.getDateTimeMillis(_instant,
+                                         hourOfDay,
+                                         minuteOfHour,
+                                         secondOfMinute,
+                                         millisOfSecond)
     checkLimits(_instant, "resulting")
     _instant
   }
@@ -141,7 +157,8 @@ class LimitChronology private (base: Chronology, val lowerLimit: DateTime, val u
     fields.monthOfYear = convertField(fields.monthOfYear, converted)
     fields.weekOfWeekyear = convertField(fields.weekOfWeekyear, converted)
     fields.weekyear = convertField(fields.weekyear, converted)
-    fields.weekyearOfCentury = convertField(fields.weekyearOfCentury, converted)
+    fields.weekyearOfCentury =
+      convertField(fields.weekyearOfCentury, converted)
     fields.millisOfSecond = convertField(fields.millisOfSecond, converted)
     fields.millisOfDay = convertField(fields.millisOfDay, converted)
     fields.secondOfMinute = convertField(fields.secondOfMinute, converted)
@@ -151,11 +168,13 @@ class LimitChronology private (base: Chronology, val lowerLimit: DateTime, val u
     fields.hourOfDay = convertField(fields.hourOfDay, converted)
     fields.hourOfHalfday = convertField(fields.hourOfHalfday, converted)
     fields.clockhourOfDay = convertField(fields.clockhourOfDay, converted)
-    fields.clockhourOfHalfday = convertField(fields.clockhourOfHalfday, converted)
+    fields.clockhourOfHalfday =
+      convertField(fields.clockhourOfHalfday, converted)
     fields.halfdayOfDay = convertField(fields.halfdayOfDay, converted)
   }
 
-  private def convertField(field: DurationField, converted: HashMap[Any, Any]): DurationField = {
+  private def convertField(field: DurationField,
+                           converted: HashMap[Any, Any]): DurationField = {
     if (field == null || !field.isSupported) {
       return field
     }
@@ -167,27 +186,31 @@ class LimitChronology private (base: Chronology, val lowerLimit: DateTime, val u
     limitField
   }
 
-  private def convertField(field: DateTimeField, converted: HashMap[Any, Any]): DateTimeField = {
+  private def convertField(field: DateTimeField,
+                           converted: HashMap[Any, Any]): DateTimeField = {
     if (field == null || !field.isSupported) {
       return field
     }
     if (converted.containsKey(field)) {
       return converted.get(field).asInstanceOf[DateTimeField]
     }
-    val limitField = new LimitDateTimeField(field, convertField(field.getDurationField, converted), convertField(field.getRangeDurationField,
-      converted), convertField(field.getLeapDurationField, converted))
+    val limitField = new LimitDateTimeField(
+      field,
+      convertField(field.getDurationField, converted),
+      convertField(field.getRangeDurationField, converted),
+      convertField(field.getLeapDurationField, converted))
     converted.put(field, limitField)
     limitField
   }
 
   def checkLimits(instant: Long, desc: String) {
     var limit: DateTime = null
-    if ( {
+    if ({
       limit = iLowerLimit; limit
     } != null && instant < limit.getMillis) {
       throw new LimitException(desc, true)
     }
-    if ( {
+    if ({
       limit = iUpperLimit; limit
     } != null && instant >= limit.getMillis) {
       throw new LimitException(desc, false)
@@ -202,8 +225,9 @@ class LimitChronology private (base: Chronology, val lowerLimit: DateTime, val u
       return false
     }
     val chrono = obj.asInstanceOf[LimitChronology]
-    getBase == chrono.getBase && FieldUtils.==(getLowerLimit, chrono.getLowerLimit) &&
-      FieldUtils.==(getUpperLimit, chrono.getUpperLimit)
+    getBase == chrono.getBase && FieldUtils.==(getLowerLimit,
+                                               chrono.getLowerLimit) &&
+    FieldUtils.==(getUpperLimit, chrono.getUpperLimit)
   }
 
   override def hashCode(): Int = {
@@ -223,7 +247,8 @@ class LimitChronology private (base: Chronology, val lowerLimit: DateTime, val u
   }
 
   @SerialVersionUID(-5924689995607498581L)
-  private class LimitException(desc: String, private val iIsLow: Boolean) extends IllegalArgumentException(desc) {
+  private class LimitException(desc: String, private val iIsLow: Boolean)
+      extends IllegalArgumentException(desc) {
 
     override def getMessage(): String = {
       val buf = new StringBuffer(85)
@@ -255,7 +280,8 @@ class LimitChronology private (base: Chronology, val lowerLimit: DateTime, val u
   }
 
   @SerialVersionUID(8049297699408782284L)
-  private class LimitDurationField(field: DurationField) extends DecoratedDurationField(field, field.getType) {
+  private class LimitDurationField(field: DurationField)
+      extends DecoratedDurationField(field, field.getType) {
 
     override def getValue(duration: Long, instant: Long): Int = {
       checkLimits(instant, null)
@@ -291,13 +317,15 @@ class LimitChronology private (base: Chronology, val lowerLimit: DateTime, val u
       result
     }
 
-    override def getDifference(minuendInstant: Long, subtrahendInstant: Long): Int = {
+    override def getDifference(minuendInstant: Long,
+                               subtrahendInstant: Long): Int = {
       checkLimits(minuendInstant, "minuend")
       checkLimits(subtrahendInstant, "subtrahend")
       getWrappedField.getDifference(minuendInstant, subtrahendInstant)
     }
 
-    override def getDifferenceAsLong(minuendInstant: Long, subtrahendInstant: Long): Long = {
+    override def getDifferenceAsLong(minuendInstant: Long,
+                                     subtrahendInstant: Long): Long = {
       checkLimits(minuendInstant, "minuend")
       checkLimits(subtrahendInstant, "subtrahend")
       getWrappedField.getDifferenceAsLong(minuendInstant, subtrahendInstant)
@@ -305,14 +333,16 @@ class LimitChronology private (base: Chronology, val lowerLimit: DateTime, val u
   }
 
   @SerialVersionUID(-2435306746995699312L)
-  private class LimitDateTimeField(field: DateTimeField,
-                                   private val durationField: DurationField,
-                                   private val rangeDurationField: DurationField,
-                                   private val leapDurationField: DurationField) extends DecoratedDateTimeField(field, field.getType) {
+  private class LimitDateTimeField(
+      field: DateTimeField,
+      private val durationField: DurationField,
+      private val rangeDurationField: DurationField,
+      private val leapDurationField: DurationField)
+      extends DecoratedDateTimeField(field, field.getType) {
 
     private var iDurationField: DurationField = null
     private var iRangeDurationField: DurationField = null
-    private var iLeapDurationField: DurationField  = null
+    private var iLeapDurationField: DurationField = null
 
     iDurationField = durationField
     iRangeDurationField = rangeDurationField
@@ -354,13 +384,15 @@ class LimitChronology private (base: Chronology, val lowerLimit: DateTime, val u
       result
     }
 
-    override def getDifference(minuendInstant: Long, subtrahendInstant: Long): Int = {
+    override def getDifference(minuendInstant: Long,
+                               subtrahendInstant: Long): Int = {
       checkLimits(minuendInstant, "minuend")
       checkLimits(subtrahendInstant, "subtrahend")
       getWrappedField.getDifference(minuendInstant, subtrahendInstant)
     }
 
-    override def getDifferenceAsLong(minuendInstant: Long, subtrahendInstant: Long): Long = {
+    override def getDifferenceAsLong(minuendInstant: Long,
+                                     subtrahendInstant: Long): Long = {
       checkLimits(minuendInstant, "minuend")
       checkLimits(subtrahendInstant, "subtrahend")
       getWrappedField.getDifferenceAsLong(minuendInstant, subtrahendInstant)

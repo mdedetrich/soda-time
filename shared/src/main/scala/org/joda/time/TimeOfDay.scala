@@ -13,7 +13,10 @@ import TimeOfDay._
 
 object TimeOfDay {
 
-  private val FIELD_TYPES = Array(DateTimeFieldType.hourOfDay(), DateTimeFieldType.minuteOfHour(), DateTimeFieldType.secondOfMinute(), DateTimeFieldType.millisOfSecond())
+  private val FIELD_TYPES = Array(DateTimeFieldType.hourOfDay(),
+                                  DateTimeFieldType.minuteOfHour(),
+                                  DateTimeFieldType.secondOfMinute(),
+                                  DateTimeFieldType.millisOfSecond())
 
   val MIDNIGHT = new TimeOfDay(0, 0, 0, 0)
   val HOUR_OF_DAY = 0
@@ -25,18 +28,24 @@ object TimeOfDay {
     if (calendar == null) {
       throw new IllegalArgumentException("The calendar must not be null")
     }
-    new TimeOfDay(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND),
-      calendar.get(Calendar.MILLISECOND))
+    new TimeOfDay(calendar.get(Calendar.HOUR_OF_DAY),
+                  calendar.get(Calendar.MINUTE),
+                  calendar.get(Calendar.SECOND),
+                  calendar.get(Calendar.MILLISECOND))
   }
 
   def fromDateFields(date: Date): TimeOfDay = {
     if (date == null) {
       throw new IllegalArgumentException("The date must not be null")
     }
-    new TimeOfDay(date.getHours, date.getMinutes, date.getSeconds, ((date.getTime % 1000).toInt + 1000) % 1000)
+    new TimeOfDay(date.getHours,
+                  date.getMinutes,
+                  date.getSeconds,
+                  ((date.getTime % 1000).toInt + 1000) % 1000)
   }
 
-  def fromMillisOfDay(millisOfDay: Long): TimeOfDay = fromMillisOfDay(millisOfDay, null)
+  def fromMillisOfDay(millisOfDay: Long): TimeOfDay =
+    fromMillisOfDay(millisOfDay, null)
 
   def fromMillisOfDay(millisOfDay: Long, chrono: Chronology): TimeOfDay = {
     var _chrono = chrono
@@ -47,8 +56,10 @@ object TimeOfDay {
 
   @SerialVersionUID(5598459141741063833L)
   @Deprecated
-  class Property(private val iTimeOfDay: TimeOfDay, private val iFieldIndex: Int)
-    extends AbstractPartialFieldProperty() with Serializable {
+  class Property(private val iTimeOfDay: TimeOfDay,
+                 private val iFieldIndex: Int)
+      extends AbstractPartialFieldProperty()
+      with Serializable {
 
     def getField(): DateTimeField = iTimeOfDay.getField(iFieldIndex)
 
@@ -60,7 +71,8 @@ object TimeOfDay {
 
     def addToCopy(valueToAdd: Int): TimeOfDay = {
       var newValues = iTimeOfDay.getValues
-      newValues = getField.addWrapPartial(iTimeOfDay, iFieldIndex, newValues, valueToAdd)
+      newValues =
+        getField.addWrapPartial(iTimeOfDay, iFieldIndex, newValues, valueToAdd)
       new TimeOfDay(iTimeOfDay, newValues)
     }
 
@@ -72,7 +84,8 @@ object TimeOfDay {
 
     def addWrapFieldToCopy(valueToAdd: Int): TimeOfDay = {
       var newValues = iTimeOfDay.getValues
-      newValues = getField.addWrapField(iTimeOfDay, iFieldIndex, newValues, valueToAdd)
+      newValues =
+        getField.addWrapField(iTimeOfDay, iFieldIndex, newValues, valueToAdd)
       new TimeOfDay(iTimeOfDay, newValues)
     }
 
@@ -84,7 +97,8 @@ object TimeOfDay {
 
     def setCopy(text: String, locale: Locale): TimeOfDay = {
       var newValues = iTimeOfDay.getValues
-      newValues = getField.set(iTimeOfDay, iFieldIndex, newValues, text, locale)
+      newValues =
+        getField.set(iTimeOfDay, iFieldIndex, newValues, text, locale)
       new TimeOfDay(iTimeOfDay, newValues)
     }
 
@@ -127,7 +141,9 @@ class TimeOfDay extends BasePartial() with ReadablePartial with Serializable {
 
   def this(instant: AnyRef, chronology: Chronology) {
     this()
-    super.auxConstructor(instant, DateTimeUtils.getChronology(chronology), ISODateTimeFormat.timeParser())
+    super.auxConstructor(instant,
+                         DateTimeUtils.getChronology(chronology),
+                         ISODateTimeFormat.timeParser())
   }
 
   def this(hourOfDay: Int,
@@ -136,7 +152,9 @@ class TimeOfDay extends BasePartial() with ReadablePartial with Serializable {
            millisOfSecond: Int,
            chronology: Chronology) {
     this()
-    super.auxConstructor(Array(hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond), chronology)
+    super.auxConstructor(
+      Array(hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond),
+      chronology)
   }
 
   def this(partial: TimeOfDay, values: Array[Int]) {
@@ -175,17 +193,16 @@ class TimeOfDay extends BasePartial() with ReadablePartial with Serializable {
     this(hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond, null)
   }
 
-
-
   def size(): Int = 4
 
-  protected def getField(index: Int, chrono: Chronology): DateTimeField = index match {
-    case HOUR_OF_DAY => chrono.hourOfDay()
-    case MINUTE_OF_HOUR => chrono.minuteOfHour()
-    case SECOND_OF_MINUTE => chrono.secondOfMinute()
-    case MILLIS_OF_SECOND => chrono.millisOfSecond()
-    case _ => throw new IndexOutOfBoundsException("Invalid index: " + index)
-  }
+  protected def getField(index: Int, chrono: Chronology): DateTimeField =
+    index match {
+      case HOUR_OF_DAY => chrono.hourOfDay()
+      case MINUTE_OF_HOUR => chrono.minuteOfHour()
+      case SECOND_OF_MINUTE => chrono.secondOfMinute()
+      case MILLIS_OF_SECOND => chrono.millisOfSecond()
+      case _ => throw new IndexOutOfBoundsException("Invalid index: " + index)
+    }
 
   override def getFieldType(index: Int): DateTimeFieldType = FIELD_TYPES(index)
 
@@ -235,8 +252,11 @@ class TimeOfDay extends BasePartial() with ReadablePartial with Serializable {
       val fieldType = period.getFieldType(i)
       val index = indexOf(fieldType)
       if (index >= 0) {
-        newValues = getField(index).addWrapPartial(this, index, newValues, FieldUtils.safeMultiply(period.getValue(i),
-          scalar))
+        newValues = getField(index).addWrapPartial(
+          this,
+          index,
+          newValues,
+          FieldUtils.safeMultiply(period.getValue(i), scalar))
       }
     }
     new TimeOfDay(this, newValues)
@@ -283,7 +303,11 @@ class TimeOfDay extends BasePartial() with ReadablePartial with Serializable {
   }
 
   def toLocalTime(): LocalTime = {
-    new LocalTime(getHourOfDay, getMinuteOfHour, getSecondOfMinute, getMillisOfSecond, getChronology)
+    new LocalTime(getHourOfDay,
+                  getMinuteOfHour,
+                  getSecondOfMinute,
+                  getMillisOfSecond,
+                  getChronology)
   }
 
   def toDateTimeToday(): DateTime = toDateTimeToday(null)
@@ -305,25 +329,31 @@ class TimeOfDay extends BasePartial() with ReadablePartial with Serializable {
 
   def withHourOfDay(hour: Int): TimeOfDay = {
     var newValues = getValues
-    newValues = getChronology.hourOfDay().set(this, HOUR_OF_DAY, newValues, hour)
+    newValues =
+      getChronology.hourOfDay().set(this, HOUR_OF_DAY, newValues, hour)
     new TimeOfDay(this, newValues)
   }
 
   def withMinuteOfHour(minute: Int): TimeOfDay = {
     var newValues = getValues
-    newValues = getChronology.minuteOfHour().set(this, MINUTE_OF_HOUR, newValues, minute)
+    newValues =
+      getChronology.minuteOfHour().set(this, MINUTE_OF_HOUR, newValues, minute)
     new TimeOfDay(this, newValues)
   }
 
   def withSecondOfMinute(second: Int): TimeOfDay = {
     var newValues = getValues
-    newValues = getChronology.secondOfMinute().set(this, SECOND_OF_MINUTE, newValues, second)
+    newValues = getChronology
+      .secondOfMinute()
+      .set(this, SECOND_OF_MINUTE, newValues, second)
     new TimeOfDay(this, newValues)
   }
 
   def withMillisOfSecond(millis: Int): TimeOfDay = {
     var newValues = getValues
-    newValues = getChronology.millisOfSecond().set(this, MILLIS_OF_SECOND, newValues, millis)
+    newValues = getChronology
+      .millisOfSecond()
+      .set(this, MILLIS_OF_SECOND, newValues, millis)
     new TimeOfDay(this, newValues)
   }
 

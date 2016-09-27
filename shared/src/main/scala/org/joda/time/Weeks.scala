@@ -15,7 +15,8 @@ object Weeks {
   val MAX_VALUE = new Weeks(Integer.MAX_VALUE)
   val MIN_VALUE = new Weeks(Integer.MIN_VALUE)
 
-  private val PARSER = ISOPeriodFormat.standard().withParseType(PeriodType.weeks())
+  private val PARSER =
+    ISOPeriodFormat.standard().withParseType(PeriodType.weeks())
 
   def weeks(weeks: Int): Weeks = weeks match {
     case 0 => ZERO
@@ -28,14 +29,18 @@ object Weeks {
   }
 
   def weeksBetween(start: ReadableInstant, end: ReadableInstant): Weeks = {
-    val amount = BaseSingleFieldPeriod.between(start, end, DurationFieldType.weeks())
+    val amount =
+      BaseSingleFieldPeriod.between(start, end, DurationFieldType.weeks())
     Weeks.weeks(amount)
   }
 
   def weeksBetween(start: ReadablePartial, end: ReadablePartial): Weeks = {
     if (start.isInstanceOf[LocalDate] && end.isInstanceOf[LocalDate]) {
       val chrono = DateTimeUtils.getChronology(start.getChronology)
-      val weeks = chrono.weeks().getDifference(end.asInstanceOf[LocalDate].getLocalMillis, start.asInstanceOf[LocalDate].getLocalMillis)
+      val weeks = chrono
+        .weeks()
+        .getDifference(end.asInstanceOf[LocalDate].getLocalMillis,
+                       start.asInstanceOf[LocalDate].getLocalMillis)
       return Weeks.weeks(weeks)
     }
     val amount = BaseSingleFieldPeriod.between(start, end, ZERO)
@@ -46,12 +51,14 @@ object Weeks {
     if (interval == null) {
       return Weeks.ZERO
     }
-    val amount = BaseSingleFieldPeriod.between(interval.getStart, interval.getEnd, DurationFieldType.weeks())
+    val amount = BaseSingleFieldPeriod
+      .between(interval.getStart, interval.getEnd, DurationFieldType.weeks())
     Weeks.weeks(amount)
   }
 
   def standardWeeksIn(period: ReadablePeriod): Weeks = {
-    val amount = BaseSingleFieldPeriod.standardPeriodIn(period, DateTimeConstants.MILLIS_PER_WEEK)
+    val amount = BaseSingleFieldPeriod
+      .standardPeriodIn(period, DateTimeConstants.MILLIS_PER_WEEK)
     Weeks.weeks(amount)
   }
 
@@ -75,19 +82,23 @@ class Weeks private (weeks: Int) extends BaseSingleFieldPeriod(weeks) {
   def getPeriodType(): PeriodType = PeriodType.weeks()
 
   def toStandardDays(): Days = {
-    Days.days(FieldUtils.safeMultiply(getValue, DateTimeConstants.DAYS_PER_WEEK))
+    Days.days(
+      FieldUtils.safeMultiply(getValue, DateTimeConstants.DAYS_PER_WEEK))
   }
 
   def toStandardHours(): Hours = {
-    Hours.hours(FieldUtils.safeMultiply(getValue, DateTimeConstants.HOURS_PER_WEEK))
+    Hours.hours(
+      FieldUtils.safeMultiply(getValue, DateTimeConstants.HOURS_PER_WEEK))
   }
 
   def toStandardMinutes(): Minutes = {
-    Minutes.minutes(FieldUtils.safeMultiply(getValue, DateTimeConstants.MINUTES_PER_WEEK))
+    Minutes.minutes(
+      FieldUtils.safeMultiply(getValue, DateTimeConstants.MINUTES_PER_WEEK))
   }
 
   def toStandardSeconds(): Seconds = {
-    Seconds.seconds(FieldUtils.safeMultiply(getValue, DateTimeConstants.SECONDS_PER_WEEK))
+    Seconds.seconds(
+      FieldUtils.safeMultiply(getValue, DateTimeConstants.SECONDS_PER_WEEK))
   }
 
   def toStandardDuration(): Duration = {

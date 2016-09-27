@@ -16,5 +16,7 @@ trait InternalPrinter {
               displayZone: DateTimeZone,
               locale: Locale): Unit
 
-  def printTo(appendable: Appendable, partial: ReadablePartial, locale: Locale): Unit
+  def printTo(appendable: Appendable,
+              partial: ReadablePartial,
+              locale: Locale): Unit
 }

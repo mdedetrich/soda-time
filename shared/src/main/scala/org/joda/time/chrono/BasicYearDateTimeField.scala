@@ -6,11 +6,12 @@ import org.joda.time.field.FieldUtils
 import org.joda.time.field.ImpreciseDateTimeField
 
 @SerialVersionUID(-98628754872287L)
-class BasicYearDateTimeField(protected val chronology: BasicChronology) extends ImpreciseDateTimeField(DateTimeFieldType.year(),
-  chronology.getAverageMillisPerYear) {
-  
+class BasicYearDateTimeField(protected val chronology: BasicChronology)
+    extends ImpreciseDateTimeField(DateTimeFieldType.year(),
+                                   chronology.getAverageMillisPerYear) {
+
   private var iChronology: BasicChronology = null
-  
+
   iChronology = chronology
 
   def isLenient(): Boolean = false
@@ -35,16 +36,23 @@ class BasicYearDateTimeField(protected val chronology: BasicChronology) extends 
       return instant
     }
     val thisYear = iChronology.getYear(instant)
-    val wrappedYear = FieldUtils.getWrappedValue(thisYear, years, iChronology.getMinYear, iChronology.getMaxYear)
+    val wrappedYear = FieldUtils.getWrappedValue(thisYear,
+                                                 years,
+                                                 iChronology.getMinYear,
+                                                 iChronology.getMaxYear)
     set(instant, wrappedYear)
   }
 
   def set(instant: Long, year: Int): Long = {
-    FieldUtils.verifyValueBounds(this, year, iChronology.getMinYear, iChronology.getMaxYear)
+    FieldUtils.verifyValueBounds(this,
+                                 year,
+                                 iChronology.getMinYear,
+                                 iChronology.getMaxYear)
     iChronology.setYear(instant, year)
   }
 
-  override def getDifferenceAsLong(minuendInstant: Long, subtrahendInstant: Long): Long = {
+  override def getDifferenceAsLong(minuendInstant: Long,
+                                   subtrahendInstant: Long): Long = {
     if (minuendInstant < subtrahendInstant) {
       return -iChronology.getYearDifference(subtrahendInstant, minuendInstant)
     }
@@ -53,7 +61,8 @@ class BasicYearDateTimeField(protected val chronology: BasicChronology) extends 
 
   def getRangeDurationField(): DurationField = null
 
-  override def isLeap(instant: Long): Boolean = iChronology.isLeapYear(get(instant))
+  override def isLeap(instant: Long): Boolean =
+    iChronology.isLeapYear(get(instant))
 
   override def getLeapAmount(instant: Long): Int = {
     if (iChronology.isLeapYear(get(instant))) {

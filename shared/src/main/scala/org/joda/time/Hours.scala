@@ -20,7 +20,8 @@ object Hours {
   val MAX_VALUE = new Hours(Integer.MAX_VALUE)
   val MIN_VALUE = new Hours(Integer.MIN_VALUE)
 
-  private val PARSER = ISOPeriodFormat.standard().withParseType(PeriodType.hours())
+  private val PARSER =
+    ISOPeriodFormat.standard().withParseType(PeriodType.hours())
 
   def hours(hours: Int): Hours = hours match {
     case 0 => ZERO
@@ -38,14 +39,18 @@ object Hours {
   }
 
   def hoursBetween(start: ReadableInstant, end: ReadableInstant): Hours = {
-    val amount = BaseSingleFieldPeriod.between(start, end, DurationFieldType.hours())
+    val amount =
+      BaseSingleFieldPeriod.between(start, end, DurationFieldType.hours())
     Hours.hours(amount)
   }
 
   def hoursBetween(start: ReadablePartial, end: ReadablePartial): Hours = {
     if (start.isInstanceOf[LocalTime] && end.isInstanceOf[LocalTime]) {
       val chrono = DateTimeUtils.getChronology(start.getChronology)
-      val hours = chrono.hours().getDifference(end.asInstanceOf[LocalTime].getLocalMillis, start.asInstanceOf[LocalTime].getLocalMillis)
+      val hours = chrono
+        .hours()
+        .getDifference(end.asInstanceOf[LocalTime].getLocalMillis,
+                       start.asInstanceOf[LocalTime].getLocalMillis)
       return Hours.hours(hours)
     }
     val amount = BaseSingleFieldPeriod.between(start, end, ZERO)
@@ -56,12 +61,14 @@ object Hours {
     if (interval == null) {
       return Hours.ZERO
     }
-    val amount = BaseSingleFieldPeriod.between(interval.getStart, interval.getEnd, DurationFieldType.hours())
+    val amount = BaseSingleFieldPeriod
+      .between(interval.getStart, interval.getEnd, DurationFieldType.hours())
     Hours.hours(amount)
   }
 
   def standardHoursIn(period: ReadablePeriod): Hours = {
-    val amount = BaseSingleFieldPeriod.standardPeriodIn(period, DateTimeConstants.MILLIS_PER_HOUR)
+    val amount = BaseSingleFieldPeriod
+      .standardPeriodIn(period, DateTimeConstants.MILLIS_PER_HOUR)
     Hours.hours(amount)
   }
 
@@ -93,11 +100,13 @@ class Hours private (hours: Int) extends BaseSingleFieldPeriod(hours) {
   }
 
   def toStandardMinutes(): Minutes = {
-    Minutes.minutes(FieldUtils.safeMultiply(getValue, DateTimeConstants.MINUTES_PER_HOUR))
+    Minutes.minutes(
+      FieldUtils.safeMultiply(getValue, DateTimeConstants.MINUTES_PER_HOUR))
   }
 
   def toStandardSeconds(): Seconds = {
-    Seconds.seconds(FieldUtils.safeMultiply(getValue, DateTimeConstants.SECONDS_PER_HOUR))
+    Seconds.seconds(
+      FieldUtils.safeMultiply(getValue, DateTimeConstants.SECONDS_PER_HOUR))
   }
 
   def toStandardDuration(): Duration = {

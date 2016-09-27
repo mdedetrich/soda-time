@@ -17,13 +17,16 @@ object LenientChronology {
 }
 
 @SerialVersionUID(-3148237568046877177L)
-class LenientChronology private (base: Chronology) extends AssembledChronology(base, null) {
+class LenientChronology private (base: Chronology)
+    extends AssembledChronology(base, null) {
 
   @transient private var iWithUTC: Chronology = null
 
   def withUTC(): Chronology = {
     if (iWithUTC == null) {
-      iWithUTC = if (getZone == DateTimeZone.UTC) this else LenientChronology.getInstance(getBase.withUTC())
+      iWithUTC =
+        if (getZone == DateTimeZone.UTC) this
+        else LenientChronology.getInstance(getBase.withUTC())
     }
     iWithUTC
   }

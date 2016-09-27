@@ -15,17 +15,19 @@ object BasicMonthOfYearDateTimeField {
 }
 
 @SerialVersionUID(-8258715387168736L)
-class BasicMonthOfYearDateTimeField(private val chronology: BasicChronology, private val leapMonth: Int)
-  extends ImpreciseDateTimeField(DateTimeFieldType.monthOfYear(), chronology.getAverageMillisPerMonth) {
+class BasicMonthOfYearDateTimeField(private val chronology: BasicChronology,
+                                    private val leapMonth: Int)
+    extends ImpreciseDateTimeField(DateTimeFieldType.monthOfYear(),
+                                   chronology.getAverageMillisPerMonth) {
 
   private var iChronology: BasicChronology = null
-  private var iMax:Int = _
+  private var iMax: Int = _
   private var iLeapMonth: Int = _
 
   iChronology = chronology
   iMax = iChronology.getMaxMonth
   iLeapMonth = leapMonth
-  
+
   def isLenient(): Boolean = false
 
   def get(instant: Long): Int = iChronology.getMonthOfYear(instant)
@@ -59,7 +61,8 @@ class BasicMonthOfYearDateTimeField(private val chronology: BasicChronology, pri
     if (dayToUse > maxDay) {
       dayToUse = maxDay
     }
-    val datePart = iChronology.getYearMonthDayMillis(yearToUse, monthToUse, dayToUse)
+    val datePart =
+      iChronology.getYearMonthDayMillis(yearToUse, monthToUse, dayToUse)
     datePart + timePart
   }
 
@@ -89,7 +92,8 @@ class BasicMonthOfYearDateTimeField(private val chronology: BasicChronology, pri
       }
     }
     if (yearToUse < iChronology.getMinYear || yearToUse > iChronology.getMaxYear) {
-      throw new IllegalArgumentException("Magnitude of add amount is too large: " + months)
+      throw new IllegalArgumentException(
+        "Magnitude of add amount is too large: " + months)
     }
     val i_yearToUse = yearToUse.toInt
     val i_monthToUse = monthToUse.toInt
@@ -98,20 +102,21 @@ class BasicMonthOfYearDateTimeField(private val chronology: BasicChronology, pri
     if (dayToUse > maxDay) {
       dayToUse = maxDay
     }
-    val datePart = iChronology.getYearMonthDayMillis(i_yearToUse, i_monthToUse, dayToUse)
+    val datePart =
+      iChronology.getYearMonthDayMillis(i_yearToUse, i_monthToUse, dayToUse)
     datePart + timePart
   }
 
   override def add(partial: ReadablePartial,
-          fieldIndex: Int,
-          values: Array[Int],
-          valueToAdd: Int): Array[Int] = {
+                   fieldIndex: Int,
+                   values: Array[Int],
+                   valueToAdd: Int): Array[Int] = {
     if (valueToAdd == 0) {
       return values
     }
     if (partial.size > 0 &&
-      partial.getFieldType(0) == DateTimeFieldType.monthOfYear() &&
-      fieldIndex == 0) {
+        partial.getFieldType(0) == DateTimeFieldType.monthOfYear() &&
+        fieldIndex == 0) {
       val curMonth0 = partial.getValue(0) - 1
       val newMonth = ((curMonth0 + (valueToAdd % 12) + 12) % 12) + 1
       return set(partial, 0, values, newMonth)
@@ -119,7 +124,8 @@ class BasicMonthOfYearDateTimeField(private val chronology: BasicChronology, pri
     if (DateTimeUtils.isContiguous(partial)) {
       var instant = 0L
       for (i <- 0 until partial.size()) {
-        instant = partial.getFieldType(i).getField(iChronology).set(instant, values(i))
+        instant =
+          partial.getFieldType(i).getField(iChronology).set(instant, values(i))
       }
       instant = add(instant, valueToAdd)
       iChronology.get(partial, instant)
@@ -132,7 +138,8 @@ class BasicMonthOfYearDateTimeField(private val chronology: BasicChronology, pri
     set(instant, FieldUtils.getWrappedValue(get(instant), months, MIN, iMax))
   }
 
-  override def getDifferenceAsLong(minuendInstant: Long, subtrahendInstant: Long): Long = {
+  override def getDifferenceAsLong(minuendInstant: Long,
+                                   subtrahendInstant: Long): Long = {
     var _subtrahendInstant: Long = subtrahendInstant
     if (minuendInstant < _subtrahendInstant) {
       return -getDifference(_subtrahendInstant, minuendInstant)
@@ -140,21 +147,25 @@ class BasicMonthOfYearDateTimeField(private val chronology: BasicChronology, pri
     val minuendYear = iChronology.getYear(minuendInstant)
     val minuendMonth = iChronology.getMonthOfYear(minuendInstant, minuendYear)
     val subtrahendYear = iChronology.getYear(_subtrahendInstant)
-    val subtrahendMonth = iChronology.getMonthOfYear(_subtrahendInstant, subtrahendYear)
+    val subtrahendMonth =
+      iChronology.getMonthOfYear(_subtrahendInstant, subtrahendYear)
     var difference = (minuendYear - subtrahendYear) * iMax.toLong + minuendMonth -
-      subtrahendMonth
-    val minuendDom = iChronology.getDayOfMonth(minuendInstant, minuendYear, minuendMonth)
+        subtrahendMonth
+    val minuendDom =
+      iChronology.getDayOfMonth(minuendInstant, minuendYear, minuendMonth)
     if (minuendDom ==
-      iChronology.getDaysInYearMonth(minuendYear, minuendMonth)) {
-      val subtrahendDom = iChronology.getDayOfMonth(_subtrahendInstant, subtrahendYear, subtrahendMonth)
+          iChronology.getDaysInYearMonth(minuendYear, minuendMonth)) {
+      val subtrahendDom = iChronology
+        .getDayOfMonth(_subtrahendInstant, subtrahendYear, subtrahendMonth)
       if (subtrahendDom > minuendDom) {
-        _subtrahendInstant = iChronology.dayOfMonth().set(_subtrahendInstant, minuendDom)
+        _subtrahendInstant =
+          iChronology.dayOfMonth().set(_subtrahendInstant, minuendDom)
       }
     }
     val minuendRem = minuendInstant -
-      iChronology.getYearMonthMillis(minuendYear, minuendMonth)
+        iChronology.getYearMonthMillis(minuendYear, minuendMonth)
     val subtrahendRem = _subtrahendInstant -
-      iChronology.getYearMonthMillis(subtrahendYear, subtrahendMonth)
+        iChronology.getYearMonthMillis(subtrahendYear, subtrahendMonth)
     if (minuendRem < subtrahendRem) {
       difference -= 1
     }
@@ -183,7 +194,8 @@ class BasicMonthOfYearDateTimeField(private val chronology: BasicChronology, pri
     false
   }
 
-  override def getLeapAmount(instant: Long): Int = if (isLeap(instant)) 1 else 0
+  override def getLeapAmount(instant: Long): Int =
+    if (isLeap(instant)) 1 else 0
 
   override def getLeapDurationField(): DurationField = iChronology.days()
 

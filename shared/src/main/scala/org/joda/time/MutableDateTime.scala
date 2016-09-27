@@ -48,8 +48,9 @@ object MutableDateTime {
   }
 
   @SerialVersionUID(-4481126543819298617L)
-  class Property(private var iInstant: MutableDateTime, private var iField: DateTimeField)
-    extends AbstractReadableInstantFieldProperty() {
+  class Property(private var iInstant: MutableDateTime,
+                 private var iField: DateTimeField)
+      extends AbstractReadableInstantFieldProperty() {
 
     private def writeObject(oos: ObjectOutputStream) {
       oos.writeObject(iInstant)
@@ -128,7 +129,11 @@ object MutableDateTime {
 }
 
 @SerialVersionUID(2852608688135209575L)
-class MutableDateTime extends BaseDateTime() with ReadWritableDateTime with Cloneable with Serializable {
+class MutableDateTime
+    extends BaseDateTime()
+    with ReadWritableDateTime
+    with Cloneable
+    with Serializable {
 
   private var iRoundingField: DateTimeField = _
 
@@ -182,7 +187,13 @@ class MutableDateTime extends BaseDateTime() with ReadWritableDateTime with Clon
            secondOfMinute: Int,
            millisOfSecond: Int) {
     this()
-    super.auxConstructor(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond)
+    super.auxConstructor(year,
+                         monthOfYear,
+                         dayOfMonth,
+                         hourOfDay,
+                         minuteOfHour,
+                         secondOfMinute,
+                         millisOfSecond)
   }
 
   def this(year: Int,
@@ -194,7 +205,14 @@ class MutableDateTime extends BaseDateTime() with ReadWritableDateTime with Clon
            millisOfSecond: Int,
            zone: DateTimeZone) {
     this()
-    super.auxConstructor(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond, zone)
+    super.auxConstructor(year,
+                         monthOfYear,
+                         dayOfMonth,
+                         hourOfDay,
+                         minuteOfHour,
+                         secondOfMinute,
+                         millisOfSecond,
+                         zone)
   }
 
   def this(year: Int,
@@ -206,7 +224,14 @@ class MutableDateTime extends BaseDateTime() with ReadWritableDateTime with Clon
            millisOfSecond: Int,
            chronology: Chronology) {
     this()
-    super.auxConstructor(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond, chronology)
+    super.auxConstructor(year,
+                         monthOfYear,
+                         dayOfMonth,
+                         hourOfDay,
+                         minuteOfHour,
+                         secondOfMinute,
+                         millisOfSecond,
+                         chronology)
   }
 
   def getRoundingField(): DateTimeField = iRoundingField
@@ -459,7 +484,11 @@ class MutableDateTime extends BaseDateTime() with ReadWritableDateTime with Clon
               minuteOfHour: Int,
               secondOfMinute: Int,
               millisOfSecond: Int) {
-    val instant = getChronology.getDateTimeMillis(getMillis, hour, minuteOfHour, secondOfMinute, millisOfSecond)
+    val instant = getChronology.getDateTimeMillis(getMillis,
+                                                  hour,
+                                                  minuteOfHour,
+                                                  secondOfMinute,
+                                                  millisOfSecond)
     setMillis(instant)
   }
 
@@ -470,18 +499,25 @@ class MutableDateTime extends BaseDateTime() with ReadWritableDateTime with Clon
                   minuteOfHour: Int,
                   secondOfMinute: Int,
                   millisOfSecond: Int) {
-    val instant = getChronology.getDateTimeMillis(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour,
-      secondOfMinute, millisOfSecond)
+    val instant = getChronology.getDateTimeMillis(year,
+                                                  monthOfYear,
+                                                  dayOfMonth,
+                                                  hourOfDay,
+                                                  minuteOfHour,
+                                                  secondOfMinute,
+                                                  millisOfSecond)
     setMillis(instant)
   }
 
   def property(`type`: DateTimeFieldType): Property = {
     if (`type` == null) {
-      throw new IllegalArgumentException("The DateTimeFieldType must not be null")
+      throw new IllegalArgumentException(
+        "The DateTimeFieldType must not be null")
     }
     val field = `type`.getField(getChronology)
     if (field.isSupported == false) {
-      throw new IllegalArgumentException("Field '" + `type` + "' is not supported")
+      throw new IllegalArgumentException(
+        "Field '" + `type` + "' is not supported")
     }
     new Property(this, field)
   }

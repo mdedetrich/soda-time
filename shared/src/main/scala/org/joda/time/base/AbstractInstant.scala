@@ -22,7 +22,8 @@ abstract class AbstractInstant protected () extends ReadableInstant() {
 
   def get(`type`: DateTimeFieldType): Int = {
     if (`type` == null) {
-      throw new IllegalArgumentException("The DateTimeFieldType must not be null")
+      throw new IllegalArgumentException(
+        "The DateTimeFieldType must not be null")
     }
     `type`.getField(getChronology).get(getMillis)
   }
@@ -55,9 +56,11 @@ abstract class AbstractInstant protected () extends ReadableInstant() {
     new DateTime(getMillis, chrono)
   }
 
-  def toDateTime(chronology: Chronology): DateTime = new DateTime(getMillis, chronology)
+  def toDateTime(chronology: Chronology): DateTime =
+    new DateTime(getMillis, chronology)
 
-  def toMutableDateTime(): MutableDateTime = new MutableDateTime(getMillis, getZone)
+  def toMutableDateTime(): MutableDateTime =
+    new MutableDateTime(getMillis, getZone)
 
   def toMutableDateTimeISO(): MutableDateTime = {
     new MutableDateTime(getMillis, ISOChronology.getInstance(getZone))
@@ -84,7 +87,7 @@ abstract class AbstractInstant protected () extends ReadableInstant() {
     }
     val otherInstant = readableInstant.asInstanceOf[ReadableInstant]
     getMillis == otherInstant.getMillis &&
-      FieldUtils.==(getChronology, otherInstant.getChronology)
+    FieldUtils.==(getChronology, otherInstant.getChronology)
   }
 
   override def hashCode(): Int = {

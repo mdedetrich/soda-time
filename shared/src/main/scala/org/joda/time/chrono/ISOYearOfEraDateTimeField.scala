@@ -13,8 +13,9 @@ object ISOYearOfEraDateTimeField {
 }
 
 @SerialVersionUID(7037524068969447317L)
-class ISOYearOfEraDateTimeField private () extends DecoratedDateTimeField(GregorianChronology.getInstanceUTC.year(),
-  DateTimeFieldType.yearOfEra()) {
+class ISOYearOfEraDateTimeField private ()
+    extends DecoratedDateTimeField(GregorianChronology.getInstanceUTC.year(),
+                                   DateTimeFieldType.yearOfEra()) {
 
   override def getRangeDurationField(): DurationField = {
     GregorianChronology.getInstanceUTC.eras()
@@ -25,26 +26,30 @@ class ISOYearOfEraDateTimeField private () extends DecoratedDateTimeField(Gregor
     if (year < 0) -year else year
   }
 
-  override def add(instant: Long, years: Int): Long = getWrappedField.add(instant, years)
+  override def add(instant: Long, years: Int): Long =
+    getWrappedField.add(instant, years)
 
-  override def add(instant: Long, years: Long): Long = getWrappedField.add(instant, years)
+  override def add(instant: Long, years: Long): Long =
+    getWrappedField.add(instant, years)
 
   override def addWrapField(instant: Long, years: Int): Long = {
     getWrappedField.addWrapField(instant, years)
   }
 
   override def addWrapField(instant: ReadablePartial,
-                   fieldIndex: Int,
-                   values: Array[Int],
-                   years: Int): Array[Int] = {
+                            fieldIndex: Int,
+                            values: Array[Int],
+                            years: Int): Array[Int] = {
     getWrappedField.addWrapField(instant, fieldIndex, values, years)
   }
 
-  override def getDifference(minuendInstant: Long, subtrahendInstant: Long): Int = {
+  override def getDifference(minuendInstant: Long,
+                             subtrahendInstant: Long): Int = {
     getWrappedField.getDifference(minuendInstant, subtrahendInstant)
   }
 
-  override def getDifferenceAsLong(minuendInstant: Long, subtrahendInstant: Long): Long = {
+  override def getDifferenceAsLong(minuendInstant: Long,
+                                   subtrahendInstant: Long): Long = {
     getWrappedField.getDifferenceAsLong(minuendInstant, subtrahendInstant)
   }
 
@@ -61,11 +66,14 @@ class ISOYearOfEraDateTimeField private () extends DecoratedDateTimeField(Gregor
 
   override def getMaximumValue(): Int = getWrappedField.getMaximumValue
 
-  override def roundFloor(instant: Long): Long = getWrappedField.roundFloor(instant)
+  override def roundFloor(instant: Long): Long =
+    getWrappedField.roundFloor(instant)
 
-  override def roundCeiling(instant: Long): Long = getWrappedField.roundCeiling(instant)
+  override def roundCeiling(instant: Long): Long =
+    getWrappedField.roundCeiling(instant)
 
-  override def remainder(instant: Long): Long = getWrappedField.remainder(instant)
+  override def remainder(instant: Long): Long =
+    getWrappedField.remainder(instant)
 
   private def readResolve(): AnyRef = INSTANCE
 }

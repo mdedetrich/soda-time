@@ -16,30 +16,43 @@ object BaseSingleFieldPeriod {
 
   private val START_1972 = 2L * 365L * 86400L * 1000L
 
-  def between(start: ReadableInstant, end: ReadableInstant, field: DurationFieldType): Int = {
+  def between(start: ReadableInstant,
+              end: ReadableInstant,
+              field: DurationFieldType): Int = {
     if (start == null || end == null) {
-      throw new IllegalArgumentException("ReadableInstant objects must not be null")
+      throw new IllegalArgumentException(
+        "ReadableInstant objects must not be null")
     }
     val chrono = DateTimeUtils.getInstantChronology(start)
-    val amount = field.getField(chrono).getDifference(end.getMillis, start.getMillis)
+    val amount =
+      field.getField(chrono).getDifference(end.getMillis, start.getMillis)
     amount
   }
 
-  def between(start: ReadablePartial, end: ReadablePartial, zeroInstance: ReadablePeriod): Int = {
+  def between(start: ReadablePartial,
+              end: ReadablePartial,
+              zeroInstance: ReadablePeriod): Int = {
     if (start == null || end == null) {
-      throw new IllegalArgumentException("ReadablePartial objects must not be null")
+      throw new IllegalArgumentException(
+        "ReadablePartial objects must not be null")
     }
     if (start.size != end.size) {
-      throw new IllegalArgumentException("ReadablePartial objects must have the same set of fields")
+      throw new IllegalArgumentException(
+        "ReadablePartial objects must have the same set of fields")
     }
-    for (i <- 0 until start.size() if start.getFieldType(i) != end.getFieldType(i)) {
-      throw new IllegalArgumentException("ReadablePartial objects must have the same set of fields")
+    for (i <- 0 until start.size()
+         if start.getFieldType(i) != end.getFieldType(i)) {
+      throw new IllegalArgumentException(
+        "ReadablePartial objects must have the same set of fields")
     }
     if (DateTimeUtils.isContiguous(start) == false) {
-      throw new IllegalArgumentException("ReadablePartial objects must be contiguous")
+      throw new IllegalArgumentException(
+        "ReadablePartial objects must be contiguous")
     }
     val chrono = DateTimeUtils.getChronology(start.getChronology).withUTC()
-    val values = chrono.get(zeroInstance, chrono.set(start, START_1972), chrono.set(end, START_1972))
+    val values = chrono.get(zeroInstance,
+                            chrono.set(start, START_1972),
+                            chrono.set(end, START_1972))
     values(0)
   }
 
@@ -54,11 +67,14 @@ object BaseSingleFieldPeriod {
       if (value != 0) {
         val field = period.getFieldType(i).getField(iso)
         if (field.isPrecise == false) {
-          throw new IllegalArgumentException("Cannot convert period to duration as " + field.getName +
-            " is not precise in the period " +
-            period)
+          throw new IllegalArgumentException(
+            "Cannot convert period to duration as " + field.getName +
+              " is not precise in the period " +
+              period)
         }
-        duration = FieldUtils.safeAdd(duration, FieldUtils.safeMultiply(field.getUnitMillis, value))
+        duration = FieldUtils.safeAdd(
+          duration,
+          FieldUtils.safeMultiply(field.getUnitMillis, value))
       }
     }
     FieldUtils.safeToInt(duration / millisPerUnit)
@@ -66,8 +82,11 @@ object BaseSingleFieldPeriod {
 }
 
 @SerialVersionUID(9386874258972L)
-abstract class BaseSingleFieldPeriod protected (@volatile private var iPeriod: Int)
-  extends ReadablePeriod() with Comparable[BaseSingleFieldPeriod] with Serializable {
+abstract class BaseSingleFieldPeriod protected (
+    @volatile private var iPeriod: Int)
+    extends ReadablePeriod()
+    with Comparable[BaseSingleFieldPeriod]
+    with Serializable {
 
   protected def getValue(): Int = iPeriod
 
@@ -102,7 +121,8 @@ abstract class BaseSingleFieldPeriod protected (@volatile private var iPeriod: I
     0
   }
 
-  def isSupported(`type`: DurationFieldType): Boolean = (`type` == getFieldType)
+  def isSupported(`type`: DurationFieldType): Boolean =
+    (`type` == getFieldType)
 
   def toPeriod(): Period = Period.ZERO.withFields(this)
 
@@ -132,7 +152,8 @@ abstract class BaseSingleFieldPeriod protected (@volatile private var iPeriod: I
 
   def compareTo(other: BaseSingleFieldPeriod): Int = {
     if (other.getClass != getClass) {
-      throw new ClassCastException(getClass + " cannot be compared to " + other.getClass)
+      throw new ClassCastException(
+        getClass + " cannot be compared to " + other.getClass)
     }
     val otherValue = other.getValue
     val thisValue = getValue

@@ -15,7 +15,8 @@ object Seconds {
   val MAX_VALUE = new Seconds(Integer.MAX_VALUE)
   val MIN_VALUE = new Seconds(Integer.MIN_VALUE)
 
-  private val PARSER = ISOPeriodFormat.standard().withParseType(PeriodType.seconds())
+  private val PARSER =
+    ISOPeriodFormat.standard().withParseType(PeriodType.seconds())
 
   def seconds(seconds: Int): Seconds = seconds match {
     case 0 => ZERO
@@ -28,14 +29,18 @@ object Seconds {
   }
 
   def secondsBetween(start: ReadableInstant, end: ReadableInstant): Seconds = {
-    val amount = BaseSingleFieldPeriod.between(start, end, DurationFieldType.seconds())
+    val amount =
+      BaseSingleFieldPeriod.between(start, end, DurationFieldType.seconds())
     Seconds.seconds(amount)
   }
 
   def secondsBetween(start: ReadablePartial, end: ReadablePartial): Seconds = {
     if (start.isInstanceOf[LocalTime] && end.isInstanceOf[LocalTime]) {
       val chrono = DateTimeUtils.getChronology(start.getChronology)
-      val seconds = chrono.seconds().getDifference(end.asInstanceOf[LocalTime].getLocalMillis, start.asInstanceOf[LocalTime].getLocalMillis)
+      val seconds = chrono
+        .seconds()
+        .getDifference(end.asInstanceOf[LocalTime].getLocalMillis,
+                       start.asInstanceOf[LocalTime].getLocalMillis)
       return Seconds.seconds(seconds)
     }
     val amount = BaseSingleFieldPeriod.between(start, end, ZERO)
@@ -46,12 +51,14 @@ object Seconds {
     if (interval == null) {
       return Seconds.ZERO
     }
-    val amount = BaseSingleFieldPeriod.between(interval.getStart, interval.getEnd, DurationFieldType.seconds())
+    val amount = BaseSingleFieldPeriod
+      .between(interval.getStart, interval.getEnd, DurationFieldType.seconds())
     Seconds.seconds(amount)
   }
 
   def standardSecondsIn(period: ReadablePeriod): Seconds = {
-    val amount = BaseSingleFieldPeriod.standardPeriodIn(period, DateTimeConstants.MILLIS_PER_SECOND)
+    val amount = BaseSingleFieldPeriod
+      .standardPeriodIn(period, DateTimeConstants.MILLIS_PER_SECOND)
     Seconds.seconds(amount)
   }
 

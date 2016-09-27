@@ -5,15 +5,17 @@ import org.joda.time.DurationField
 import org.joda.time.DurationFieldType
 
 @SerialVersionUID(-2554245107589433218L)
-abstract class BaseDurationField protected (private val `type`: DurationFieldType)
-  extends DurationField() with Serializable {
-  
+abstract class BaseDurationField protected (
+    private val `type`: DurationFieldType)
+    extends DurationField()
+    with Serializable {
+
   private var iType: DurationFieldType = null
 
   if (`type` == null) {
     throw new IllegalArgumentException("The type must not be null")
   }
-  
+
   iType = `type`
 
   def getType(): DurationFieldType = iType
@@ -39,7 +41,8 @@ abstract class BaseDurationField protected (private val `type`: DurationFieldTyp
   }
 
   def getDifference(minuendInstant: Long, subtrahendInstant: Long): Int = {
-    FieldUtils.safeToInt(getDifferenceAsLong(minuendInstant, subtrahendInstant))
+    FieldUtils.safeToInt(
+      getDifferenceAsLong(minuendInstant, subtrahendInstant))
   }
 
   def compareTo(otherField: DurationField): Int = {

@@ -8,11 +8,14 @@ import org.joda.time.DateTimeFieldType
 import org.joda.time.ReadableDateTime
 import org.joda.time.format.DateTimeFormat
 
-abstract class AbstractDateTime extends AbstractInstant() with ReadableDateTime {
+abstract class AbstractDateTime
+    extends AbstractInstant()
+    with ReadableDateTime {
 
   override def get(`type`: DateTimeFieldType): Int = {
     if (`type` == null) {
-      throw new IllegalArgumentException("The DateTimeFieldType must not be null")
+      throw new IllegalArgumentException(
+        "The DateTimeFieldType must not be null")
     }
     `type`.getField(getChronology).get(getMillis)
   }
@@ -84,7 +87,7 @@ abstract class AbstractDateTime extends AbstractInstant() with ReadableDateTime 
   }
 
   def toCalendar(locale: Locale): Calendar = {
-    var _locale:Locale = locale
+    var _locale: Locale = locale
     if (_locale == null) {
       _locale = Locale.getDefault
     }
@@ -115,7 +118,6 @@ abstract class AbstractDateTime extends AbstractInstant() with ReadableDateTime 
     if (pattern == null) {
       return toString
     }
-    DateTimeFormat.forPattern(pattern).withLocale(locale)
-      .print(this)
+    DateTimeFormat.forPattern(pattern).withLocale(locale).print(this)
   }
 }

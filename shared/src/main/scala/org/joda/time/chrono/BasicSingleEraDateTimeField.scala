@@ -15,7 +15,8 @@ object BasicSingleEraDateTimeField {
   private val ERA_VALUE = DateTimeConstants.CE
 }
 
-class BasicSingleEraDateTimeField(private val iEraText: String) extends BaseDateTimeField(DateTimeFieldType.era()) {
+class BasicSingleEraDateTimeField(private val iEraText: String)
+    extends BaseDateTimeField(DateTimeFieldType.era()) {
 
   def isLenient(): Boolean = false
 

@@ -15,7 +15,9 @@ import org.joda.time.field.UnsupportedDateTimeField
 import org.joda.time.field.UnsupportedDurationField
 
 @SerialVersionUID(-7310865996721419676L)
-abstract class BaseChronology protected () extends Chronology() with Serializable {
+abstract class BaseChronology protected ()
+    extends Chronology()
+    with Serializable {
 
   def getZone(): DateTimeZone
 
@@ -67,23 +69,36 @@ abstract class BaseChronology protected () extends Chronology() with Serializabl
       val value = values(i)
       val field = partial.getField(i)
       if (value < field.getMinimumValue) {
-        throw IllegalFieldValueException.create(field.getType, Integer.valueOf(value), Integer.valueOf(field.getMinimumValue),
+        throw IllegalFieldValueException.create(
+          field.getType,
+          Integer.valueOf(value),
+          Integer.valueOf(field.getMinimumValue),
           null)
       }
       if (value > field.getMaximumValue) {
-        throw IllegalFieldValueException.create(field.getType, Integer.valueOf(value), null, Integer.valueOf(field.getMaximumValue))
+        throw IllegalFieldValueException.create(
+          field.getType,
+          Integer.valueOf(value),
+          null,
+          Integer.valueOf(field.getMaximumValue))
       }
     }
     for (i <- 0 until size) {
       val value = values(i)
       val field = partial.getField(i)
       if (value < field.getMinimumValue(partial, values)) {
-        throw IllegalFieldValueException.create(field.getType, Integer.valueOf(value), Integer.valueOf(field.getMinimumValue(partial,
-          values)), null)
+        throw IllegalFieldValueException.create(
+          field.getType,
+          Integer.valueOf(value),
+          Integer.valueOf(field.getMinimumValue(partial, values)),
+          null)
       }
       if (value > field.getMaximumValue(partial, values)) {
-        throw IllegalFieldValueException.create(field.getType, Integer.valueOf(value), null, Integer.valueOf(field.getMaximumValue(partial,
-          values)))
+        throw IllegalFieldValueException.create(
+          field.getType,
+          Integer.valueOf(value),
+          null,
+          Integer.valueOf(field.getMaximumValue(partial, values)))
       }
     }
   }
@@ -100,13 +115,18 @@ abstract class BaseChronology protected () extends Chronology() with Serializabl
   def set(partial: ReadablePartial, instant: Long): Long = {
     var _instant = instant
     for (i <- 0 until partial.size) {
-      _instant = partial.getFieldType(i).getField(this).set(_instant, partial.getValue(i))
+      _instant = partial
+        .getFieldType(i)
+        .getField(this)
+        .set(_instant, partial.getValue(i))
     }
     _instant
   }
 
-  def get(period: ReadablePeriod, startInstant: Long, endInstant: Long): Array[Int] = {
-    var _startInstant:Long = startInstant
+  def get(period: ReadablePeriod,
+          startInstant: Long,
+          endInstant: Long): Array[Int] = {
+    var _startInstant: Long = startInstant
     val size = period.size
     val values = Array.ofDim[Int](size)
     if (_startInstant != endInstant) {
@@ -126,7 +146,7 @@ abstract class BaseChronology protected () extends Chronology() with Serializabl
     val size = period.size
     val values = Array.ofDim[Int](size)
     if (duration != 0) {
-      var current:Long = 0
+      var current: Long = 0
       for (i <- 0 until size) {
         val field = period.getFieldType(i).getField(this)
         if (field.isPrecise) {
@@ -140,12 +160,13 @@ abstract class BaseChronology protected () extends Chronology() with Serializabl
   }
 
   def add(period: ReadablePeriod, instant: Long, scalar: Int): Long = {
-    var _instant:Long = instant
+    var _instant: Long = instant
     if (scalar != 0 && period != null) {
       for (i <- 0 until period.size()) {
         val value = period.getValue(i)
         if (value != 0) {
-          _instant = period.getFieldType(i).getField(this).add(_instant, value * scalar)
+          _instant =
+            period.getFieldType(i).getField(this).add(_instant, value * scalar)
         }
       }
     }
@@ -165,11 +186,13 @@ abstract class BaseChronology protected () extends Chronology() with Serializabl
   }
 
   def millisOfSecond(): DateTimeField = {
-    UnsupportedDateTimeField.getInstance(DateTimeFieldType.millisOfSecond(), millis())
+    UnsupportedDateTimeField
+      .getInstance(DateTimeFieldType.millisOfSecond(), millis())
   }
 
   def millisOfDay(): DateTimeField = {
-    UnsupportedDateTimeField.getInstance(DateTimeFieldType.millisOfDay(), millis())
+    UnsupportedDateTimeField
+      .getInstance(DateTimeFieldType.millisOfDay(), millis())
   }
 
   def seconds(): DurationField = {
@@ -177,11 +200,13 @@ abstract class BaseChronology protected () extends Chronology() with Serializabl
   }
 
   def secondOfMinute(): DateTimeField = {
-    UnsupportedDateTimeField.getInstance(DateTimeFieldType.secondOfMinute(), seconds())
+    UnsupportedDateTimeField
+      .getInstance(DateTimeFieldType.secondOfMinute(), seconds())
   }
 
   def secondOfDay(): DateTimeField = {
-    UnsupportedDateTimeField.getInstance(DateTimeFieldType.secondOfDay(), seconds())
+    UnsupportedDateTimeField
+      .getInstance(DateTimeFieldType.secondOfDay(), seconds())
   }
 
   def minutes(): DurationField = {
@@ -189,11 +214,13 @@ abstract class BaseChronology protected () extends Chronology() with Serializabl
   }
 
   def minuteOfHour(): DateTimeField = {
-    UnsupportedDateTimeField.getInstance(DateTimeFieldType.minuteOfHour(), minutes())
+    UnsupportedDateTimeField
+      .getInstance(DateTimeFieldType.minuteOfHour(), minutes())
   }
 
   def minuteOfDay(): DateTimeField = {
-    UnsupportedDateTimeField.getInstance(DateTimeFieldType.minuteOfDay(), minutes())
+    UnsupportedDateTimeField
+      .getInstance(DateTimeFieldType.minuteOfDay(), minutes())
   }
 
   def hours(): DurationField = {
@@ -201,11 +228,13 @@ abstract class BaseChronology protected () extends Chronology() with Serializabl
   }
 
   def hourOfDay(): DateTimeField = {
-    UnsupportedDateTimeField.getInstance(DateTimeFieldType.hourOfDay(), hours())
+    UnsupportedDateTimeField
+      .getInstance(DateTimeFieldType.hourOfDay(), hours())
   }
 
   def clockhourOfDay(): DateTimeField = {
-    UnsupportedDateTimeField.getInstance(DateTimeFieldType.clockhourOfDay(), hours())
+    UnsupportedDateTimeField
+      .getInstance(DateTimeFieldType.clockhourOfDay(), hours())
   }
 
   def halfdays(): DurationField = {
@@ -213,15 +242,18 @@ abstract class BaseChronology protected () extends Chronology() with Serializabl
   }
 
   def hourOfHalfday(): DateTimeField = {
-    UnsupportedDateTimeField.getInstance(DateTimeFieldType.hourOfHalfday(), hours())
+    UnsupportedDateTimeField
+      .getInstance(DateTimeFieldType.hourOfHalfday(), hours())
   }
 
   def clockhourOfHalfday(): DateTimeField = {
-    UnsupportedDateTimeField.getInstance(DateTimeFieldType.clockhourOfHalfday(), hours())
+    UnsupportedDateTimeField
+      .getInstance(DateTimeFieldType.clockhourOfHalfday(), hours())
   }
 
   def halfdayOfDay(): DateTimeField = {
-    UnsupportedDateTimeField.getInstance(DateTimeFieldType.halfdayOfDay(), halfdays())
+    UnsupportedDateTimeField
+      .getInstance(DateTimeFieldType.halfdayOfDay(), halfdays())
   }
 
   def days(): DurationField = {
@@ -233,7 +265,8 @@ abstract class BaseChronology protected () extends Chronology() with Serializabl
   }
 
   def dayOfMonth(): DateTimeField = {
-    UnsupportedDateTimeField.getInstance(DateTimeFieldType.dayOfMonth(), days())
+    UnsupportedDateTimeField
+      .getInstance(DateTimeFieldType.dayOfMonth(), days())
   }
 
   def dayOfYear(): DateTimeField = {
@@ -245,7 +278,8 @@ abstract class BaseChronology protected () extends Chronology() with Serializabl
   }
 
   def weekOfWeekyear(): DateTimeField = {
-    UnsupportedDateTimeField.getInstance(DateTimeFieldType.weekOfWeekyear(), weeks())
+    UnsupportedDateTimeField
+      .getInstance(DateTimeFieldType.weekOfWeekyear(), weeks())
   }
 
   def weekyears(): DurationField = {
@@ -253,11 +287,13 @@ abstract class BaseChronology protected () extends Chronology() with Serializabl
   }
 
   def weekyear(): DateTimeField = {
-    UnsupportedDateTimeField.getInstance(DateTimeFieldType.weekyear(), weekyears())
+    UnsupportedDateTimeField
+      .getInstance(DateTimeFieldType.weekyear(), weekyears())
   }
 
   def weekyearOfCentury(): DateTimeField = {
-    UnsupportedDateTimeField.getInstance(DateTimeFieldType.weekyearOfCentury(), weekyears())
+    UnsupportedDateTimeField
+      .getInstance(DateTimeFieldType.weekyearOfCentury(), weekyears())
   }
 
   def months(): DurationField = {
@@ -265,7 +301,8 @@ abstract class BaseChronology protected () extends Chronology() with Serializabl
   }
 
   def monthOfYear(): DateTimeField = {
-    UnsupportedDateTimeField.getInstance(DateTimeFieldType.monthOfYear(), months())
+    UnsupportedDateTimeField
+      .getInstance(DateTimeFieldType.monthOfYear(), months())
   }
 
   def years(): DurationField = {
@@ -277,11 +314,13 @@ abstract class BaseChronology protected () extends Chronology() with Serializabl
   }
 
   def yearOfEra(): DateTimeField = {
-    UnsupportedDateTimeField.getInstance(DateTimeFieldType.yearOfEra(), years())
+    UnsupportedDateTimeField
+      .getInstance(DateTimeFieldType.yearOfEra(), years())
   }
 
   def yearOfCentury(): DateTimeField = {
-    UnsupportedDateTimeField.getInstance(DateTimeFieldType.yearOfCentury(), years())
+    UnsupportedDateTimeField
+      .getInstance(DateTimeFieldType.yearOfCentury(), years())
   }
 
   def centuries(): DurationField = {
@@ -289,7 +328,8 @@ abstract class BaseChronology protected () extends Chronology() with Serializabl
   }
 
   def centuryOfEra(): DateTimeField = {
-    UnsupportedDateTimeField.getInstance(DateTimeFieldType.centuryOfEra(), centuries())
+    UnsupportedDateTimeField
+      .getInstance(DateTimeFieldType.centuryOfEra(), centuries())
   }
 
   def eras(): DurationField = {

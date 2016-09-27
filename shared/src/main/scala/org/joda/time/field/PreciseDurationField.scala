@@ -3,14 +3,16 @@ package org.joda.time.field
 import org.joda.time.DurationFieldType
 
 @SerialVersionUID(-8346152187724495365L)
-class PreciseDurationField(`type`: DurationFieldType, private val iUnitMillis: Long)
-  extends BaseDurationField(`type`) {
+class PreciseDurationField(`type`: DurationFieldType,
+                           private val iUnitMillis: Long)
+    extends BaseDurationField(`type`) {
 
   def isPrecise(): Boolean = true
 
   def getUnitMillis(): Long = iUnitMillis
 
-  def getValueAsLong(duration: Long, instant: Long): Long = duration / iUnitMillis
+  def getValueAsLong(duration: Long, instant: Long): Long =
+    duration / iUnitMillis
 
   def getMillis(value: Int, instant: Long): Long = value * iUnitMillis
 
@@ -28,7 +30,8 @@ class PreciseDurationField(`type`: DurationFieldType, private val iUnitMillis: L
     FieldUtils.safeAdd(instant, addition)
   }
 
-  def getDifferenceAsLong(minuendInstant: Long, subtrahendInstant: Long): Long = {
+  def getDifferenceAsLong(minuendInstant: Long,
+                          subtrahendInstant: Long): Long = {
     val difference = FieldUtils.safeSubtract(minuendInstant, subtrahendInstant)
     difference / iUnitMillis
   }

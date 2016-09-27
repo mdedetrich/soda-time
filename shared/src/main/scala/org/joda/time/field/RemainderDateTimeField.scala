@@ -5,28 +5,32 @@ import org.joda.time.DateTimeFieldType
 import org.joda.time.DurationField
 
 @SerialVersionUID(5708241235177666790L)
-class RemainderDateTimeField(field: DateTimeField, `type`: DateTimeFieldType, val divisor: Int)
-  extends DecoratedDateTimeField(field, `type`) {
+class RemainderDateTimeField(field: DateTimeField,
+                             `type`: DateTimeFieldType,
+                             val divisor: Int)
+    extends DecoratedDateTimeField(field, `type`) {
 
   var iDurationField = field.getDurationField
-  var iDivisor:Int = _
-  
+  var iDivisor: Int = _
+
   val rangeField = field.getDurationField()
 
-  var iRangeField:DurationField = if (rangeField == null) null else new ScaledDurationField(rangeField, `type`.getRangeDurationType,
-    divisor)
+  var iRangeField: DurationField =
+    if (rangeField == null) null
+    else
+      new ScaledDurationField(rangeField, `type`.getRangeDurationType, divisor)
 
   if (divisor < 2) {
     throw new IllegalArgumentException("The divisor must be at least 2")
   }
-  
 
   iDurationField = field.getDurationField
   iDivisor = divisor
 
-
-  def this(dividedField: DividedDateTimeField, durationField: DurationField, `type`: DateTimeFieldType) {
-    this(dividedField.getWrappedField,`type`,dividedField.iDivisor)
+  def this(dividedField: DividedDateTimeField,
+           durationField: DurationField,
+           `type`: DateTimeFieldType) {
+    this(dividedField.getWrappedField, `type`, dividedField.iDivisor)
   }
 
   def this(dividedField: DividedDateTimeField, `type`: DateTimeFieldType) {
@@ -41,7 +45,7 @@ class RemainderDateTimeField(field: DateTimeField, `type`: DateTimeFieldType, va
            rangeField: DurationField,
            `type`: DateTimeFieldType,
            divisor: Int) {
-    this(field,`type`,divisor)
+    this(field, `type`, divisor)
   }
 
   override def get(instant: Long): Int = {
@@ -54,7 +58,8 @@ class RemainderDateTimeField(field: DateTimeField, `type`: DateTimeFieldType, va
   }
 
   override def addWrapField(instant: Long, amount: Int): Long = {
-    set(instant, FieldUtils.getWrappedValue(get(instant), amount, 0, iDivisor - 1))
+    set(instant,
+        FieldUtils.getWrappedValue(get(instant), amount, 0, iDivisor - 1))
   }
 
   override def set(instant: Long, value: Int): Long = {
@@ -71,19 +76,24 @@ class RemainderDateTimeField(field: DateTimeField, `type`: DateTimeFieldType, va
 
   override def getMaximumValue(): Int = iDivisor - 1
 
-  override def roundFloor(instant: Long): Long = getWrappedField.roundFloor(instant)
+  override def roundFloor(instant: Long): Long =
+    getWrappedField.roundFloor(instant)
 
-  override def roundCeiling(instant: Long): Long = getWrappedField.roundCeiling(instant)
+  override def roundCeiling(instant: Long): Long =
+    getWrappedField.roundCeiling(instant)
 
-  override def roundHalfFloor(instant: Long): Long = getWrappedField.roundHalfFloor(instant)
+  override def roundHalfFloor(instant: Long): Long =
+    getWrappedField.roundHalfFloor(instant)
 
   override def roundHalfCeiling(instant: Long): Long = {
     getWrappedField.roundHalfCeiling(instant)
   }
 
-  override def roundHalfEven(instant: Long): Long = getWrappedField.roundHalfEven(instant)
+  override def roundHalfEven(instant: Long): Long =
+    getWrappedField.roundHalfEven(instant)
 
-  override def remainder(instant: Long): Long = getWrappedField.remainder(instant)
+  override def remainder(instant: Long): Long =
+    getWrappedField.remainder(instant)
 
   def getDivisor(): Int = iDivisor
 

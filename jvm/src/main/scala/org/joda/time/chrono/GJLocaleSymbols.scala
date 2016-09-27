@@ -11,7 +11,8 @@ import GJLocaleSymbols._
 
 object GJLocaleSymbols {
 
-  private val cCache: ConcurrentMap[Locale, GJLocaleSymbols] = new ConcurrentHashMap[Locale, GJLocaleSymbols]()
+  private val cCache: ConcurrentMap[Locale, GJLocaleSymbols] =
+    new ConcurrentHashMap[Locale, GJLocaleSymbols]()
 
   def forLocale(locale: Locale): GJLocaleSymbols = {
     var _locale: Locale = locale
@@ -45,7 +46,9 @@ object GJLocaleSymbols {
     a
   }
 
-  private def addSymbols(map: TreeMap[String, Integer], symbols: Array[String], integers: Array[Integer]) {
+  private def addSymbols(map: TreeMap[String, Integer],
+                         symbols: Array[String],
+                         integers: Array[Integer]) {
     var i = symbols.length
     while (i >= 0) {
       val symbol = symbols(i)
@@ -86,16 +89,18 @@ class GJLocaleSymbols private (locale: Locale) {
 
   val dfs = DateTimeUtils.getDateFormatSymbols(locale)
 
-
   private val iEras = dfs.getEras
   private val iDaysOfWeek = realignDaysOfWeek(dfs.getWeekdays)
   private val iShortDaysOfWeek = realignDaysOfWeek(dfs.getShortWeekdays)
   private val iMonths = realignMonths(dfs.getMonths)
   private val iShortMonths = realignMonths(dfs.getShortMonths)
   private val iHalfday = dfs.getAmPmStrings
-  private val iParseEras = new TreeMap[String, Integer](String.CASE_INSENSITIVE_ORDER)
-  private val iParseDaysOfWeek = new TreeMap[String, Integer](String.CASE_INSENSITIVE_ORDER)
-  private val iParseMonths = new TreeMap[String, Integer](String.CASE_INSENSITIVE_ORDER)
+  private val iParseEras =
+    new TreeMap[String, Integer](String.CASE_INSENSITIVE_ORDER)
+  private val iParseDaysOfWeek =
+    new TreeMap[String, Integer](String.CASE_INSENSITIVE_ORDER)
+  private val iParseMonths =
+    new TreeMap[String, Integer](String.CASE_INSENSITIVE_ORDER)
   private val iMaxEraLength = maxLength(iEras)
   private val iMaxDayOfWeekLength = maxLength(iDaysOfWeek)
   private val iMaxShortDayOfWeekLength = maxLength(iShortDaysOfWeek)
@@ -149,7 +154,8 @@ class GJLocaleSymbols private (locale: Locale) {
     if (month != null) {
       return month.intValue()
     }
-    throw IllegalFieldValueException.create(DateTimeFieldType.monthOfYear(), text)
+    throw IllegalFieldValueException
+      .create(DateTimeFieldType.monthOfYear(), text)
   }
 
   def getMonthMaxTextLength(): Int = iMaxMonthLength
@@ -165,7 +171,8 @@ class GJLocaleSymbols private (locale: Locale) {
     if (day != null) {
       return day.intValue()
     }
-    throw IllegalFieldValueException.create(DateTimeFieldType.dayOfWeek(), text)
+    throw IllegalFieldValueException
+      .create(DateTimeFieldType.dayOfWeek(), text)
   }
 
   def getDayOfWeekMaxTextLength(): Int = iMaxDayOfWeekLength
@@ -182,7 +189,8 @@ class GJLocaleSymbols private (locale: Locale) {
         return i
       }
     }
-    throw IllegalFieldValueException.create(DateTimeFieldType.halfdayOfDay(), text)
+    throw IllegalFieldValueException
+      .create(DateTimeFieldType.halfdayOfDay(), text)
   }
 
   def getHalfdayMaxTextLength(): Int = iMaxHalfdayLength

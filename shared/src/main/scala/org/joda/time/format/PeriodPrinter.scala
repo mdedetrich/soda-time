@@ -8,7 +8,9 @@ trait PeriodPrinter {
 
   def calculatePrintedLength(period: ReadablePeriod, locale: Locale): Int
 
-  def countFieldsToPrint(period: ReadablePeriod, stopAt: Int, locale: Locale): Int
+  def countFieldsToPrint(period: ReadablePeriod,
+                         stopAt: Int,
+                         locale: Locale): Int
 
   def printTo(buf: StringBuffer, period: ReadablePeriod, locale: Locale): Unit
 
