@@ -71,7 +71,7 @@ class BuddhistChronology private (base: Chronology, param: AnyRef) extends Assem
   }
 
   override def equals(obj: Any): Boolean = {
-    if (this == obj) {
+    if (super.equals(obj)) {
       return true
     }
     if (obj.isInstanceOf[BuddhistChronology]) {

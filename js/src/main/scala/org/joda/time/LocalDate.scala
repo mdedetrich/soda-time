@@ -271,16 +271,17 @@ class LocalDate(instant: Long, private var chronology: Chronology) extends BaseL
   def getChronology(): Chronology = iChronology
 
   override def equals(partial: Any): Boolean = {
-    if (this == partial) {
-      return true
+    partial match {
+      case other: LocalDate =>
+        if (this eq other) {
+          return true
+        }
+        if (iChronology == other.iChronology) {
+          return iLocalMillis == other.iLocalMillis
+        }
+      case _ =>
     }
-    if (partial.isInstanceOf[LocalDate]) {
-      val other = partial.asInstanceOf[LocalDate]
-      if (iChronology == other.iChronology) {
-        return iLocalMillis == other.iLocalMillis
-      }
-    }
-    this == partial
+    super.equals(partial)
   }
 
   override def hashCode(): Int = {

@@ -106,7 +106,7 @@ class CachedDateTimeZone private (private val zone: DateTimeZone) extends DateTi
   override def hashCode(): Int = iZone.hashCode
 
   override def equals(obj: Any): Boolean = {
-    if (this == obj) {
+    if (super.equals(obj)) {
       return true
     }
     if (obj.isInstanceOf[CachedDateTimeZone]) {

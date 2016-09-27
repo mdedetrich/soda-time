@@ -195,7 +195,7 @@ class LimitChronology private (base: Chronology, val lowerLimit: DateTime, val u
   }
 
   override def equals(obj: Any): Boolean = {
-    if (this == obj) {
+    if (super.equals(obj)) {
       return true
     }
     if (obj.isInstanceOf[LimitChronology] == false) {

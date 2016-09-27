@@ -16,7 +16,7 @@ class GJCacheKey(private val zone: DateTimeZone, private val cutoverInstant: Ins
   }
 
   override def equals(obj: Any): Boolean = {
-    if (this == obj) {
+    if (super.equals(obj)) {
       return true
     }
     if (obj == null) {

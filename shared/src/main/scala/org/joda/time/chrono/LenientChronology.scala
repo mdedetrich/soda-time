@@ -73,7 +73,7 @@ class LenientChronology private (base: Chronology) extends AssembledChronology(b
   }
 
   override def equals(obj: Any): Boolean = {
-    if (this == obj) {
+    if (super.equals(obj)) {
       return true
     }
     if (obj.isInstanceOf[LenientChronology] == false) {
